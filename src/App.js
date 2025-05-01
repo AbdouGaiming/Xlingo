@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Login from "./Pages/Login";
-import Dashboard from "./Pages/Dashboard/Dashboard";
-import PronunciationPractice from "./Pages/Practice/PronunciationPractice";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/shared/Navbar";
+import Registration from "./Pages/Registration";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   // State to manage user authentication
