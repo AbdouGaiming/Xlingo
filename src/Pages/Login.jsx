@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.scss";
 
-const Login = ({ onLoginSuccess }) => {
+const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -62,26 +62,17 @@ const Login = ({ onLoginSuccess }) => {
       // For demo purposes, we'll simulate successful login after a delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock user data - with more profile details for our navbar
+      // Mock user data
       const userData = {
         id: 'user123',
         username: formData.username,
-        name: formData.username.charAt(0).toUpperCase() + formData.username.slice(1),
-        level: 3,
-        streak: 5,
-        xp: 1250,
-        learningLanguage: 'es',
+        name: 'Demo User',
         isAuthenticated: true,
         token: 'mock-jwt-token' // In real app, this would come from server
       };
       
       // Save to localStorage
       localStorage.setItem('xlingoUser', JSON.stringify(userData));
-      
-      // Call the login success callback with user data
-      if (onLoginSuccess) {
-        onLoginSuccess(userData);
-      }
       
       // Redirect to dashboard
       navigate('/dashboard');
