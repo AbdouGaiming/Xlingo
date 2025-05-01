@@ -1,16 +1,16 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const { validationResult } = require('express-validator');
-const User = require('../Models/User');
-const dotenv = require('dotenv');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const { validationResult } = require("express-validator");
+const User = require("../Models/User");
+const dotenv = require("dotenv");
 
 // Load environment variables
 dotenv.config();
 
 // Get JWT secret from environment variable or use a default (for development only)
-const JWT_SECRET = process.env.JWT_SECRET || 'xlingo_secret_key_development';
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '24h';
+const JWT_SECRET = process.env.JWT_SECRET || "xlingo_secret_key_development";
+const JWT_EXPIRE = process.env.JWT_EXPIRE || "24h";
 
 /**
  * @desc    Register a new user
@@ -32,20 +32,20 @@ exports.register = async (req, res) => {
 
     if (user) {
       if (user.email === email) {
-        return res.status(400).json({ message: 'Email already in use' });
+        return res.status(400).json({ message: "Email already in use" });
       }
-      return res.status(400).json({ message: 'Username already taken' });
+      return res.status(400).json({ message: "Username already taken" });
     }
 
     // Generate verification token
-    const verificationToken = crypto.randomBytes(20).toString('hex');
+    const verificationToken = crypto.randomBytes(20).toString("hex");
 
     // Create new user
     user = new User({
       username,
       email,
       password,
-      verificationToken
+      verificationToken,
     });
 
     // Save user to database
@@ -61,32 +61,27 @@ exports.register = async (req, res) => {
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,
-        accountStatus: user.accountStatus
-      }
+        accountStatus: user.accountStatus,
+      },
     };
 
     // Sign token
-    jwt.sign(
-      payload,
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRE },
-      (err, token) => {
-        if (err) throw err;
-        res.status(201).json({
-          message: 'User registered successfully',
-          token,
-          user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            isVerified: user.isVerified
-          }
-        });
-      }
-    );
+    jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRE }, (err, token) => {
+      if (err) throw err;
+      res.status(201).json({
+        message: "User registered successfully",
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          isVerified: user.isVerified,
+        },
+      });
+    });
   } catch (err) {
-    console.error('Registration error:', err.message);
-    res.status(500).json({ message: 'Server error during registration' });
+    console.error("Registration error:", err.message);
+    res.status(500).json({ message: "Server error during registration" });
   }
 };
 
@@ -109,7 +104,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Check if account is locked
@@ -117,8 +112,8 @@ exports.login = async (req, res) => {
       const now = new Date();
       if (user.accountLockedUntil > now) {
         return res.status(403).json({
-          message: 'Account is temporarily locked',
-          lockExpires: user.accountLockedUntil
+          message: "Account is temporarily locked",
+          lockExpires: user.accountLockedUntil,
         });
       } else {
         // Unlock account if lock duration has passed
@@ -143,9 +138,9 @@ exports.login = async (req, res) => {
 
       await user.save();
 
-      return res.status(400).json({ 
-        message: 'Invalid credentials',
-        attemptsLeft: user.accountLocked ? 0 : 5 - user.loginAttempts
+      return res.status(400).json({
+        message: "Invalid credentials",
+        attemptsLeft: user.accountLocked ? 0 : 5 - user.loginAttempts,
       });
     }
 
@@ -167,36 +162,172 @@ exports.login = async (req, res) => {
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,
-        accountStatus: user.accountStatus
-      }
+        accountStatus: user.accountStatus,
+      },
     };
 
     // Sign token
-    jwt.sign(
-      payload,
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRE },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          message: 'Login successful',
-          token,
-          user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            isVerified: user.isVerified,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            profileImage: user.profileImage
-          }
-        });
-      }
-    );
+    jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRE }, (err, token) => {
+      if (err) throw err;
+      res.json({
+        message: "Login successful",
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          isVerified: user.isVerified,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImage: user.profileImage,
+        },
+      });
+    });
   } catch (err) {
-    console.error('Login error:', err.message);
-    res.status(500).json({ message: 'Server error during login' });
+    console.error("Login error:", err.message);
+    res.status(500).json({ message: "Server error during login" });
+  }
+};
+
+/**
+ * @desc    Login user from frontend (supports both username and email login)
+ * @route   POST /api/auth/login-frontend
+ * @access  Public
+ */
+exports.loginFrontend = async (req, res) => {
+  try {
+    const { username, password, rememberMe } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        errors: {
+          general: "Username and password are required",
+        },
+      });
+    }
+
+    // Find user by username or email
+    // This allows users to login with either their username or email address
+    const user = await User.findOne({
+      $or: [{ username }, { email: username }],
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        errors: {
+          general: "Invalid credentials",
+        },
+      });
+    }
+
+    // Check if account is locked
+    if (user.accountLocked) {
+      const now = new Date();
+      if (user.accountLockedUntil > now) {
+        return res.status(403).json({
+          success: false,
+          errors: {
+            general: `Account is temporarily locked. Try again after ${new Date(
+              user.accountLockedUntil
+            ).toLocaleTimeString()}`,
+          },
+        });
+      } else {
+        // Unlock account if lock duration has passed
+        user.accountLocked = false;
+        user.loginAttempts = 0;
+        await user.save();
+      }
+    }
+
+    // Compare password
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      // Increment login attempts
+      user.loginAttempts += 1;
+
+      // Lock account after 5 failed attempts
+      if (user.loginAttempts >= 5) {
+        user.accountLocked = true;
+        user.accountLockedUntil = new Date(Date.now() + 30 * 60 * 1000); // Lock for 30 minutes
+      }
+
+      await user.save();
+
+      return res.status(400).json({
+        success: false,
+        errors: {
+          general: user.accountLocked
+            ? "Too many failed attempts. Account temporarily locked."
+            : "Invalid credentials",
+        },
+        attemptsLeft: user.accountLocked ? 0 : 5 - user.loginAttempts,
+      });
+    }
+
+    // Reset login attempts on successful login
+    user.loginAttempts = 0;
+    if (user.accountLocked) {
+      user.accountLocked = false;
+    }
+
+    // Update last active timestamp
+    user.lastActive = Date.now();
+    await user.save();
+
+    // Create JWT payload
+    const payload = {
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
+        accountStatus: user.accountStatus,
+      },
+    };
+
+    // Set token expiration based on "remember me" option
+    const expiresIn = rememberMe ? "30d" : JWT_EXPIRE;
+
+    // Sign token
+    jwt.sign(payload, JWT_SECRET, { expiresIn }, (err, token) => {
+      if (err) throw err;
+
+      // Format the response to match what our React frontend expects
+      const userData = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        name:
+          user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.username,
+        role: user.role,
+        profileImage: user.profileImage,
+        isAuthenticated: true,
+        isVerified: user.isVerified,
+        token,
+      };
+
+      res.json({
+        success: true,
+        message: "Login successful",
+        user: userData,
+      });
+    });
+  } catch (err) {
+    console.error("Frontend login error:", err.message);
+    res.status(500).json({
+      success: false,
+      errors: {
+        general: "Server error during login. Please try again later.",
+      },
+    });
   }
 };
 
@@ -208,23 +339,23 @@ exports.login = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
-    
+
     // Find user with matching verification token
     const user = await User.findOne({ verificationToken: token });
-    
+
     if (!user) {
-      return res.status(400).json({ message: 'Invalid verification token' });
+      return res.status(400).json({ message: "Invalid verification token" });
     }
-    
+
     // Mark user as verified
     user.isVerified = true;
     user.verificationToken = undefined; // Remove token after verification
     await user.save();
-    
-    res.json({ message: 'Email verified successfully' });
+
+    res.json({ message: "Email verified successfully" });
   } catch (err) {
-    console.error('Email verification error:', err.message);
-    res.status(500).json({ message: 'Server error during verification' });
+    console.error("Email verification error:", err.message);
+    res.status(500).json({ message: "Server error during verification" });
   }
 };
 
@@ -242,28 +373,32 @@ exports.forgotPassword = async (req, res) => {
 
   try {
     const { email } = req.body;
-    
+
     // Find user by email
     const user = await User.findOne({ email });
-    
+
     if (!user) {
       // For security reasons, don't reveal if email exists or not
-      return res.json({ message: 'If the email exists, a reset link will be sent' });
+      return res.json({
+        message: "If the email exists, a reset link will be sent",
+      });
     }
-    
+
     // Generate reset token and expiration
-    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetToken = crypto.randomBytes(20).toString("hex");
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-    
+
     await user.save();
-    
+
     // TODO: Send password reset email with token
-    
-    res.json({ message: 'Password reset email sent' });
+
+    res.json({ message: "Password reset email sent" });
   } catch (err) {
-    console.error('Forgot password error:', err.message);
-    res.status(500).json({ message: 'Server error during password reset request' });
+    console.error("Forgot password error:", err.message);
+    res
+      .status(500)
+      .json({ message: "Server error during password reset request" });
   }
 };
 
@@ -282,28 +417,30 @@ exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
-    
+
     // Find user with matching reset token and token not expired
     const user = await User.findOne({
       resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }
+      resetPasswordExpires: { $gt: Date.now() },
     });
-    
+
     if (!user) {
-      return res.status(400).json({ message: 'Password reset token is invalid or has expired' });
+      return res
+        .status(400)
+        .json({ message: "Password reset token is invalid or has expired" });
     }
-    
+
     // Set new password and clear reset token
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
-    
+
     await user.save();
-    
-    res.json({ message: 'Password has been reset successfully' });
+
+    res.json({ message: "Password has been reset successfully" });
   } catch (err) {
-    console.error('Reset password error:', err.message);
-    res.status(500).json({ message: 'Server error during password reset' });
+    console.error("Reset password error:", err.message);
+    res.status(500).json({ message: "Server error during password reset" });
   }
 };
 
@@ -315,20 +452,20 @@ exports.resetPassword = async (req, res) => {
 exports.getMe = async (req, res) => {
   try {
     // Get user details without password
-    const user = await User.findById(req.user.id).select('-password');
-    
+    const user = await User.findById(req.user.id).select("-password");
+
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Update last active timestamp
     user.lastActive = Date.now();
     await user.save();
-    
+
     res.json(user);
   } catch (err) {
-    console.error('Get user profile error:', err.message);
-    res.status(500).json({ message: 'Server error retrieving user profile' });
+    console.error("Get user profile error:", err.message);
+    res.status(500).json({ message: "Server error retrieving user profile" });
   }
 };
 
@@ -346,24 +483,24 @@ exports.changePassword = async (req, res) => {
 
   try {
     const { currentPassword, newPassword } = req.body;
-    
+
     // Get user with password
     const user = await User.findById(req.user.id);
-    
+
     // Check if current password matches
     const isMatch = await user.comparePassword(currentPassword);
-    
+
     if (!isMatch) {
-      return res.status(400).json({ message: 'Current password is incorrect' });
+      return res.status(400).json({ message: "Current password is incorrect" });
     }
-    
+
     // Set new password
     user.password = newPassword;
     await user.save();
-    
-    res.json({ message: 'Password updated successfully' });
+
+    res.json({ message: "Password updated successfully" });
   } catch (err) {
-    console.error('Change password error:', err.message);
-    res.status(500).json({ message: 'Server error updating password' });
+    console.error("Change password error:", err.message);
+    res.status(500).json({ message: "Server error updating password" });
   }
 };

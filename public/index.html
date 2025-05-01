@@ -11,16 +11,71 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Xlingo</title>
     <script>
-        // Check if user is logged in (using localStorage)
-        document.addEventListener('DOMContentLoaded', function() {
+        // Token verification function
+        function verifyTokenExpiration() {
+            const token = localStorage.getItem('xlingoToken');
+            const userString = localStorage.getItem('xlingoUser');
+
+            // Redirect to login if no token or user data found
+            if (!token || !userString) {
+                return false;
+            }
+
+            try {
+                // Parse the stored user object
+                const user = JSON.parse(userString);
+
+                // Basic token validation (check if token exists in user object)
+                if (!user.token || user.token !== token) {
+                    return false;
+                }
+
+                // Check token expiration by decoding JWT payload
+                // Note: This is a basic check - the real validation happens server-side
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const expiration = payload.exp * 1000; // Convert to milliseconds
+                const now = Date.now();
+
+                if (now >= expiration) {
+                    // Token has expired
+                    return false;
+                }
+
+                // Check last activity time (optional, for automatic logout after inactivity)
+                const lastActivity = localStorage.getItem('lastLoginTime');
+                if (lastActivity) {
+                    const inactiveTime = now - new Date(lastActivity).getTime();
+                    // Log out if inactive for more than 24 hours
+                    const maxInactiveTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+                    if (inactiveTime > maxInactiveTime) {
+                        return false;
+                    }
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Token verification error:', error);
+                return false;
+            }
+        }
+
+        // Handle authentication verification on page load
+        document.addEventListener('DOMContentLoaded', function () {
             // This script runs after the React app has initialized
             // We use a slight delay to ensure React has mounted
             setTimeout(() => {
-                const isLoggedIn = localStorage.getItem('xlingoUser');
+                const isValidSession = verifyTokenExpiration();
                 const currentPath = window.location.pathname;
-                
-                // If user is not logged in and not already on the login page
-                if (!isLoggedIn && currentPath !== '/login') {
+                const publicPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
+                const isPublicPath = publicPaths.some(path => currentPath.startsWith(path));
+
+                if (!isValidSession && !isPublicPath) {
+                    // Clear invalid authentication data
+                    localStorage.removeItem('xlingoUser');
+                    localStorage.removeItem('xlingoToken');
+                    localStorage.removeItem('lastLoginTime');
+
+                    // Redirect to login page
                     window.location.href = '/login';
                 }
             }, 100);
