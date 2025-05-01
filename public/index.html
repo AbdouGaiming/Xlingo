@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Xlingo - Web application created using create-react-app" />
+    <meta
+      name="description"
+      content="Xlingo - Web application created using create-react-app"
+    />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Xlingo</title>
     <script>
-        // Check if user is logged in (using localStorage)
-        document.addEventListener('DOMContentLoaded', function() {
-            // This script runs after the React app has initialized
-            // We use a slight delay to ensure React has mounted
-            setTimeout(() => {
-                const isLoggedIn = localStorage.getItem('xlingoUser');
-                const currentPath = window.location.pathname;
-                
-                // If user is not logged in and not already on the login page
-                if (!isLoggedIn && currentPath !== '/login') {
-                    window.location.href = '/login';
-                }
-            }, 100);
-        });
-    </script>
-</head>
+      // Check if user is logged in (using localStorage)
+      document.addEventListener("DOMContentLoaded", function () {
+        // This script runs after the React app has initialized
+        // We use a slight delay to ensure React has mounted
+        setTimeout(() => {
+          const isLoggedIn = localStorage.getItem("xlingoUser");
+          const currentPath = window.location.pathname;
 
-<body>
+          // If user is not logged in and not already on the login page
+          // if (!isLoggedIn && currentPath !== '/login') {
+          //     window.location.href = '/login';
+          // }
+        }, 100);
+      });
+    </script>
+  </head>
+
+  <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-</body>
-
+  </body>
 </html>
