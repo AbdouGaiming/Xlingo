@@ -1,23 +1,35 @@
 import React from "react";
 import "./App.css";
+import Login from "./Pages/Login";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
+  // Check if user is logged in
+  const isLoggedIn = localStorage.getItem('xlingoUser');
+
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Welcome to Xlingo</h1>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          {/* Login route */}
+          <Route path="/login" element={
+            isLoggedIn ? <Navigate to="/dashboard" /> : <Login />
+          } />
+          
+          {/* Protected routes */}
+          <Route path="/dashboard" element={
+            isLoggedIn ? <div>Dashboard Page (Coming Soon)</div> : <Navigate to="/login" />
+          } />
+          
+          {/* Home route - redirects based on login status */}
+          <Route path="/" element={
+            isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+          } />
+          
+          {/* Catch all other routes */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

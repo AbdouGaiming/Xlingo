@@ -10,6 +10,22 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Xlingo</title>
+    <script>
+        // Check if user is logged in (using localStorage)
+        document.addEventListener('DOMContentLoaded', function() {
+            // This script runs after the React app has initialized
+            // We use a slight delay to ensure React has mounted
+            setTimeout(() => {
+                const isLoggedIn = localStorage.getItem('xlingoUser');
+                const currentPath = window.location.pathname;
+                
+                // If user is not logged in and not already on the login page
+                if (!isLoggedIn && currentPath !== '/login') {
+                    window.location.href = '/login';
+                }
+            }, 100);
+        });
+    </script>
 </head>
 
 <body>
