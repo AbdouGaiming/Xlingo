@@ -4029,6 +4029,7 @@ delayed-stream@~1.0.0:
   resolved "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
+<<<<<<< HEAD
 delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/delegates/-/delegates-1.0.0.tgz"
@@ -4039,11 +4040,21 @@ depd@^2.0.0, depd@~2.0.0, depd@2.0.0:
   resolved "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz"
   integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
 
+=======
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
 depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/depd/-/depd-1.1.2.tgz"
   integrity sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==
 
+<<<<<<< HEAD
+=======
+depd@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz"
+  integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
+
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
 dequal@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/dequal/-/dequal-2.0.3.tgz"
@@ -5584,6 +5595,7 @@ http-errors@^2.0.0, http-errors@2.0.0:
     statuses "2.0.1"
     toidentifier "1.0.1"
 
+<<<<<<< HEAD
 http-errors@~1.6.2:
   version "1.6.3"
   resolved "https://registry.npmjs.org/http-errors/-/http-errors-1.6.3.tgz"
@@ -5594,6 +5606,8 @@ http-errors@~1.6.2:
     setprototypeof "1.1.0"
     statuses ">= 1.4.0 < 2"
 
+=======
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
 http-parser-js@>=0.5.1:
   version "0.5.10"
   resolved "https://registry.npmjs.org/http-parser-js/-/http-parser-js-0.5.10.tgz"
@@ -5641,7 +5655,11 @@ human-signals@^2.1.0:
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-2.1.0.tgz"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
+<<<<<<< HEAD
 iconv-lite@^0.6.3, iconv-lite@0.6.3:
+=======
+iconv-lite@^0.6.3:
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
   version "0.6.3"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.6.3.tgz"
   integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
@@ -7150,11 +7168,14 @@ micromatch@^4.0.2, micromatch@^4.0.4, micromatch@^4.0.5, micromatch@^4.0.8:
     braces "^3.0.3"
     picomatch "^2.3.1"
 
+<<<<<<< HEAD
 mime-db@^1.54.0:
   version "1.54.0"
   resolved "https://registry.npmjs.org/mime-db/-/mime-db-1.54.0.tgz"
   integrity sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==
 
+=======
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
 "mime-db@>= 1.43.0 < 2", mime-db@1.52.0:
   version "1.52.0"
   resolved "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz"
@@ -7367,11 +7388,14 @@ natural-compare@^1.4.0:
   resolved "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
+<<<<<<< HEAD
 negotiator@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-1.0.0.tgz"
   integrity sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==
 
+=======
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
 negotiator@~0.6.4:
   version "0.6.4"
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-0.6.4.tgz"
@@ -9556,11 +9580,14 @@ static-eval@2.0.2:
   dependencies:
     escodegen "^1.8.1"
 
+<<<<<<< HEAD
 statuses@^2.0.1, statuses@2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/statuses/-/statuses-2.0.1.tgz"
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
 
+=======
+>>>>>>> ab1ada2fb3a9e74b41c90208aa3ce403010b13ad
 "statuses@>= 1.4.0 < 2":
   version "1.5.0"
   resolved "https://registry.npmjs.org/statuses/-/statuses-1.5.0.tgz"
