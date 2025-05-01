@@ -1,0 +1,503 @@
+// Variables
+$primary-color: #2c3e50;
+$secondary-color: #eef2f7; 
+$accent-color: #3498db;
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$danger-color: #e74c3c;
+$text-color: #333;
+$light-text: #666;
+$border-radius: 8px;
+$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+$hover-transition: all 0.3s ease;
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    
+    .user-welcome {
+      h1 {
+        color: $primary-color;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      p {
+        color: $light-text;
+        font-size: 1rem;
+      }
+    }
+    
+    .current-language {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-radius: $border-radius;
+      padding: 0.75rem 1.5rem;
+      box-shadow: $box-shadow;
+      
+      .language-flag {
+        font-size: 2.5rem;
+        margin-right: 1rem;
+      }
+      
+      .language-info {
+        h2 {
+          color: $primary-color;
+          font-size: 1.5rem;
+          margin: 0 0 0.25rem 0;
+        }
+        
+        .level-badge {
+          background-color: $accent-color;
+          color: white;
+          border-radius: 20px;
+          padding: 0.25rem 0.75rem;
+          font-size: 0.85rem;
+          font-weight: 500;
+          display: inline-block;
+        }
+      }
+    }
+  }
+  
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 2rem;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+    
+    section {
+      background-color: white;
+      border-radius: $border-radius;
+      padding: 1.5rem;
+      box-shadow: $box-shadow;
+      
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        
+        h3 {
+          color: $primary-color;
+          font-size: 1.3rem;
+          margin: 0;
+        }
+        
+        .see-all-link {
+          color: $accent-color;
+          font-size: 0.9rem;
+          text-decoration: none;
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+  
+  // Progress Section
+  .progress-section {
+    grid-column: span 2;
+    
+    @media (max-width: 992px) {
+      grid-column: span 1;
+    }
+    
+    .progress-stats {
+      display: flex;
+      gap: 1.5rem;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
+      
+      .progress-card {
+        flex: 1;
+        background-color: $secondary-color;
+        border-radius: $border-radius;
+        padding: 1.25rem;
+        
+        h4 {
+          color: $primary-color;
+          font-size: 1.1rem;
+          margin: 0 0 1rem 0;
+        }
+        
+        p {
+          color: $light-text;
+          font-size: 0.9rem;
+          margin: 0.5rem 0 0 0;
+        }
+        
+        &.streak {
+          display: flex;
+          align-items: center;
+          background-color: transparentize($warning-color, 0.9);
+          
+          .streak-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+          }
+          
+          .streak-info {
+            h4 {
+              color: darken($warning-color, 10%);
+              margin-bottom: 0.25rem;
+            }
+            
+            p {
+              margin-top: 0;
+            }
+          }
+        }
+        
+        .progress-bar-container {
+          height: 10px;
+          background-color: white;
+          border-radius: 5px;
+          overflow: hidden;
+          
+          .progress-bar {
+            height: 100%;
+            background-color: $accent-color;
+            border-radius: 5px;
+          }
+        }
+        
+        .progress-details {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.9rem;
+          margin: 0.5rem 0;
+          
+          span:first-child {
+            color: $accent-color;
+            font-weight: 500;
+          }
+          
+          span:last-child {
+            color: $light-text;
+          }
+        }
+      }
+    }
+  }
+  
+  // Activities Section
+  .activities-section {
+    .activities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      
+      @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+      }
+      
+      .activity-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: $border-radius;
+        background-color: $secondary-color;
+        transition: $hover-transition;
+        
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        &.vocabulary {
+          border-left: 4px solid #9b59b6;
+          .activity-icon { background-color: transparentize(#9b59b6, 0.8); }
+        }
+        
+        &.grammar {
+          border-left: 4px solid #3498db;
+          .activity-icon { background-color: transparentize(#3498db, 0.8); }
+        }
+        
+        &.listening {
+          border-left: 4px solid #2ecc71;
+          .activity-icon { background-color: transparentize(#2ecc71, 0.8); }
+        }
+        
+        &.speaking {
+          border-left: 4px solid #f39c12;
+          .activity-icon { background-color: transparentize(#f39c12, 0.8); }
+        }
+        
+        .activity-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+          margin-right: 1rem;
+          flex-shrink: 0;
+        }
+        
+        .activity-info {
+          flex-grow: 1;
+          
+          h4 {
+            font-size: 1rem;
+            margin: 0 0 0.5rem 0;
+            color: $primary-color;
+          }
+          
+          .activity-progress-bar {
+            height: 6px;
+            background-color: white;
+            border-radius: 3px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            
+            .progress-fill {
+              height: 100%;
+              background-color: $accent-color;
+              border-radius: 3px;
+            }
+          }
+          
+          .activity-details {
+            font-size: 0.8rem;
+            color: $light-text;
+            margin: 0;
+          }
+        }
+        
+        .continue-button {
+          background-color: white;
+          color: $accent-color;
+          border: 1px solid $accent-color;
+          border-radius: $border-radius;
+          padding: 0.5rem 0.75rem;
+          font-size: 0.8rem;
+          text-decoration: none;
+          transition: $hover-transition;
+          white-space: nowrap;
+          
+          &:hover {
+            background-color: $accent-color;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+  
+  // Challenges Section
+  .challenges-section {
+    .challenges-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      
+      .challenge-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: $border-radius;
+        background-color: $secondary-color;
+        transition: $hover-transition;
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        &.completed {
+          background-color: transparentize($success-color, 0.9);
+          
+          .challenge-icon {
+            background-color: transparentize($success-color, 0.7);
+          }
+        }
+        
+        .challenge-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background-color: transparentize($warning-color, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          margin-right: 1rem;
+          flex-shrink: 0;
+        }
+        
+        .challenge-info {
+          flex-grow: 1;
+          
+          h4 {
+            font-size: 1rem;
+            margin: 0 0 0.25rem 0;
+            color: $primary-color;
+          }
+          
+          p {
+            font-size: 0.85rem;
+            color: $light-text;
+            margin: 0 0 0.5rem 0;
+          }
+          
+          .challenge-reward {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            
+            .xp-reward {
+              font-size: 0.8rem;
+              font-weight: 500;
+              color: $accent-color;
+            }
+            
+            .completed-badge {
+              font-size: 0.75rem;
+              background-color: $success-color;
+              color: white;
+              padding: 0.15rem 0.5rem;
+              border-radius: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Leaderboard Section
+  .leaderboard-section {
+    .leaderboard-list {
+      .leaderboard-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        border-radius: $border-radius;
+        margin-bottom: 0.5rem;
+        
+        &.current-user {
+          background-color: transparentize($accent-color, 0.9);
+          font-weight: 500;
+        }
+        
+        .rank {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background-color: $secondary-color;
+          color: $primary-color;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.8rem;
+          font-weight: 500;
+          margin-right: 0.75rem;
+        }
+        
+        .user-avatar {
+          font-size: 1.25rem;
+          margin-right: 0.75rem;
+        }
+        
+        .user-name {
+          flex-grow: 1;
+          font-size: 0.9rem;
+          color: $primary-color;
+        }
+        
+        .user-xp {
+          font-size: 0.9rem;
+          color: $accent-color;
+          font-weight: 500;
+        }
+      }
+    }
+    
+    .leaderboard-footer {
+      text-align: center;
+      margin-top: 1rem;
+      
+      p {
+        font-size: 0.85rem;
+        color: $light-text;
+        margin: 0;
+      }
+    }
+  }
+  
+  // Quick Actions
+  .quick-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .action-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border-radius: $border-radius;
+      padding: 1rem 1.5rem;
+      box-shadow: $box-shadow;
+      text-decoration: none;
+      transition: $hover-transition;
+      
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.practice-btn {
+        background-color: $accent-color;
+        color: white;
+      }
+      
+      &.lesson-btn {
+        background-color: $success-color;
+        color: white;
+      }
+      
+      &.community-btn {
+        background-color: $warning-color;
+        color: white;
+      }
+      
+      .action-icon {
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+      }
+      
+      .action-text {
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
