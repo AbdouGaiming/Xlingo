@@ -10,7 +10,7 @@ import {
 // API URL - Configure based on environment
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -37,7 +37,7 @@ const Login = () => {
     if (loginSuccess) {
       const redirectTimer = setTimeout(() => {
         console.log("Login successful, redirecting to home page");
-        navigate("/home");
+        // Let App.js handle the navigation
       }, 1000); // Slightly longer delay for better UX
 
       return () => clearTimeout(redirectTimer);
@@ -146,6 +146,11 @@ const Login = () => {
 
         // Set success state - this will trigger the useEffect for redirection
         setLoginSuccess(true);
+
+        // Call the onLoginSuccess prop to update user state in App component
+        if (onLoginSuccess && typeof onLoginSuccess === "function") {
+          onLoginSuccess(data.user);
+        }
       } else {
         showErrorAlert(
           "Login Failed",
