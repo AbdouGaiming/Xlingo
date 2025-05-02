@@ -9,6 +9,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  overflow-x: hidden;
   background: #0505b5;
   background: linear-gradient(
     120deg,
@@ -25,8 +26,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: 10px 34px;
 }
 
 .section1 .right {

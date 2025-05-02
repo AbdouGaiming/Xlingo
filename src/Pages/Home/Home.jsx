@@ -131,7 +131,7 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div className="section4">
+      {/* <div className="section4">
         <div className="footer-section">
           <div className="footer-content">
             <div className="footer-top">
@@ -179,11 +179,11 @@ export default function Home() {
               <p className="copyright">© 2025 Xlingo. All rights reserved.</p>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="footer-wrapper">
           <Footer />
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 }
