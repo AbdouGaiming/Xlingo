@@ -5,12 +5,9 @@ import Registration from "./Pages/Registration";
 import Home from "./Pages/Home/Home";
 import Navbar from "./components/shared/Navbar";
 import Dashboard from "./Pages/Dashboard/Dashboard";
-<<<<<<< HEAD
 import Community from "./Pages/Community/Community";
 import FriendProfile from "./Pages/Community/components/profile/FriendProfile";
-=======
 import LessonsAdventure from "./Pages/LessonsAdventure/LessonsAdventure";
->>>>>>> d347063787cfb0072c0ae045cf4aef31c977d31e
 import LanguageSelector from "./components/language/LanguageSelector";
 import VocabularyFlashcards from "./components/language/VocabularyFlashcards";
 import PronunciationPractice from "./Pages/Practice/PronunciationPractice";
@@ -35,8 +32,13 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Add NavigateFunction component
+const NavigateFunction = ({ children }) => {
+  const navigate = useNavigate();
+  return children(navigate);
+};
+
 function App() {
-  // Check if user is logged in
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -82,17 +84,14 @@ function App() {
     localStorage.removeItem("xlingoToken");
     localStorage.removeItem("lastLoginTime");
     setUser(null);
-    // Using Navigate in the Navbar component instead of window.location for smooth transitions
   };
 
   const handleSelectLanguage = useCallback(
     (language) => {
       if (user) {
-        // Update user's selected language
         const updatedUser = { ...user, currentLanguage: language };
         localStorage.setItem("xlingoUser", JSON.stringify(updatedUser));
         setUser(updatedUser);
-        // Don't use window.location.href - it causes page refreshes
       }
     },
     [user]
@@ -106,7 +105,6 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-<<<<<<< HEAD
         <Navbar user={user} onLogout={handleLogout} />
         <div className="app-content">
           <Routes>
@@ -117,7 +115,22 @@ function App() {
             {/* Login route */}
             <Route
               path="/login"
-              element={user ? <Navigate to="/dashboard" /> : <Login />}
+              element={
+                user ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <NavigateFunction>
+                    {(navigate) => (
+                      <Login
+                        onLoginSuccess={(userData) => {
+                          setUser(userData);
+                          navigate("/dashboard");
+                        }}
+                      />
+                    )}
+                  </NavigateFunction>
+                )
+              }
             />
 
             {/* Registration route */}
@@ -130,55 +143,90 @@ function App() {
             <Route
               path="/select-language"
               element={
-                user ? (
+                <ProtectedRoute>
                   <LanguageSelector onSelectLanguage={handleSelectLanguage} />
-                ) : (
-                  <Navigate to="/login" />
-                )
+                </ProtectedRoute>
               }
             />
 
             {/* Dashboard route */}
             <Route
               path="/dashboard"
-              element={user ? <Dashboard /> : <Navigate to="/login" />}
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
             />
 
             {/* Community routes */}
             <Route
               path="/community"
-              element={user ? <Community /> : <Navigate to="/login" />}
+              element={
+                <ProtectedRoute>
+                  <Community />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/community/profile/:userId"
-              element={user ? <FriendProfile /> : <Navigate to="/login" />}
+              element={
+                <ProtectedRoute>
+                  <FriendProfile />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Lessons Adventure route */}
+            <Route
+              path="/lessons"
+              element={
+                <ProtectedRoute>
+                  <LessonsAdventure />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Specific Lesson route */}
+            <Route
+              path="/lesson/:lessonId"
+              element={
+                <ProtectedRoute>
+                  <LessonsAdventure />
+                </ProtectedRoute>
+              }
             />
 
             {/* Practice routes */}
             <Route
               path="/practice/vocabulary/:categoryId"
               element={
-                user ? (
+                <ProtectedRoute>
                   <VocabularyFlashcards
                     languageId={user?.currentLanguage?.id || "es"}
                     categoryId="food"
                   />
-                ) : (
-                  <Navigate to="/login" />
-                )
+                </ProtectedRoute>
               }
             />
 
             <Route
               path="/practice/vocabulary"
               element={
-                user ? (
+                <ProtectedRoute>
                   <VocabularyFlashcards
                     languageId={user?.currentLanguage?.id || "es"}
                   />
-                ) : (
-                  <Navigate to="/login" />
-                )
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/practice/pronunciation"
+              element={
+                <ProtectedRoute>
+                  <PronunciationPractice />
+                </ProtectedRoute>
               }
             />
 
@@ -186,143 +234,8 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
-=======
-        <AppContent
-          user={user}
-          setUser={setUser}
-          handleLogout={handleLogout}
-          handleSelectLanguage={handleSelectLanguage}
-        />
->>>>>>> d347063787cfb0072c0ae045cf4aef31c977d31e
       </BrowserRouter>
     </div>
-  );
-}
-
-// Separate component to access router hooks
-function AppContent({ user, setUser, handleLogout, handleSelectLanguage }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Update user when logging in
-  const handleLogin = useCallback(
-    (userData) => {
-      setUser(userData);
-      navigate("/dashboard");
-    },
-    [navigate, setUser]
-  );
-
-  return (
-    <>
-      <Navbar user={user} onLogout={handleLogout} />
-      <div className="app-content">
-        <Routes>
-          {/* Home route - main landing page */}
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-
-          {/* Login route */}
-          <Route
-            path="/login"
-            element={
-              user ? (
-                <Navigate to="/dashboard" />
-              ) : (
-                <Login onLoginSuccess={handleLogin} />
-              )
-            }
-          />
-
-          {/* Registration route */}
-          <Route
-            path="/register"
-            element={user ? <Navigate to="/dashboard" /> : <Registration />}
-          />
-
-          {/* Language Selection */}
-          <Route
-            path="/select-language"
-            element={
-              <ProtectedRoute>
-                <LanguageSelector
-                  onSelectLanguage={(lang) => {
-                    handleSelectLanguage(lang);
-                    navigate("/dashboard");
-                  }}
-                />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Dashboard route */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Lessons Adventure route */}
-          <Route
-            path="/lessons"
-            element={
-              <ProtectedRoute>
-                <LessonsAdventure />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Specific Lesson route */}
-          <Route
-            path="/lesson/:lessonId"
-            element={
-              <ProtectedRoute>
-                <LessonsAdventure />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Practice routes */}
-          <Route
-            path="/practice/vocabulary/:categoryId"
-            element={
-              <ProtectedRoute>
-                <VocabularyFlashcards
-                  languageId={user?.currentLanguage?.id || "es"}
-                  categoryId={location.pathname.split("/").pop()}
-                />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/practice/vocabulary"
-            element={
-              <ProtectedRoute>
-                <VocabularyFlashcards
-                  languageId={user?.currentLanguage?.id || "es"}
-                />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/practice/pronunciation"
-            element={
-              <ProtectedRoute>
-                <PronunciationPractice />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Catch all other routes */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
-    </>
   );
 }
 
