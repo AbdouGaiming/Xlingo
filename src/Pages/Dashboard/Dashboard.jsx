@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.scss";
 
@@ -14,6 +14,11 @@ const Dashboard = () => {
     dailyGoal: 50,
     dailyProgress: 30,
   });
+  
+  // References for scroll buttons
+  const activitiesContainerRef = useRef(null);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightScroll, setShowRightScroll] = useState(true);
 
   // Load user data and selected language from localStorage on component mount
   useEffect(() => {
@@ -30,6 +35,40 @@ const Dashboard = () => {
     }
   }, []);
 
+  // Check scroll position to show/hide scroll buttons
+  useEffect(() => {
+    const checkScroll = () => {
+      const container = activitiesContainerRef.current;
+      if (!container) return;
+      
+      setShowLeftScroll(container.scrollLeft > 20);
+      setShowRightScroll(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 20
+      );
+    };
+
+    const container = activitiesContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScroll);
+      // Initial check
+      checkScroll();
+      
+      return () => container.removeEventListener('scroll', checkScroll);
+    }
+  }, []);
+
+  // Scroll activities horizontally
+  const scrollActivities = (direction) => {
+    const container = activitiesContainerRef.current;
+    if (!container) return;
+    
+    const scrollAmount = container.clientWidth * 0.75;
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
   // Mock data for demonstration
   const learningActivities = [
     {
@@ -39,6 +78,8 @@ const Dashboard = () => {
       progress: 70,
       totalWords: 30,
       completed: 21,
+      timeEstimate: "5 min",
+      isRecommended: true
     },
     {
       id: 2,
@@ -47,6 +88,7 @@ const Dashboard = () => {
       progress: 45,
       exercises: 20,
       completed: 9,
+      timeEstimate: "10 min"
     },
     {
       id: 3,
@@ -55,6 +97,7 @@ const Dashboard = () => {
       progress: 20,
       duration: "15 min",
       completed: "3 min",
+      timeEstimate: "7 min"
     },
     {
       id: 4,
@@ -63,6 +106,26 @@ const Dashboard = () => {
       progress: 60,
       phrases: 15,
       completed: 9,
+      timeEstimate: "8 min",
+      isNew: true
+    },
+    {
+      id: 5,
+      type: "vocabulary",
+      title: "Travel Words",
+      progress: 35,
+      totalWords: 40,
+      completed: 14,
+      timeEstimate: "6 min"
+    },
+    {
+      id: 6,
+      type: "grammar",
+      title: "Past Tense",
+      progress: 15,
+      exercises: 25,
+      completed: 4,
+      timeEstimate: "15 min"
     },
   ];
 
@@ -88,6 +151,20 @@ const Dashboard = () => {
       xp: 75,
       completed: true,
     },
+    {
+      id: 4,
+      title: "Grammar Guru",
+      description: "Complete all grammar exercises with 90% accuracy",
+      xp: 120,
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Early Bird",
+      description: "Practice before 9am for 3 consecutive days",
+      xp: 40,
+      completed: true,
+    },
   ];
 
   const leaderboardData = [
@@ -103,6 +180,19 @@ const Dashboard = () => {
     (currentLanguage.xp / currentLanguage.nextLevelXp) * 100;
   const dailyProgressPercentage =
     (currentLanguage.dailyProgress / currentLanguage.dailyGoal) * 100;
+
+  // Get appropriate icon for activity type
+  const getActivityIcon = (type) => {
+    switch(type) {
+      case "vocabulary": return "📚";
+      case "grammar": return "📝";
+      case "listening": return "🎧";
+      case "speaking": return "🎤";
+      case "reading": return "📖";
+      case "writing": return "✍️";
+      default: return "🎯";
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -172,7 +262,7 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* Activities Section */}
+        {/* Activities Section - Enhanced Horizontal */}
         <section className="activities-section">
           <div className="section-header">
             <h3>Continue Learning</h3>
@@ -181,45 +271,91 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          <div className="activities-grid">
-            {learningActivities.map((activity) => (
-              <div
-                key={activity.id}
-                className={`activity-card ${activity.type}`}
+          <div className="activities-carousel">
+            {showLeftScroll && (
+              <button 
+                className="scroll-button left" 
+                onClick={() => scrollActivities('left')}
+                aria-label="Scroll left"
               >
-                <div className={`activity-icon ${activity.type}-icon`}>
-                  {activity.type === "vocabulary" && "📚"}
-                  {activity.type === "grammar" && "📝"}
-                  {activity.type === "listening" && "🎧"}
-                  {activity.type === "speaking" && "🎤"}
-                </div>
-                <div className="activity-info">
-                  <h4>{activity.title}</h4>
-                  <div className="activity-progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${activity.progress}%` }}
-                    ></div>
-                  </div>
-                  <p className="activity-details">
-                    {activity.type === "vocabulary" &&
-                      `${activity.completed}/${activity.totalWords} words`}
-                    {activity.type === "grammar" &&
-                      `${activity.completed}/${activity.exercises} exercises`}
-                    {activity.type === "listening" &&
-                      `${activity.completed}/${activity.duration}`}
-                    {activity.type === "speaking" &&
-                      `${activity.completed}/${activity.phrases} phrases`}
-                  </p>
-                </div>
-                <Link
-                  to={`/practice/${activity.type}/${activity.id}`}
-                  className="continue-button"
+                ◀
+              </button>
+            )}
+            
+            <div className="activities-grid" ref={activitiesContainerRef}>
+              {learningActivities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className={`activity-card ${activity.type}`}
                 >
-                  Continue
-                </Link>
-              </div>
-            ))}
+                  <div className="activity-card-content">
+                    <div className={`activity-icon ${activity.type}-icon`}>
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="activity-info">
+                      <div className="activity-header">
+                        <h4>{activity.title}</h4>
+                        {activity.isRecommended && (
+                          <span className="activity-badge recommended">Recommended</span>
+                        )}
+                        {activity.isNew && (
+                          <span className="activity-badge new">New</span>
+                        )}
+                      </div>
+                      <div className="activity-progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${activity.progress}%` }}
+                        ></div>
+                      </div>
+                      <div className="activity-stats">
+                        <p className="activity-details">
+                          {activity.type === "vocabulary" &&
+                            `${activity.completed}/${activity.totalWords} words`}
+                          {activity.type === "grammar" &&
+                            `${activity.completed}/${activity.exercises} exercises`}
+                          {activity.type === "listening" &&
+                            `${activity.completed}/${activity.duration}`}
+                          {activity.type === "speaking" &&
+                            `${activity.completed}/${activity.phrases} phrases`}
+                        </p>
+                        <span className="time-estimate">
+                          <span className="time-icon">⏱️</span> {activity.timeEstimate}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    to={`/practice/${activity.type}/${activity.id}`}
+                    className="continue-button"
+                  >
+                    Continue
+                  </Link>
+                </div>
+              ))}
+            </div>
+            
+            {showRightScroll && (
+              <button 
+                className="scroll-button right" 
+                onClick={() => scrollActivities('right')}
+                aria-label="Scroll right"
+              >
+                ▶
+              </button>
+            )}
+          </div>
+          
+          <div className="carousel-indicators">
+            <div className="carousel-dots">
+              {[...Array(Math.ceil(learningActivities.length / 3))].map((_, i) => (
+                <button 
+                  key={i} 
+                  className={`carousel-dot ${i === 0 ? 'active' : ''}`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
