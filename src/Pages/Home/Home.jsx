@@ -1,6 +1,7 @@
 import React from "react";
 import "./Home.css";
 import Footer from "../../components/shared/Footer";
+import { useNavigate } from "react-router-dom";
 
 const languageData = [
   {
@@ -66,9 +67,21 @@ const languageData = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const handleLanguageClick = (language) => {
     console.log(`Selected language: ${language.name}`);
-    // Could redirect to language selection page or trigger language selection
+
+    // Store the selected language in localStorage for future use
+    localStorage.setItem("selectedLanguage", JSON.stringify(language));
+
+    // Redirect to registration page when Spanish is selected,
+    // or when any language is selected (you can adjust this as needed)
+    if (language.id === "es") {
+      navigate("/register");
+    } else {
+      navigate("/register");
+    }
   };
 
   return (

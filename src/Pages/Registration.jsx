@@ -13,6 +13,7 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 const Registration = () => {
   const navigate = useNavigate();
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -33,6 +34,12 @@ const Registration = () => {
 
     if (token && user) {
       navigate("/");
+    }
+
+    // Get selected language from localStorage
+    const languageFromStorage = localStorage.getItem("selectedLanguage");
+    if (languageFromStorage) {
+      setSelectedLanguage(JSON.parse(languageFromStorage));
     }
   }, [navigate]);
 
@@ -156,23 +163,35 @@ const Registration = () => {
       }, 2000);
     } catch (error) {
       setIsLoading(false);
-      console.error("Registration error:", error.response?.data || error.message);
+      console.error(
+        "Registration error:",
+        error.response?.data || error.message
+      );
 
       if (error.response && error.response.data) {
         // Handle validation errors from backend
-        if (error.response.data.errors && Array.isArray(error.response.data.errors)) {
+        if (
+          error.response.data.errors &&
+          Array.isArray(error.response.data.errors)
+        ) {
           const fieldErrors = {};
           error.response.data.errors.forEach((err) => {
             fieldErrors[err.param] = err.msg;
           });
           setErrors({ ...fieldErrors });
-          showErrorAlert("Registration Failed", "Please check the form for errors.");
+          showErrorAlert(
+            "Registration Failed",
+            "Please check the form for errors."
+          );
         } else if (error.response.data.message) {
           setErrors({ general: error.response.data.message });
           showErrorAlert("Registration Failed", error.response.data.message);
         } else {
           setErrors({ general: "Registration failed. Please try again." });
-          showErrorAlert("Registration Failed", "Registration failed. Please try again.");
+          showErrorAlert(
+            "Registration Failed",
+            "Registration failed. Please try again."
+          );
         }
       } else {
         setErrors({ general: "Registration failed. Please try again later." });
@@ -205,6 +224,9 @@ const Registration = () => {
         <div className="registration-header">
           <h1>Join Xlingo</h1>
           <p>Create an account to start your language journey</p>
+          {selectedLanguage && (
+            <p>Selected Language: {selectedLanguage.name}</p>
+          )}
         </div>
 
         {registrationSuccess ? (

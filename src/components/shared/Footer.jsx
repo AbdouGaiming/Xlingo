@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="footer-top">
             <div className="social-section">
               <div className="social-category">
-                <h4>Social Media</h4>
+                <h2>Social Media</h2>
                 <div className="footer-icons">
                   <a
                     href="https://instagram.com"
