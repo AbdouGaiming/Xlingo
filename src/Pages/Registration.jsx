@@ -1,23 +1,39 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Registration.scss";
+import axios from "axios";
+import {
+  showSuccessAlert,
+  showErrorAlert,
+  withLoading,
+} from "../components/shared/SweetAlert/SweetAlert";
 
-// API URL - Configure based on environment, matching Login.jsx
+// API URL - Configure based on environment
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 const Registration = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    acceptTerms: false,
+    agreeTerms: false,
   });
-
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("xlingoToken");
+    const user = localStorage.getItem("xlingoUser");
+
+    if (token && user) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -39,25 +55,23 @@ const Registration = () => {
     let tempErrors = {};
     let isValid = true;
 
-    // Username validation
-    if (!formData.username.trim()) {
-      tempErrors.username = "Username is required";
+    // Name validation
+    if (!formData.firstName.trim()) {
+      tempErrors.firstName = "First name is required";
       isValid = false;
-    } else if (formData.username.length < 3) {
-      tempErrors.username = "Username must be at least 3 characters";
-      isValid = false;
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
-      tempErrors.username =
-        "Username can only contain letters, numbers and underscores";
+    }
+
+    if (!formData.lastName.trim()) {
+      tempErrors.lastName = "Last name is required";
       isValid = false;
     }
 
     // Email validation
-    if (!formData.email) {
+    if (!formData.email.trim()) {
       tempErrors.email = "Email is required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      tempErrors.email = "Email address is invalid";
+      tempErrors.email = "Email is invalid";
       isValid = false;
     }
 
@@ -65,24 +79,20 @@ const Registration = () => {
     if (!formData.password) {
       tempErrors.password = "Password is required";
       isValid = false;
-    } else if (formData.password.length < 6) {
-      tempErrors.password = "Password must be at least 6 characters";
-      isValid = false;
-    } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/.test(formData.password)) {
-      tempErrors.password =
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number";
+    } else if (formData.password.length < 8) {
+      tempErrors.password = "Password must be at least 8 characters";
       isValid = false;
     }
 
     // Confirm password validation
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.confirmPassword !== formData.password) {
       tempErrors.confirmPassword = "Passwords do not match";
       isValid = false;
     }
 
-    // Terms acceptance validation
-    if (!formData.acceptTerms) {
-      tempErrors.acceptTerms = "You must accept the terms and conditions";
+    // Terms agreement validation
+    if (!formData.agreeTerms) {
+      tempErrors.agreeTerms = "You must agree to the terms and conditions";
       isValid = false;
     }
 
@@ -92,197 +102,234 @@ const Registration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
+    // Clear any previous errors
+    setErrors({});
+    let hasErrors = false;
+    const newErrors = {};
+
+    // Validation
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setErrors({});
-
     try {
-      console.log("Attempting registration with:", {
-        username: formData.username,
-        email: formData.email,
-        password: "***",
-      });
-      console.log("API URL:", `${API_URL}/auth/register`);
-
-      // Make API call to register endpoint
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.username,
+      const response = await withLoading(
+        axios.post(`${API_URL}/auth/register`, {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
         }),
-        credentials: "include", // Include cookies in the request
-      });
-
-      const data = await response.json();
-      console.log("Registration response:", data);
-
-      if (!response.ok) {
-        // Handle error response
-        if (data.errors) {
-          setErrors(data.errors);
-        } else {
-          setErrors({
-            general: data.message || "Registration failed. Please try again.",
-          });
+        {
+          loadingTitle: "Creating Account",
+          loadingText: "Setting up your new Xlingo account...",
         }
-        return;
-      }
+      );
 
-      // Handle successful registration
+      setIsLoading(false);
+      // Show success message
+      showSuccessAlert(
+        "Registration Successful!",
+        "Your account has been created. Please log in."
+      );
+
+      // Set success state and redirect after a delay
       setRegistrationSuccess(true);
-
-      // Auto-redirect to login after 3 seconds
       setTimeout(() => {
         navigate("/login");
-      }, 3000);
+      }, 2000);
     } catch (error) {
-      console.error("Registration failed:", error);
-      setErrors({
-        general: "Network error. Please check your connection and try again.",
-      });
-    } finally {
       setIsLoading(false);
+      if (error.response && error.response.data.message) {
+        setErrors({ general: error.response.data.message });
+        showErrorAlert("Registration Failed", error.response.data.message);
+      } else {
+        setErrors({ general: "Registration failed. Please try again later." });
+        showErrorAlert(
+          "Registration Failed",
+          "Registration failed. Please try again later."
+        );
+      }
     }
+  };
+
+  // Generate animated particles
+  const renderParticles = () => {
+    const particles = [];
+    for (let i = 0; i < 20; i++) {
+      particles.push(<div key={`particle-${i}`} className="particle"></div>);
+    }
+    return particles;
   };
 
   return (
     <div className="registration-container">
+      {/* Animated background particles */}
+      <div className="particles">{renderParticles()}</div>
+
+      {/* Giant X logo in background */}
+      <div className="x-logo-bg">X</div>
+
       <div className="registration-form-wrapper">
+        <div className="registration-header">
+          <h1>Join Xlingo</h1>
+          <p>Create an account to start your language journey</p>
+        </div>
+
         {registrationSuccess ? (
-          <div className="registration-success">
-            <h2>Registration Successful!</h2>
-            <p>Your account has been created successfully.</p>
-            <p>Please check your email to verify your account.</p>
-            <p>Redirecting to login page...</p>
+          <div className="success-message">
+            Registration successful! Redirecting to login page...
           </div>
         ) : (
-          <>
-            <div className="registration-header">
-              <h1>Join Xlingo</h1>
-              <p>Create your account to start learning languages</p>
-            </div>
-            <form onSubmit={handleSubmit} className="registration-form">
-              {errors.general && (
-                <div className="error-message">{errors.general}</div>
-              )}
+          <form onSubmit={handleSubmit} className="registration-form">
+            {errors.general && (
+              <div className="error-message">{errors.general}</div>
+            )}
 
+            <div className="form-row">
               <div className="form-group">
-                <label htmlFor="username">Username</label>
                 <input
                   type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
                   onChange={handleInputChange}
-                  placeholder="Choose a username"
-                  className={errors.username ? "input-error" : ""}
+                  placeholder="First Name"
+                  className={errors.firstName ? "input-error" : ""}
                   disabled={isLoading}
                 />
-                {errors.username && (
-                  <span className="error">{errors.username}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter your email"
-                  className={errors.email ? "input-error" : ""}
-                  disabled={isLoading}
-                />
-                {errors.email && <span className="error">{errors.email}</span>}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Create a password"
-                  className={errors.password ? "input-error" : ""}
-                  disabled={isLoading}
-                />
-                {errors.password && (
-                  <span className="error">{errors.password}</span>
-                )}
-                <small className="password-hint">
-                  Use at least 6 characters with one uppercase letter, one
-                  lowercase letter, and one number
-                </small>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Confirm your password"
-                  className={errors.confirmPassword ? "input-error" : ""}
-                  disabled={isLoading}
-                />
-                {errors.confirmPassword && (
-                  <span className="error">{errors.confirmPassword}</span>
-                )}
-              </div>
-
-              <div className="form-group checkbox">
-                <input
-                  type="checkbox"
-                  id="acceptTerms"
-                  name="acceptTerms"
-                  checked={formData.acceptTerms}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                <label htmlFor="acceptTerms">
-                  I accept the{" "}
-                  <a href="/terms" target="_blank" rel="noopener noreferrer">
-                    Terms and Conditions
-                  </a>{" "}
-                  and{" "}
-                  <a href="/privacy" target="_blank" rel="noopener noreferrer">
-                    Privacy Policy
-                  </a>
+                <label
+                  htmlFor="firstName"
+                  className={formData.firstName ? "active" : ""}
+                >
+                  First Name
                 </label>
-                {errors.acceptTerms && (
-                  <span className="error">{errors.acceptTerms}</span>
+                {errors.firstName && (
+                  <span className="error">{errors.firstName}</span>
                 )}
               </div>
 
-              <button
-                type="submit"
-                className={`registration-button ${isLoading ? "loading" : ""}`}
-                disabled={isLoading}
-              >
-                {isLoading ? "Creating Account..." : "Create Account"}
-              </button>
-            </form>
-
-            <div className="registration-footer">
-              <p className="login-link">
-                Already have an account? <Link to="/login">Log in</Link>
-              </p>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  placeholder="Last Name"
+                  className={errors.lastName ? "input-error" : ""}
+                  disabled={isLoading}
+                />
+                <label
+                  htmlFor="lastName"
+                  className={formData.lastName ? "active" : ""}
+                >
+                  Last Name
+                </label>
+                {errors.lastName && (
+                  <span className="error">{errors.lastName}</span>
+                )}
+              </div>
             </div>
-          </>
+
+            <div className="form-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Email"
+                className={errors.email ? "input-error" : ""}
+                disabled={isLoading}
+                autoComplete="email"
+              />
+              <label htmlFor="email" className={formData.email ? "active" : ""}>
+                Email Address
+              </label>
+              {errors.email && <span className="error">{errors.email}</span>}
+            </div>
+
+            <div className="form-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Password"
+                className={errors.password ? "input-error" : ""}
+                disabled={isLoading}
+                autoComplete="new-password"
+              />
+              <label
+                htmlFor="password"
+                className={formData.password ? "active" : ""}
+              >
+                Password
+              </label>
+              {errors.password && (
+                <span className="error">{errors.password}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                placeholder="Confirm Password"
+                className={errors.confirmPassword ? "input-error" : ""}
+                disabled={isLoading}
+                autoComplete="new-password"
+              />
+              <label
+                htmlFor="confirmPassword"
+                className={formData.confirmPassword ? "active" : ""}
+              >
+                Confirm Password
+              </label>
+              {errors.confirmPassword && (
+                <span className="error">{errors.confirmPassword}</span>
+              )}
+            </div>
+
+            <div className="form-terms">
+              <input
+                type="checkbox"
+                id="agreeTerms"
+                name="agreeTerms"
+                checked={formData.agreeTerms}
+                onChange={handleInputChange}
+                disabled={isLoading}
+              />
+              <label htmlFor="agreeTerms">
+                I agree to the <Link to="/terms">Terms & Conditions</Link> and{" "}
+                <Link to="/privacy">Privacy Policy</Link>
+              </label>
+              {errors.agreeTerms && (
+                <span className="error">{errors.agreeTerms}</span>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className={`register-button ${isLoading ? "loading" : ""}`}
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
         )}
+
+        <div className="registration-footer">
+          <p>
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

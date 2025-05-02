@@ -1,0 +1,89 @@
+// SweetAlert custom styling for Xlingo
+.xlingo-swal-container {
+  z-index: 9999;
+}
+
+.xlingo-swal-popup {
+  font-family: "Nunito", sans-serif;
+  border-radius: 15px;
+  padding: 1.5rem;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: 2px solid #f0f0f0;
+}
+
+.xlingo-swal-title {
+  color: #333;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.xlingo-swal-confirm-button {
+  background: linear-gradient(135deg, #4a90e2, #2e5eaa);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  margin: 8px;
+
+  &:hover {
+    background: linear-gradient(135deg, #5aa0f2, #3a6eba);
+    transform: translateY(-2px);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+  }
+}
+
+.xlingo-swal-cancel-button {
+  background: #f7f7f7;
+  color: #666;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  margin: 8px;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Progress bar styling for timed alerts
+.swal2-timer-progress-bar {
+  background: linear-gradient(90deg, #4a90e2, #2e5eaa);
+}
+
+// Custom styling for the success icon
+.swal2-success {
+  border-color: #4a90e2 !important;
+
+  .swal2-success-line-tip,
+  .swal2-success-line-long {
+    background-color: #4a90e2 !important;
+  }
+
+  .swal2-success-ring {
+    border-color: rgba(74, 144, 226, 0.3) !important;
+  }
+}
+
+// Loading animation customization
+.swal2-loader {
+  border-color: #4a90e2 transparent #4a90e2 transparent;
+}
