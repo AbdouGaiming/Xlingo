@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import { API_URL } from '../../../config/index';
 
 const FriendRequests = ({ requests, onAccept, onReject }) => {
   // Helper function to format date
@@ -11,7 +12,68 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
     }
   };
 
-  const { received, sent } = requests;
+  const handleAccept = async (requestId) => {
+    try {
+      const token = localStorage.getItem('xlingoToken');
+      const response = await fetch(`${API_URL}/community/friends/accept/${requestId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        onAccept(requestId);
+      } else {
+        console.error('Failed to accept request:', data.message);
+      }
+    } catch (err) {
+      console.error('Error accepting friend request:', err);
+    }
+  };
+
+  const handleReject = async (requestId) => {
+    try {
+      const token = localStorage.getItem('xlingoToken');
+      const response = await fetch(`${API_URL}/community/friends/reject/${requestId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        onReject(requestId);
+      } else {
+        console.error('Failed to reject request:', data.message);
+      }
+    } catch (err) {
+      console.error('Error rejecting friend request:', err);
+    }
+  };
+
+  const handleCancel = async (requestId) => {
+    try {
+      const token = localStorage.getItem('xlingoToken');
+      const response = await fetch(`${API_URL}/community/friends/cancel/${requestId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        onReject(requestId); // Use the same callback as reject since the UI update is the same
+      } else {
+        console.error('Failed to cancel request:', data.message);
+      }
+    } catch (err) {
+      console.error('Error cancelling friend request:', err);
+    }
+  };
 
   return (
     <div className="friend-requests">
@@ -19,8 +81,8 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
       <div className="requests-section">
         <h2 className="section-title">Friend Requests Received</h2>
         <div className="request-list">
-          {received && received.length > 0 ? (
-            received.map((request) => (
+          {requests.incoming && requests.incoming.length > 0 ? (
+            requests.incoming.map((request) => (
               <div className="request-card" key={request.id}>
                 <div className="request-avatar">
                   {request.profileImage 
@@ -34,20 +96,20 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
                       : request.username}
                   </h3>
                   <p className="request-date">
-                    Requested {formatDateTime(request.since)}
+                    Requested {formatDateTime(request.requestDate)}
                   </p>
                 </div>
                 <div className="request-actions">
                   <button 
                     className="action-button accept"
-                    onClick={() => onAccept(request.id)}
+                    onClick={() => handleAccept(request.id)}
                   >
                     <span className="action-icon">✓</span>
                     Accept
                   </button>
                   <button 
                     className="action-button reject"
-                    onClick={() => onReject(request.id)}
+                    onClick={() => handleReject(request.id)}
                   >
                     <span className="action-icon">✕</span>
                     Reject
@@ -65,8 +127,8 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
       <div className="requests-section">
         <h2 className="section-title">Friend Requests Sent</h2>
         <div className="request-list">
-          {sent && sent.length > 0 ? (
-            sent.map((request) => (
+          {requests.outgoing && requests.outgoing.length > 0 ? (
+            requests.outgoing.map((request) => (
               <div className="request-card" key={request.id}>
                 <div className="request-avatar">
                   {request.profileImage 
@@ -80,13 +142,13 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
                       : request.username}
                   </h3>
                   <p className="request-date">
-                    Sent {formatDateTime(request.since)}
+                    Sent {formatDateTime(request.requestDate)}
                   </p>
                 </div>
                 <div className="request-actions">
                   <button 
                     className="action-button cancel"
-                    onClick={() => onReject(request.id)}
+                    onClick={() => handleCancel(request.id)}
                   >
                     <span className="action-icon">✕</span>
                     Cancel
