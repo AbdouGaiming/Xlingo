@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.scss";
+import {
+  showSuccessAlert,
+  showErrorAlert,
+  withLoading,
+} from "../components/shared/SweetAlert/SweetAlert";
 
 // API URL - Configure based on environment
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -14,7 +19,6 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
   // Check if user is already logged in
@@ -33,7 +37,7 @@ const Login = () => {
     if (loginSuccess) {
       const redirectTimer = setTimeout(() => {
         console.log("Login successful, redirecting to home page");
-        navigate("/home");
+        // Let App.js handle the navigation
       }, 1000); // Slightly longer delay for better UX
 
       return () => clearTimeout(redirectTimer);
@@ -82,34 +86,44 @@ const Login = () => {
 
     if (!validateForm()) return;
 
-    setIsLoading(true);
     setErrors({});
 
     try {
       console.log("Attempting login with:", { ...formData, password: "***" });
       console.log("API URL:", `${API_URL}/auth/login-frontend`);
 
-      // Make API call to login endpoint
-      const response = await fetch(`${API_URL}/auth/login-frontend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include", // Include cookies in the request
-      });
+      // Use the withLoading utility to show a loading alert during the API call
+      const response = await withLoading(
+        fetch(`${API_URL}/auth/login-frontend`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include", // Include cookies in the request
+        }),
+        {
+          loadingTitle: "Logging in",
+          loadingText: "Please wait while we verify your credentials...",
+        }
+      );
 
       const data = await response.json();
       console.log("Login response:", data);
 
       if (!response.ok) {
-        // Handle error response
+        // Handle error response with SweetAlert
         if (data.errors) {
           setErrors(data.errors);
+          showErrorAlert("Login Failed", Object.values(data.errors)[0]);
         } else {
           setErrors({
             general: data.message || "Login failed. Please try again.",
           });
+          showErrorAlert(
+            "Login Failed",
+            data.message || "Login failed. Please try again."
+          );
         }
         return;
       }
@@ -127,25 +141,54 @@ const Login = () => {
         // Update last login time
         localStorage.setItem("lastLoginTime", new Date().toISOString());
 
+        // Show success message with SweetAlert
+        showSuccessAlert("Login Successful", "Welcome back to Xlingo!");
+
         // Set success state - this will trigger the useEffect for redirection
         setLoginSuccess(true);
+
+        // Call the onLoginSuccess prop to update user state in App component
+        if (onLoginSuccess && typeof onLoginSuccess === "function") {
+          onLoginSuccess(data.user);
+        }
       } else {
+        showErrorAlert(
+          "Login Failed",
+          data.message || "Something went wrong. Please try again."
+        );
         setErrors({
           general: data.message || "Something went wrong. Please try again.",
         });
       }
     } catch (error) {
       console.error("Login failed:", error);
+      showErrorAlert(
+        "Network Error",
+        "Please check your connection and try again."
+      );
       setErrors({
         general: "Network error. Please check your connection and try again.",
       });
-    } finally {
-      setIsLoading(false);
     }
+  };
+
+  // Generate animated particles
+  const renderParticles = () => {
+    const particles = [];
+    for (let i = 0; i < 20; i++) {
+      particles.push(<div key={`particle-${i}`} className="particle"></div>);
+    }
+    return particles;
   };
 
   return (
     <div className="login-container">
+      {/* Animated background particles */}
+      <div className="particles">{renderParticles()}</div>
+
+      {/* Giant X logo in background */}
+      <div className="x-logo-bg">X</div>
+
       <div className="login-form-wrapper">
         <div className="login-header">
           <h1>Welcome to Xlingo</h1>
@@ -163,34 +206,42 @@ const Login = () => {
             )}
 
             <div className="form-group">
-              <label htmlFor="username">Username or Email</label>
               <input
                 type="text"
                 id="username"
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
-                placeholder="Enter your username or email"
+                placeholder="Username"
                 className={errors.username ? "input-error" : ""}
-                disabled={isLoading}
               />
+              <label
+                htmlFor="username"
+                className={formData.username ? "active" : ""}
+              >
+                Username or Email
+              </label>
               {errors.username && (
                 <span className="error">{errors.username}</span>
               )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Enter your password"
+                placeholder="Password"
                 className={errors.password ? "input-error" : ""}
-                disabled={isLoading}
               />
+              <label
+                htmlFor="password"
+                className={formData.password ? "active" : ""}
+              >
+                Password
+              </label>
               {errors.password && (
                 <span className="error">{errors.password}</span>
               )}
@@ -203,17 +254,12 @@ const Login = () => {
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleInputChange}
-                disabled={isLoading}
               />
               <label htmlFor="rememberMe">Remember me</label>
             </div>
 
-            <button
-              type="submit"
-              className={`login-button ${isLoading ? "loading" : ""}`}
-              disabled={isLoading}
-            >
-              {isLoading ? "Logging in..." : "Login"}
+            <button type="submit" className="login-button">
+              Login
             </button>
           </form>
         )}
@@ -223,7 +269,7 @@ const Login = () => {
             <Link to="/forgot-password">Forgot password?</Link>
           </p>
           <p className="signup-link">
-            Don't have an account? <Link to="/register">Sign up</Link>
+            Don't have an account? <Link to="/register">Sign Up</Link>
           </p>
         </div>
       </div>

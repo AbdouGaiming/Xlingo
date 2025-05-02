@@ -442,6 +442,10 @@ const Dashboard = () => {
           <span className="action-icon">🎯</span>
           <span className="action-text">Vocabulary Practice</span>
         </Link>
+        <Link to="/lessons" className="action-button lesson-btn">
+          <span className="action-icon">🌴</span>
+          <span className="action-text">Adventure Lessons</span>
+        </Link>
         <Link to="/select-language" className="action-button lesson-btn">
           <span className="action-icon">🌍</span>
           <span className="action-text">Change Language</span>

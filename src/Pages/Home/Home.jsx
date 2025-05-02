@@ -74,11 +74,10 @@ export default function Home() {
     <div className="home">
       <div className="section1">
         <div className="left">
-          <h1>New language, new opportunities, new you</h1>
-          <p>
-            Get access to compact lessons from the experts and connect with a
-            community of native speakers to help you master words faster.
-          </p>
+          <h1>
+            <span>X</span>lingo
+          </h1>
+          <div className="text">Code the World in Every Language</div>
         </div>
         <div className="right">
           <img

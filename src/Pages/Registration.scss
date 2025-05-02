@@ -1,12 +1,17 @@
-// Variables
-$primary-color: #2c3e50; // Dark blue theme
-$secondary-color: #eef2f7;
+@import url("https://fonts.googleapis.com/css2?family=Paprika&display=swap");
+
+// Variables - matching Home.css theme
+$primary-blue: #0505b5;
+$secondary-blue: rgba(27, 27, 222, 1);
+$white: #ffffff;
+$light-white: rgba(255, 255, 255, 0.9);
 $error-color: #ff4d4f;
 $success-color: #52c41a;
 $text-color: #333;
 $light-text-color: #666;
 $border-color: #ddd;
-$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+$box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+$border-radius: 18px;
 
 // Mixins
 @mixin transition($property: all, $duration: 0.3s, $timing: ease) {
@@ -19,150 +24,442 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   justify-content: center;
 }
 
+@mixin gradient-background {
+  background: linear-gradient(
+    120deg,
+    rgba(5, 5, 181, 1) 0%,
+    rgba(27, 27, 222, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+
+// Success message styling
+.success-message {
+  background-color: rgba($success-color, 0.1);
+  color: $success-color;
+  padding: 10px;
+  border-radius: $border-radius;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+  border-left: 3px solid $success-color;
+  font-family: "Paprika", system-ui;
+  box-shadow: 0 4px 12px rgba($success-color, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // Registration Container
 .registration-container {
   @include flex-center;
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    lighten($primary-color, 30%),
-    $secondary-color
-  );
-  padding: 20px;
+  @include gradient-background;
+  padding: 10px;
+  perspective: 1500px;
+  position: relative;
+  overflow: hidden;
+
+  // Animated background particles
+  .particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: particleFloat 15s infinite linear;
+
+      @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+          top: random(100) + 0%;
+          left: random(100) + 0%;
+          width: random(6) + 2px;
+          height: random(6) + 2px;
+          opacity: random(60) / 100 + 0.2;
+          animation-delay: random(15) + 0s;
+          animation-duration: random(20) + 10s;
+        }
+      }
+    }
+  }
+
+  // Giant X Logo in background - Fixed to match Login.scss
+  .x-logo-bg {
+    position: absolute;
+    font-family: "Paprika", system-ui;
+    font-size: 500px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.03);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 0 80px rgba(255, 255, 255, 0.1);
+  }
 
   // Form wrapper
   .registration-form-wrapper {
     width: 100%;
     max-width: 500px;
-    background-color: white;
-    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: $border-radius;
     box-shadow: $box-shadow;
-    padding: 30px;
+    padding: 25px 25px;
+    transform-style: preserve-3d;
+    animation: float 6s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    overflow: visible;
+
+    // X logo on top of the form
+    &::before {
+      content: "X";
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      background: $primary-blue;
+      color: $white;
+      @include flex-center;
+      font-family: "Paprika", system-ui;
+      font-size: 48px;
+      font-weight: 700;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(5, 5, 181, 0.4);
+      z-index: 3;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      animation: pulse 3s infinite;
+      border: 3px solid $white;
+    }
 
     // Header
     .registration-header {
       text-align: center;
-      margin-bottom: 25px;
+      margin-top: 30px;
+      margin-bottom: 15px;
 
       h1 {
-        color: $primary-color;
-        margin-bottom: 8px;
+        color: $primary-blue;
+        margin-bottom: 12px;
         font-weight: 700;
         font-size: 1.8rem;
+        font-family: "Paprika", system-ui;
+        position: relative;
+        display: inline-block;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -6px;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background: linear-gradient(to right, $primary-blue, $secondary-blue);
+          border-radius: 3px;
+        }
       }
 
       p {
         color: $light-text-color;
-        font-size: 0.95rem;
+        font-size: 1rem;
+        font-family: "Paprika", system-ui;
       }
     }
 
     // Success message
     .registration-success {
       text-align: center;
-      padding: 20px 0;
+      padding: 30px 20px;
 
       h2 {
-        color: $success-color;
-        margin-bottom: 15px;
+        color: $primary-blue;
+        margin-bottom: 20px;
         font-weight: 700;
+        font-size: 1.6rem;
+        font-family: "Paprika", system-ui;
+        position: relative;
+        display: inline-block;
+
+        &::before {
+          content: "✓";
+          position: absolute;
+          top: -40px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 50px;
+          height: 50px;
+          background: $success-color;
+          color: $white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28px;
+          box-shadow: 0 4px 10px rgba($success-color, 0.4);
+          animation: scaleIn 0.5s ease;
+        }
       }
 
       p {
         color: $text-color;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        font-family: "Paprika", system-ui;
+      }
+
+      .login-link {
+        display: inline-block;
+        padding: 12px 25px;
+        background: linear-gradient(to right, $primary-blue, $secondary-blue);
+        color: $white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-family: "Paprika", system-ui;
+        font-weight: 500;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(5, 5, 181, 0.3);
+        @include transition;
+        position: relative;
+        overflow: hidden;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(to right, 
+            rgba(255, 255, 255, 0) 0%, 
+            rgba(255, 255, 255, 0.3) 50%, 
+            rgba(255, 255, 255, 0) 100%);
+          transform: rotate(45deg);
+          opacity: 0;
+          @include transition(opacity, 0.3s, ease);
+          z-index: 0;
+        }
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(5, 5, 181, 0.4);
+
+          &::after {
+            opacity: 1;
+            animation: shimmer 2s infinite;
+          }
+        }
       }
     }
 
     // Form
     .registration-form {
-      // General error message
+      margin: 0 auto;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+
       .error-message {
         background-color: rgba($error-color, 0.1);
         color: $error-color;
-        padding: 10px;
-        border-radius: 4px;
-        margin-bottom: 20px;
+        padding: 8px;
+        border-radius: $border-radius;
+        margin-bottom: 15px;
         font-size: 0.9rem;
         text-align: center;
+        border-left: 3px solid $error-color;
+        font-family: "Paprika", system-ui;
+        box-shadow: 0 4px 12px rgba($error-color, 0.1);
       }
 
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
+        position: relative;
 
         label {
           display: block;
-          margin-bottom: 6px;
-          color: $text-color;
-          font-weight: 500;
+          margin-bottom: 8px;
+          color: $primary-blue;
+          font-weight: 600;
+          font-family: "Paprika", system-ui;
+          font-size: 0.95rem;
+          transition: all 0.3s ease;
+          transform-origin: left center;
+          opacity: 1;
+          position: absolute;
+          top: 18px;
+          left: 18px;
+          z-index: 1;
+          pointer-events: none;
+
+          &.active {
+            transform: translateY(-28px) scale(0.85);
+            color: $secondary-blue;
+          }
         }
 
         input[type="text"],
         input[type="email"],
         input[type="password"] {
           width: 100%;
-          padding: 12px 15px;
-          border: 1px solid $border-color;
-          border-radius: 4px;
+          padding: 14px 16px;
+          border: 2px solid transparent;
+          background-color: rgba(240, 240, 255, 0.7);
+          border-radius: $border-radius;
           font-size: 1rem;
+          font-family: "Paprika", system-ui;
+          box-sizing: border-box;
           @include transition;
+          position: relative;
+          z-index: 0;
+          box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
 
           &:focus {
             outline: none;
-            border-color: $primary-color;
-            box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+            border-color: $primary-blue;
+            box-shadow: 0 0 0 3px rgba($primary-blue, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.05);
+            background-color: $white;
           }
 
           &.input-error {
             border-color: $error-color;
+            box-shadow: 0 0 0 3px rgba($error-color, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.05);
           }
 
           &::placeholder {
-            color: lighten($light-text-color, 20%);
+            color: transparent;
           }
 
-          &:disabled {
-            background-color: lighten($border-color, 5%);
-            cursor: not-allowed;
+          &:focus + label,
+          &:not(:placeholder-shown) + label {
+            transform: translateY(-24px) scale(0.85);
+            color: $secondary-blue;
           }
         }
 
         .password-hint {
           display: block;
-          margin-top: 5px;
-          font-size: 0.8rem;
-          color: $light-text-color;
+          margin-top: 8px;
+          margin-left: 5px;
+          font-size: 0.85rem;
+          color: rgba($primary-blue, 0.7);
+          font-family: "Paprika", system-ui;
         }
 
         &.checkbox {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
+          margin-left: 5px;
+          margin-top: 5px;
 
           input[type="checkbox"] {
-            margin-right: 8px;
-            margin-top: 3px;
+            position: absolute;
+            opacity: 0;
             cursor: pointer;
+            height: 0;
+            width: 0;
 
-            &:disabled {
-              cursor: not-allowed;
-            }
-          }
+            & + label {
+              position: relative;
+              padding-left: 35px;
+              cursor: pointer;
+              margin: 0;
+              top: 0;
+              left: 0;
+              font-size: 0.95rem;
+              color: $text-color;
+              font-weight: normal;
 
-          label {
-            margin-bottom: 0;
-            font-weight: normal;
-            cursor: pointer;
-            font-size: 0.9rem;
-            line-height: 1.4;
-
-            a {
-              color: $primary-color;
-              text-decoration: none;
-              font-weight: 500;
-
-              &:hover {
-                text-decoration: underline;
+              &:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 22px;
+                height: 22px;
+                border: 2px solid $border-color;
+                background: $white;
+                border-radius: 4px;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+                @include transition;
               }
+
+              &:after {
+                content: '';
+                position: absolute;
+                left: 6px;
+                top: 10px;
+                width: 10px;
+                height: 5px;
+                border-left: 2px solid $white;
+                border-bottom: 2px solid $white;
+                transform: rotate(-45deg) scale(0);
+                opacity: 0;
+                @include transition;
+              }
+
+              a {
+                color: $primary-blue;
+                text-decoration: none;
+                font-weight: 600;
+                position: relative;
+
+                &::after {
+                  content: '';
+                  position: absolute;
+                  bottom: -2px;
+                  left: 0;
+                  width: 0;
+                  height: 2px;
+                  background-color: $primary-blue;
+                  @include transition(width, 0.3s, ease);
+                }
+
+                &:hover {
+                  color: $secondary-blue;
+
+                  &::after {
+                    width: 100%;
+                  }
+                }
+              }
+            }
+
+            &:checked + label {
+              &:before {
+                background: $primary-blue;
+                border-color: $primary-blue;
+              }
+
+              &:after {
+                transform: rotate(-45deg) scale(1);
+                opacity: 1;
+              }
+            }
+
+            &:focus + label:before {
+              box-shadow: 0 0 0 3px rgba($primary-blue, 0.2);
             }
           }
         }
@@ -170,8 +467,11 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         .error {
           display: block;
           color: $error-color;
-          margin-top: 5px;
+          margin-top: 3px;
+          margin-left: 5px;
           font-size: 0.85rem;
+          font-family: "Paprika", system-ui;
+          animation: errorShake 0.4s ease-in-out;
         }
       }
 
@@ -179,21 +479,50 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       .registration-button {
         width: 100%;
         padding: 12px;
-        background-color: $primary-color;
+        background: linear-gradient(to right, $primary-blue, $secondary-blue);
         color: white;
         border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        font-weight: 500;
+        border-radius: 50px;
+        font-size: 1.05rem;
+        font-weight: 600;
         cursor: pointer;
         @include transition;
+        font-family: "Paprika", system-ui;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(5, 5, 181, 0.3);
+        margin-top: 8px;
+        z-index: 1;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(to right, 
+            rgba(255, 255, 255, 0) 0%, 
+            rgba(255, 255, 255, 0.3) 50%, 
+            rgba(255, 255, 255, 0) 100%);
+          transform: rotate(45deg);
+          opacity: 0;
+          @include transition(opacity, 0.3s, ease);
+          z-index: -1;
+        }
 
         &:hover:not(:disabled) {
-          background-color: darken($primary-color, 10%);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(5, 5, 181, 0.4);
+
+          &::after {
+            opacity: 1;
+            animation: shimmer 2s infinite;
+          }
         }
 
         &:active:not(:disabled) {
-          transform: translateY(1px);
+          transform: translateY(-1px);
         }
 
         &:disabled {
@@ -203,18 +532,20 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
         &.loading {
           position: relative;
+          padding-left: 46px;
 
-          &:before {
+          &::before {
             content: "";
-            box-sizing: border-box;
             position: absolute;
-            left: 10px;
-            width: 16px;
-            height: 16px;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-top-color: white;
-            animation: spinner 0.6s linear infinite;
+            animation: spinner 0.8s linear infinite;
           }
         }
       }
@@ -222,23 +553,40 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     // Footer
     .registration-footer {
-      margin-top: 25px;
+      margin-top: 20px;
       text-align: center;
 
       p {
         margin: 8px 0;
         color: $light-text-color;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        font-family: "Paprika", system-ui;
 
         a {
-          color: $primary-color;
+          color: $primary-blue;
           text-decoration: none;
-          font-weight: 500;
+          font-weight: 600;
           @include transition;
+          position: relative;
+          padding-bottom: 2px;
+
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, $primary-blue, $secondary-blue);
+            @include transition(width, 0.3s, ease);
+          }
 
           &:hover {
-            color: darken($primary-color, 10%);
-            text-decoration: underline;
+            color: $secondary-blue;
+
+            &::after {
+              width: 100%;
+            }
           }
         }
       }
@@ -246,30 +594,155 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 }
 
-// Animation for loading spinner
+// Animations
+@keyframes float {
+  0% {
+    transform: translateY(0) rotateX(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotateX(3deg);
+  }
+  100% {
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0;
+    transform: translateX(-150%) rotate(45deg);
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(150%) rotate(45deg);
+  }
+}
+
 @keyframes spinner {
   to {
-    transform: rotate(360deg);
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-5px);
+  }
+  40%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 4px 20px rgba(5, 5, 181, 0.4);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 4px 30px rgba(5, 5, 181, 0.6);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 4px 20px rgba(5, 5, 181, 0.4);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 1;
+  }
+  33% {
+    transform: translateY(-50px) translateX(20px);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translateY(-100px) translateX(-20px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-150px) translateX(0);
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: translateX(-50%) scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(-50%) scale(1.2);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
   }
 }
 
 // Responsive adjustments
 @media (max-width: 576px) {
   .registration-container {
-    padding: 15px;
+    padding: 15px 10px;
+
+    .x-logo-bg {
+      font-size: 300px;
+    }
 
     .registration-form-wrapper {
-      padding: 20px;
+      padding: 25px 15px 20px;
+      animation: none;
+
+      &::before {
+        width: 80px;
+        height: 80px;
+        font-size: 40px;
+        top: -40px;
+      }
 
       .registration-header {
+        margin-top: 25px;
+
         h1 {
-          font-size: 1.6rem;
+          font-size: 1.5rem;
         }
       }
 
-      .form-group.checkbox {
-        label {
-          font-size: 0.8rem;
+      .registration-form {
+        max-width: 100%;
+
+        .form-group {
+          input[type="text"],
+          input[type="email"],
+          input[type="password"] {
+            padding: 14px 14px;
+          }
+
+          &.checkbox label {
+            font-size: 0.85rem;
+          }
+        }
+      }
+
+      .registration-success {
+        padding: 15px 10px;
+
+        h2 {
+          font-size: 1.4rem;
+
+          &::before {
+            top: -35px;
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+          }
         }
       }
     }

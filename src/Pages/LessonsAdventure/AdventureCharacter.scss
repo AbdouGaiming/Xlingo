@@ -1,0 +1,1052 @@
+@import url("https://fonts.googleapis.com/css2?family=Paprika&display=swap");
+
+// Variables
+$primary-blue: #0505b5;
+$secondary-blue: rgba(27, 27, 222, 1);
+$accent-blue: #4a90e2;
+$skin-color: #f5d0b9;
+$skin-shadow: #e6a57e;
+$hair-color: #5d3901;
+$shirt-color: #3a7bc8;
+$pants-color: #2c3e50;
+$shoes-color: #1a1a1a;
+
+// Enhanced 3D character styling with unified body
+.character-container {
+  position: absolute;
+  z-index: 50;
+  top: 50%; // Position will be adjusted with JS
+  left: 50%; // Position will be adjusted with JS
+  transform: translate(-50%, -50%);
+  transition: left 0.8s ease, top 0.8s ease, transform 0.4s ease; // Added smooth transform transition
+  width: 80px;
+  height: 140px;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+
+  // Character level badge
+  .character-level {
+    position: absolute;
+    top: -25px;
+    right: -10px;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, $primary-blue, $secondary-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    font-family: "Paprika", system-ui;
+    z-index: 60;
+  }
+
+  // Character name tag
+  .character-name {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-family: "Paprika", system-ui;
+    font-weight: 600;
+    font-size: 12px;
+    color: $primary-blue;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    z-index: 55;
+  }
+
+  // 3D character with enhanced styling and unified body
+  .character {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transform: rotateX(5deg); // Subtle perspective tilt
+
+    // Head with detailed features & expressions
+    .character-head {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 36px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse at 30% 30%,
+        $skin-color 0%,
+        $skin-shadow 100%
+      );
+      transform: translateX(-50%);
+      z-index: 10;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      transition: transform 0.4s ease; // Add transition for smooth head turning
+
+      // Face elements with expressions
+      .character-face {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.4s ease; // Add transition for face elements shift
+
+        // Eyes
+        .character-eyes {
+          position: absolute;
+          top: 15px;
+          left: 0;
+          width: 100%;
+          display: flex;
+          justify-content: space-evenly;
+          padding: 0 5px;
+          transition: all 0.3s ease, transform 0.4s ease; // Add transform transition
+
+          .character-eye {
+            width: 6px;
+            height: 9px;
+            border-radius: 50%;
+            background: #333;
+            position: relative;
+            animation: blink 4s infinite;
+
+            &.left {
+              left: 2px;
+            }
+
+            &.right {
+              right: 2px;
+            }
+
+            .character-pupil {
+              transition: all 0.3s ease, left 0.4s ease, top 0.4s ease; // Smooth pupil movement
+            }
+          }
+        }
+
+        // Nose
+        .character-nose {
+          position: absolute;
+          top: 22px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 4px;
+          height: 6px;
+          background: darken($skin-color, 10%);
+          border-radius: 50%;
+          transition: all 0.3s ease, transform 0.4s ease; // Add transform transition
+        }
+
+        // Mouth
+        .character-mouth {
+          position: absolute;
+          bottom: 8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 12px;
+          height: 4px;
+          border-bottom: 2px solid #333;
+          border-radius: 0 0 50% 50%;
+          transition: all 0.3s ease, transform 0.4s ease; // Add transform transition
+        }
+      }
+
+      // Head turning styles
+      &.facing-left {
+        // Optional: Slight head rotation if desired
+        // transform: translateX(-50%) rotateY(-15deg);
+        .character-face {
+          transform: translateX(-1px); // Shift face slightly
+        }
+        .character-pupil {
+          left: 0.5px; // Move pupils to the left
+        }
+        .character-nose {
+          transform: translateX(-51%); // Shift nose slightly left
+        }
+        .character-mouth {
+          transform: translateX(-52%); // Shift mouth slightly left
+        }
+      }
+
+      &.facing-right {
+        // Optional: Slight head rotation if desired
+        // transform: translateX(-50%) rotateY(15deg);
+        .character-face {
+          transform: translateX(1px); // Shift face slightly
+        }
+        .character-pupil {
+          left: 3.5px; // Move pupils to the right
+        }
+        .character-nose {
+          transform: translateX(-49%); // Shift nose slightly right
+        }
+        .character-mouth {
+          transform: translateX(-48%); // Shift mouth slightly right
+        }
+      }
+    }
+
+    // Unified body container - Adjusted for seamless look
+    .character-body {
+      position: absolute;
+      top: 38px; // Connects directly below the head
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px; // Slightly wider to accommodate arms better
+      height: calc(100% - 40px); // Adjusted height
+      z-index: 9;
+      transform-style: preserve-3d; // Ensure 3D context
+
+      // Torso - Central part of the body
+      .character-torso {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 45px; // Extended slightly to connect better with legs
+        z-index: 9;
+        transform-origin: top center;
+
+        // Chest
+        .character-chest {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 30px; // Adjusted height
+          background: linear-gradient(
+            to right,
+            darken($shirt-color, 15%) 0%,
+            $shirt-color 50%,
+            lighten($shirt-color, 5%) 100%
+          );
+          border-radius: 8px 8px 6px 6px; // Smoother bottom corners
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+          // Removed chest details for a cleaner look
+          // &:before, &:after { ... }
+        }
+
+        // Waist - Smoother transition to legs
+        .character-waist {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 28px;
+          height: 15px;
+          background: $pants-color; // Changed to pants color for seamless transition
+          border-radius: 6px 6px 5px 5px; // Smoother connection
+          z-index: 8;
+        }
+      }
+
+      // Arms - Positioned relative to the body container
+      .character-arm {
+        position: absolute;
+        top: 2px;
+        z-index: 8;
+        width: 10px; // Define width for positioning
+        height: 50px; // Define height for positioning
+
+        // Shoulder joint - Blended
+        .character-shoulder {
+          position: absolute;
+          top: 0;
+          width: 8px;
+          height: 8px;
+          background: $shirt-color;
+          border-radius: 50%;
+          z-index: 1;
+        }
+
+        // Upper arm segment
+        .character-upper-arm {
+          position: absolute;
+          top: 4px; // Adjusted position
+          width: 8px;
+          height: 18px;
+          background: $shirt-color;
+          border-radius: 4px;
+          transform-origin: top center;
+          z-index: 0;
+        }
+
+        // Elbow joint - Subtler
+        .character-elbow {
+          position: absolute;
+          top: 20px; // Adjusted position
+          left: 1px;
+          width: 6px;
+          height: 6px;
+          background: darken($shirt-color, 5%); // Blend with arm
+          border-radius: 50%;
+          z-index: 2;
+        }
+
+        // Lower arm segment
+        .character-lower-arm {
+          position: absolute;
+          top: 23px; // Adjusted position
+          left: 1px;
+          width: 7px;
+          height: 16px;
+          background: $skin-color;
+          border-radius: 3px;
+          transform-origin: top center;
+          z-index: 1;
+        }
+
+        // Hand with fingers
+        .character-hand {
+          position: absolute;
+          top: 38px; // Adjusted position
+          left: 0px;
+          width: 9px;
+          height: 8px;
+          background: $skin-color;
+          border-radius: 4px;
+          transform-origin: top center;
+          z-index: 2;
+
+          // Fingers detail
+          .character-fingers {
+            // ... existing finger styles ...
+          }
+        }
+
+        &.left {
+          left: 0px; // Positioned closer to the torso edge
+
+          .character-shoulder {
+            left: 0;
+          }
+
+          .character-upper-arm {
+            left: 0;
+            transform-origin: top left;
+          }
+        }
+
+        &.right {
+          right: 0px; // Positioned closer to the torso edge
+
+          .character-shoulder {
+            right: 0;
+          }
+
+          .character-upper-arm {
+            right: 0;
+            transform-origin: top right;
+          }
+        }
+      }
+
+      // Legs - Positioned relative to the body container
+      .character-legs {
+        position: absolute;
+        bottom: 0; // Positioned at the bottom of the body container
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px; // Matches hip width
+        height: 60px; // Adjusted height
+        z-index: 7;
+
+        // Removed Hips element, integrated into waist/legs
+        // .character-hips { ... }
+
+        .character-leg {
+          position: absolute;
+          top: 0; // Starts from the top of the legs container
+          width: 12px; // Define width for positioning
+          height: 100%;
+
+          // Upper leg segment
+          .character-upper-leg {
+            position: absolute;
+            top: 0;
+            left: 1px; // Center within leg container
+            width: 10px;
+            height: 25px; // Adjusted height
+            background: $pants-color;
+            border-radius: 5px 5px 4px 4px; // Smoother connection
+            transform-origin: top center;
+          }
+
+          // Knee joint - Subtler
+          .character-knee {
+            position: absolute;
+            top: 23px; // Adjusted position
+            left: 2.5px;
+            width: 7px;
+            height: 7px;
+            background: darken($pants-color, 5%);
+            border-radius: 50%;
+            z-index: 2;
+          }
+
+          // Lower leg segment
+          .character-lower-leg {
+            position: absolute;
+            top: 27px; // Adjusted position
+            left: 1.5px;
+            width: 9px;
+            height: 24px; // Adjusted height
+            background: $pants-color;
+            border-radius: 4px;
+            transform-origin: top center;
+            z-index: 1;
+          }
+
+          // Ankle joint - Removed for simplicity, blended into foot
+          // .character-ankle { ... }
+
+          // Foot with improved shape
+          .character-foot {
+            position: absolute;
+            bottom: 0; // Positioned at the bottom of the leg
+            left: -1px; // Adjusted position
+            width: 14px;
+            height: 8px;
+            background: $shoes-color;
+            border-radius: 6px 8px 3px 3px;
+            z-index: 1;
+            transform-origin: top left;
+
+            // ... existing foot styles ...
+          }
+
+          &.left {
+            left: 0; // Positioned within legs container
+          }
+
+          &.right {
+            right: 0; // Positioned within legs container
+          }
+        }
+      }
+    }
+
+    // Shadow with dynamic properties
+    .character-shadow {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 50%;
+      filter: blur(4px);
+      z-index: 1;
+    }
+  }
+
+  // Animation states - May need slight adjustments if visuals changed significantly
+  &.idle {
+    .character-arms {
+      .character-arm {
+        &.left,
+        &.right {
+          .character-upper-arm {
+            animation: idle-arm 4s infinite ease-in-out;
+          }
+          .character-lower-arm {
+            animation: idle-forearm 4s infinite ease-in-out;
+          }
+        }
+      }
+    }
+
+    .character-shadow {
+      animation: idle-shadow 4s infinite ease-in-out;
+    }
+
+    .character-head {
+      animation: idle-head 4s infinite ease-in-out;
+    }
+
+    .character-torso {
+      animation: idle-breathe 4s infinite ease-in-out;
+    }
+  }
+
+  &.walking {
+    .character-leg {
+      &.left {
+        .character-upper-leg {
+          animation: walk-thigh-left 0.8s infinite ease-in-out; // Adjusted duration
+        }
+        .character-lower-leg {
+          animation: walk-calf-left 0.8s infinite ease-in-out; // Adjusted duration
+        }
+        .character-foot {
+          animation: walk-foot-left 0.8s infinite ease-in-out; // Adjusted duration
+        }
+      }
+
+      &.right {
+        .character-upper-leg {
+          animation: walk-thigh-right 0.8s infinite ease-in-out; // Adjusted duration
+        }
+        .character-lower-leg {
+          animation: walk-calf-right 0.8s infinite ease-in-out; // Adjusted duration
+        }
+        .character-foot {
+          animation: walk-foot-right 0.8s infinite ease-in-out; // Adjusted duration
+        }
+      }
+    }
+
+    .character-arm {
+      &.left {
+        .character-upper-arm {
+          animation: walk-arm-left 0.8s infinite ease-in-out; // Adjusted duration
+        }
+        .character-lower-arm {
+          animation: walk-forearm-left 0.8s infinite ease-in-out; // Adjusted duration
+        }
+      }
+
+      &.right {
+        .character-upper-arm {
+          animation: walk-arm-right 0.8s infinite ease-in-out; // Adjusted duration
+        }
+        .character-lower-arm {
+          animation: walk-forearm-right 0.8s infinite ease-in-out; // Adjusted duration
+        }
+      }
+    }
+
+    .character-torso {
+      animation: walk-body 0.8s infinite ease-in-out; // Adjusted duration and timing
+    }
+
+    .character-head {
+      // Keep head bobbing if desired, but turning is handled by facing-left/right classes
+      animation: walk-head 0.8s infinite ease-in-out; // Adjusted duration
+    }
+
+    .character-shadow {
+      animation: walk-shadow 0.8s infinite ease-in-out; // Adjusted duration
+    }
+
+    // Adjust walk-body if needed
+    @keyframes walk-body {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      25%,
+      75% {
+        transform: translateY(-1.5px); // Reduced bounce slightly
+      }
+      50% {
+        transform: translateY(0);
+      }
+    }
+    // Adjust walk-upper-body if needed
+    @keyframes walk-upper-body {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(1.5deg); // Reduced sway slightly
+      }
+      75% {
+        transform: rotate(-1.5deg);
+      }
+    }
+  }
+
+  &.jumping {
+    animation: jump-character 0.8s ease-in-out;
+
+    .character-leg {
+      .character-upper-leg {
+        animation: jump-thigh 0.8s ease-in-out;
+      }
+
+      .character-lower-leg {
+        animation: jump-calf 0.8s ease-in-out;
+      }
+    }
+
+    .character-arm {
+      &.left {
+        .character-upper-arm {
+          animation: jump-arm-up 0.8s ease-in-out;
+        }
+      }
+
+      &.right {
+        .character-upper-arm {
+          animation: jump-arm-up 0.8s ease-in-out;
+        }
+      }
+    }
+
+    .character-shadow {
+      animation: jump-shadow 0.8s ease-in-out;
+    }
+  }
+
+  &.celebrating {
+    animation: celebrate-bounce 0.5s infinite alternate;
+
+    .character-arm {
+      &.left {
+        .character-upper-arm {
+          animation: celebrate-arm-left 0.5s infinite alternate;
+        }
+        .character-lower-arm {
+          animation: celebrate-forearm-left 0.5s infinite alternate;
+        }
+      }
+
+      &.right {
+        .character-upper-arm {
+          animation: celebrate-arm-right 0.5s infinite alternate;
+        }
+        .character-lower-arm {
+          animation: celebrate-forearm-right 0.5s infinite alternate;
+        }
+      }
+    }
+
+    .character-legs {
+      animation: celebrate-legs 0.5s infinite alternate;
+    }
+
+    .character-head {
+      animation: celebrate-head 0.5s infinite alternate;
+    }
+
+    .character-mouth {
+      height: 6px !important;
+      border-bottom: 2px solid #333 !important;
+      border-radius: 0 0 50% 50% !important;
+      background: rgba(222, 82, 82, 0.6) !important;
+    }
+
+    .character-shadow {
+      animation: celebrate-shadow 0.5s infinite alternate;
+    }
+  }
+}
+
+// Idle animations
+@keyframes idle-breathe {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleY(1);
+  }
+  50% {
+    transform: translateX(-50%) scaleY(1.02);
+  }
+}
+
+@keyframes idle-arm {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes idle-forearm {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes idle-head {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(1deg);
+  }
+}
+
+@keyframes idle-shadow {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.02);
+  }
+}
+
+// Walking animations
+@keyframes walk-body {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  25%,
+  75% {
+    transform: translateX(-50%) translateY(-2px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes walk-head {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-50%) rotate(2deg);
+  }
+  75% {
+    transform: translateX(-50%) rotate(-2deg);
+  }
+}
+
+// Walking animations - Refined for more human-like leg movement
+@keyframes walk-thigh-left {
+  0%,
+  100% {
+    transform: rotate(-15deg); // Less backward swing
+  }
+  25% {
+    transform: rotate(5deg); // Start forward swing
+  }
+  50% {
+    transform: rotate(35deg); // Max forward swing
+  }
+  75% {
+    transform: rotate(10deg); // Start backward swing
+  }
+}
+
+@keyframes walk-calf-left {
+  0%,
+  100% {
+    transform: rotate(10deg); // Slight bend at start/end
+  }
+  25% {
+    transform: rotate(-40deg); // Max knee bend during swing
+  }
+  50% {
+    transform: rotate(5deg); // Straightening for contact
+  }
+  75% {
+    transform: rotate(20deg); // Pushing off
+  }
+}
+
+@keyframes walk-foot-left {
+  0%,
+  100% {
+    transform: rotate(5deg); // Slightly lifted
+  }
+  25% {
+    transform: rotate(-10deg); // Toe up during swing
+  }
+  50% {
+    transform: rotate(-5deg); // Heel strike
+  }
+  75% {
+    transform: rotate(15deg); // Toe off
+  }
+}
+
+@keyframes walk-thigh-right {
+  0%,
+  100% {
+    transform: rotate(35deg); // Max forward swing
+  }
+  25% {
+    transform: rotate(10deg); // Start backward swing
+  }
+  50% {
+    transform: rotate(-15deg); // Less backward swing
+  }
+  75% {
+    transform: rotate(5deg); // Start forward swing
+  }
+}
+
+@keyframes walk-calf-right {
+  0%,
+  100% {
+    transform: rotate(5deg); // Straightening for contact
+  }
+  25% {
+    transform: rotate(20deg); // Pushing off
+  }
+  50% {
+    transform: rotate(10deg); // Slight bend at start/end
+  }
+  75% {
+    transform: rotate(-40deg); // Max knee bend during swing
+  }
+}
+
+@keyframes walk-foot-right {
+  0%,
+  100% {
+    transform: rotate(-5deg); // Heel strike
+  }
+  25% {
+    transform: rotate(15deg); // Toe off
+  }
+  50% {
+    transform: rotate(5deg); // Slightly lifted
+  }
+  75% {
+    transform: rotate(-10deg); // Toe up during swing
+  }
+}
+
+@keyframes walk-arm-left {
+  0%,
+  100% {
+    transform: rotate(30deg);
+  }
+  50% {
+    transform: rotate(-20deg);
+  }
+}
+
+@keyframes walk-forearm-left {
+  0%,
+  100% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-20deg);
+  }
+}
+
+@keyframes walk-arm-right {
+  0%,
+  100% {
+    transform: rotate(-20deg);
+  }
+  50% {
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes walk-forearm-right {
+  0%,
+  100% {
+    transform: rotate(-20deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes walk-shadow {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 0.2;
+  }
+  25%,
+  75% {
+    transform: translateX(-50%) scaleX(0.9);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 0.2;
+  }
+}
+
+// Jumping animations
+@keyframes jump-character {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, -80%);
+  }
+}
+
+@keyframes jump-thigh {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(20deg);
+  }
+  50% {
+    transform: rotate(60deg);
+  }
+  75% {
+    transform: rotate(20deg);
+  }
+}
+
+@keyframes jump-calf {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(-60deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+
+@keyframes jump-arm-up {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25%,
+  75% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(45deg);
+  }
+}
+
+@keyframes jump-shadow {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.2;
+    filter: blur(4px);
+  }
+  50% {
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0.1;
+    filter: blur(2px);
+  }
+}
+
+// Celebration animations
+@keyframes celebrate-bounce {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, -60%);
+  }
+}
+
+@keyframes celebrate-arm-left {
+  0%,
+  100% {
+    transform: rotate(20deg);
+  }
+  50% {
+    transform: rotate(90deg);
+  }
+}
+
+@keyframes celebrate-arm-right {
+  0%,
+  100% {
+    transform: rotate(-20deg);
+  }
+  50% {
+    transform: rotate(-90deg);
+  }
+}
+
+@keyframes celebrate-forearm-left {
+  0%,
+  100% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(-40deg);
+  }
+}
+
+@keyframes celebrate-forearm-right {
+  0%,
+  100% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(40deg);
+  }
+}
+
+@keyframes celebrate-legs {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes celebrate-head {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0);
+  }
+  25% {
+    transform: translateX(-50%) rotate(-5deg);
+  }
+  75% {
+    transform: translateX(-50%) rotate(5deg);
+  }
+}
+
+@keyframes celebrate-shadow {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.2);
+    opacity: 0.15;
+  }
+}
+
+// Blinking animation
+@keyframes blink {
+  0%,
+  48%,
+  52%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.1);
+  }
+}

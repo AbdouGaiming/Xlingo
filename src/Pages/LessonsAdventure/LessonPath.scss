@@ -1,0 +1,127 @@
+.lesson-paths-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  transform-style: preserve-3d;
+
+  // SVG paths
+  .lesson-paths-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    // Path styling
+    .lesson-path {
+      fill: none;
+      stroke-width: 12px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 16, 10;
+      animation: dash-animation 60s linear infinite;
+      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+
+      // Different styles for completed and incomplete paths
+      &.completed {
+        stroke: #52c41a;
+        opacity: 0.8;
+        stroke-dasharray: 16, 6;
+        animation: dash-animation-completed 40s linear infinite;
+      }
+
+      &.incomplete {
+        stroke: #ffc53d;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  // Path decorations
+  .path-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+
+    .path-decoration {
+      position: absolute;
+      font-size: 24px;
+      animation: float-decoration 6s ease-in-out infinite alternate;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+      transform-origin: center bottom;
+
+      // Randomly offset animations
+      &:nth-child(odd) {
+        animation-delay: -1.5s;
+        animation-duration: 5.5s;
+        font-size: 22px;
+      }
+
+      &:nth-child(3n) {
+        animation-delay: -3s;
+        animation-duration: 6.5s;
+        opacity: 0.9;
+      }
+
+      &:nth-child(5n) {
+        animation-delay: -4.5s;
+        animation-duration: 7s;
+        font-size: 26px;
+      }
+    }
+  }
+}
+
+// Animations for pathway elements
+@keyframes dash-animation {
+  0% {
+    stroke-dashoffset: 300;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dash-animation-completed {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+// Improved float animation for path decorations
+@keyframes float-decoration {
+  0% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  33% {
+    transform: translateY(-8px) rotate(3deg) scale(1.05);
+  }
+  66% {
+    transform: translateY(2px) rotate(-4deg);
+  }
+  100% {
+    transform: translateY(0) rotate(2deg) scale(0.98);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+}
