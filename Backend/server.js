@@ -9,6 +9,9 @@ const connectDB = require("./Configurations/database");
 
 // Import routes
 const authRoutes = require("./Routes/authRoutes");
+const achievementRoutes = require("./Routes/achievementRoutes");
+const activityRoutes = require("./Routes/activityRoutes");
+const vocabularyRoutes = require("./Routes/vocabularyRoutes"); // Add vocabulary routes
 
 // Load environment variables
 dotenv.config();
@@ -60,6 +63,9 @@ app.get("/health", (req, res) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/achievements", achievementRoutes);
+app.use("/api/activities", activityRoutes);
+app.use("/api/vocabulary", vocabularyRoutes); // Register vocabulary routes
 
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === "production") {

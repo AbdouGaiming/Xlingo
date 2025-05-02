@@ -1,5 +1,6 @@
 import React from "react";
 import "./Home.css";
+import Footer from "../../components/shared/Footer";
 
 const languageData = [
   {
@@ -120,6 +121,9 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </div>
+      <div className="footer-wrapper">
+        <Footer />
       </div>
     </div>
   );
