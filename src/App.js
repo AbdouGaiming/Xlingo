@@ -5,6 +5,8 @@ import Registration from "./Pages/Registration";
 import Home from "./Pages/Home/Home";
 import Navbar from "./components/shared/Navbar";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Community from "./Pages/Community/Community";
+import FriendProfile from "./Pages/Community/components/profile/FriendProfile";
 import LanguageSelector from "./components/language/LanguageSelector";
 import VocabularyFlashcards from "./components/language/VocabularyFlashcards";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -75,6 +77,16 @@ function App() {
             <Route
               path="/dashboard"
               element={user ? <Dashboard /> : <Navigate to="/login" />}
+            />
+
+            {/* Community routes */}
+            <Route
+              path="/community"
+              element={user ? <Community /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/community/profile/:userId"
+              element={user ? <FriendProfile /> : <Navigate to="/login" />}
             />
 
             {/* Practice routes */}

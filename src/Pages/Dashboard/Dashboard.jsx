@@ -446,7 +446,7 @@ const Dashboard = () => {
           <span className="action-icon">🌍</span>
           <span className="action-text">Change Language</span>
         </Link>
-        <Link to="/community/chat" className="action-button community-btn">
+        <Link to="/community" className="action-button community-btn">
           <span className="action-icon">👥</span>
           <span className="action-text">Language Partners</span>
         </Link>
