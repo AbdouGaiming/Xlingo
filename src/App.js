@@ -5,12 +5,9 @@ import Registration from "./Pages/Registration";
 import Home from "./Pages/Home/Home";
 import Navbar from "./components/shared/Navbar";
 import Dashboard from "./Pages/Dashboard/Dashboard";
-<<<<<<< HEAD
 import Community from "./Pages/Community/Community";
 import FriendProfile from "./Pages/Community/components/profile/FriendProfile";
-=======
 import LessonsAdventure from "./Pages/LessonsAdventure/LessonsAdventure";
->>>>>>> d347063787cfb0072c0ae045cf4aef31c977d31e
 import LanguageSelector from "./components/language/LanguageSelector";
 import VocabularyFlashcards from "./components/language/VocabularyFlashcards";
 import PronunciationPractice from "./Pages/Practice/PronunciationPractice";
@@ -106,94 +103,12 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-<<<<<<< HEAD
-        <Navbar user={user} onLogout={handleLogout} />
-        <div className="app-content">
-          <Routes>
-            {/* Home route - main landing page */}
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-
-            {/* Login route */}
-            <Route
-              path="/login"
-              element={user ? <Navigate to="/dashboard" /> : <Login />}
-            />
-
-            {/* Registration route */}
-            <Route
-              path="/register"
-              element={user ? <Navigate to="/dashboard" /> : <Registration />}
-            />
-
-            {/* Language Selection */}
-            <Route
-              path="/select-language"
-              element={
-                user ? (
-                  <LanguageSelector onSelectLanguage={handleSelectLanguage} />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-
-            {/* Dashboard route */}
-            <Route
-              path="/dashboard"
-              element={user ? <Dashboard /> : <Navigate to="/login" />}
-            />
-
-            {/* Community routes */}
-            <Route
-              path="/community"
-              element={user ? <Community /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/community/profile/:userId"
-              element={user ? <FriendProfile /> : <Navigate to="/login" />}
-            />
-
-            {/* Practice routes */}
-            <Route
-              path="/practice/vocabulary/:categoryId"
-              element={
-                user ? (
-                  <VocabularyFlashcards
-                    languageId={user?.currentLanguage?.id || "es"}
-                    categoryId="food"
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-
-            <Route
-              path="/practice/vocabulary"
-              element={
-                user ? (
-                  <VocabularyFlashcards
-                    languageId={user?.currentLanguage?.id || "es"}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-
-            {/* Catch all other routes */}
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </div>
-=======
         <AppContent
           user={user}
           setUser={setUser}
           handleLogout={handleLogout}
           handleSelectLanguage={handleSelectLanguage}
         />
->>>>>>> d347063787cfb0072c0ae045cf4aef31c977d31e
       </BrowserRouter>
     </div>
   );
@@ -261,6 +176,24 @@ function AppContent({ user, setUser, handleLogout, handleSelectLanguage }) {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Community routes */}
+          <Route
+            path="/community"
+            element={
+              <ProtectedRoute>
+                <Community />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/community/profile/:userId"
+            element={
+              <ProtectedRoute>
+                <FriendProfile />
               </ProtectedRoute>
             }
           />
