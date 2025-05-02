@@ -5,6 +5,8 @@ import Registration from "./Pages/Registration";
 import Home from "./Pages/Home/Home";
 import Navbar from "./components/shared/Navbar";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Community from "./Pages/Community/Community";
+import FriendProfile from "./Pages/Community/components/profile/FriendProfile";
 import LessonsAdventure from "./Pages/LessonsAdventure/LessonsAdventure";
 import LanguageSelector from "./components/language/LanguageSelector";
 import VocabularyFlashcards from "./components/language/VocabularyFlashcards";
@@ -174,6 +176,24 @@ function AppContent({ user, setUser, handleLogout, handleSelectLanguage }) {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Community routes */}
+          <Route
+            path="/community"
+            element={
+              <ProtectedRoute>
+                <Community />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/community/profile/:userId"
+            element={
+              <ProtectedRoute>
+                <FriendProfile />
               </ProtectedRoute>
             }
           />
