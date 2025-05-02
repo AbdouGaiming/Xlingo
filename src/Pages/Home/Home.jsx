@@ -1,12 +1,9 @@
 import React from "react";
 import "./Home.css";
-<<<<<<< HEAD
 import { FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
-=======
 import Footer from "../../components/shared/Footer";
 import { useNavigate } from "react-router-dom";
 
->>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
 const languageData = [
   {
     id: "en",
@@ -79,13 +76,8 @@ export default function Home() {
     // Store the selected language in localStorage for future use
     localStorage.setItem("selectedLanguage", JSON.stringify(language));
 
-    // Redirect to registration page when Spanish is selected,
-    // or when any language is selected (you can adjust this as needed)
-    if (language.id === "es") {
-      navigate("/register");
-    } else {
-      navigate("/register");
-    }
+    // Redirect to registration page
+    navigate("/register");
   };
 
   return (
@@ -105,7 +97,7 @@ export default function Home() {
             style={{ width: "94%", height: "90%" }}
           />
         </div>
-      </div>{" "}
+      </div>
       <div className="section3">
         <div className="left">
           <img
@@ -139,7 +131,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-<<<<<<< HEAD
       <div className="section4">
         <div className="footer-section">
           <div className="footer-content">
@@ -189,10 +180,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-=======
-      <div className="footer-wrapper">
-        <Footer />
->>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
+        <div className="footer-wrapper">
+          <Footer />
+        </div>
       </div>
     </div>
   );

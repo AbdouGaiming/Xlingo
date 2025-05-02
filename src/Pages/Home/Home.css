@@ -16,11 +16,8 @@
     rgba(27, 27, 222, 1) 50%,
     rgba(255, 255, 255, 1) 100%
   );
-<<<<<<< HEAD
 
-=======
   padding: 22px 34px 0 34px;
->>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
   min-height: 100vh;
 }
 .section1 {
@@ -364,8 +361,6 @@
   margin: 0;
 }
 
-<<<<<<< HEAD
-=======
 /* Footer positioning specific styles */
 .home .footer-wrapper {
   position: relative;
@@ -376,7 +371,6 @@
 }
 
 /* Responsive adjustments */
->>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
 @media (max-width: 768px) {
   .section1 {
     flex-direction: column;
