@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './Community.scss';
-import { API_URL } from '../../config/index';
+import { API_URL } from '../../config';
 
 // Import components
 import FriendList from './components/FriendList';
