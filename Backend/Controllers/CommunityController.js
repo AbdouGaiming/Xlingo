@@ -11,14 +11,14 @@ class CommunityController {
       // Find all friend interactions where the user is involved
       const friendInteractions = await FriendInteraction.find({
         $or: [
-          { user1: userId, status: 'accepted' },
-          { user2: userId, status: 'accepted' }
+          { sender: userId, status: 'accepted' },
+          { recipient: userId, status: 'accepted' }
         ]
-      }).populate('user1 user2', 'username firstName lastName profileImage streak languages learningProgress');
+      }).populate('sender recipient', 'username firstName lastName profileImage streak languages learningProgress');
 
       // Transform the data to get friend details
       const friends = friendInteractions.map(interaction => {
-        const friend = interaction.user1.id === userId ? interaction.user2 : interaction.user1;
+        const friend = interaction.sender.id === userId ? interaction.recipient : interaction.sender;
         return {
           id: friend._id,
           username: friend.username,
@@ -46,32 +46,34 @@ class CommunityController {
 
       // Find incoming requests
       const incomingRequests = await FriendInteraction.find({
-        user2: userId,
+        recipient: userId,
+        type: 'friend_request',
         status: 'pending'
-      }).populate('user1', 'username firstName lastName profileImage');
+      }).populate('sender', 'username firstName lastName profileImage');
 
       // Find outgoing requests
       const outgoingRequests = await FriendInteraction.find({
-        user1: userId,
+        sender: userId,
+        type: 'friend_request',
         status: 'pending'
-      }).populate('user2', 'username firstName lastName profileImage');
+      }).populate('recipient', 'username firstName lastName profileImage');
 
       // Transform the data
       const requests = {
         incoming: incomingRequests.map(req => ({
-          id: req.user1._id,
-          username: req.user1.username,
-          firstName: req.user1.firstName,
-          lastName: req.user1.lastName,
-          profileImage: req.user1.profileImage,
+          id: req.sender._id,
+          username: req.sender.username,
+          firstName: req.sender.firstName,
+          lastName: req.sender.lastName,
+          profileImage: req.sender.profileImage,
           requestDate: req.createdAt
         })),
         outgoing: outgoingRequests.map(req => ({
-          id: req.user2._id,
-          username: req.user2.username,
-          firstName: req.user2.firstName,
-          lastName: req.user2.lastName,
-          profileImage: req.user2.profileImage,
+          id: req.recipient._id,
+          username: req.recipient.username,
+          firstName: req.recipient.firstName,
+          lastName: req.recipient.lastName,
+          profileImage: req.recipient.profileImage,
           requestDate: req.createdAt
         }))
       };
@@ -102,9 +104,10 @@ class CommunityController {
       // Check if request already exists
       const existingRequest = await FriendInteraction.findOne({
         $or: [
-          { user1: userId, user2: targetUserId },
-          { user1: targetUserId, user2: userId }
-        ]
+          { sender: userId, recipient: targetUserId },
+          { sender: targetUserId, recipient: userId }
+        ],
+        type: 'friend_request'
       });
 
       if (existingRequest) {
@@ -116,8 +119,9 @@ class CommunityController {
 
       // Create new friend request
       const friendRequest = new FriendInteraction({
-        user1: userId,
-        user2: targetUserId,
+        sender: userId,
+        recipient: targetUserId,
+        type: 'friend_request',
         status: 'pending'
       });
 
@@ -148,8 +152,9 @@ class CommunityController {
       const userId = req.user.id;
 
       const friendRequest = await FriendInteraction.findOne({
-        user1: requestId,
-        user2: userId,
+        sender: requestId,
+        recipient: userId,
+        type: 'friend_request',
         status: 'pending'
       });
 
@@ -192,8 +197,9 @@ class CommunityController {
       const userId = req.user.id;
 
       const result = await FriendInteraction.findOneAndDelete({
-        user1: requestId,
-        user2: userId,
+        sender: requestId,
+        recipient: userId,
+        type: 'friend_request',
         status: 'pending'
       });
 
@@ -215,8 +221,9 @@ class CommunityController {
       const userId = req.user.id;
 
       const result = await FriendInteraction.findOneAndDelete({
-        user1: userId,
-        user2: requestId,
+        sender: userId,
+        recipient: requestId,
+        type: 'friend_request',
         status: 'pending'
       });
 
@@ -239,8 +246,8 @@ class CommunityController {
 
       const result = await FriendInteraction.findOneAndDelete({
         $or: [
-          { user1: userId, user2: friendId },
-          { user1: friendId, user2: userId }
+          { sender: userId, recipient: friendId },
+          { sender: friendId, recipient: userId }
         ],
         status: 'accepted'
       });
@@ -296,8 +303,8 @@ class CommunityController {
       // Check if they are friends
       const areFriends = await FriendInteraction.exists({
         $or: [
-          { user1: userId, user2: friendId },
-          { user1: friendId, user2: userId }
+          { sender: userId, recipient: friendId },
+          { sender: friendId, recipient: userId }
         ],
         status: 'accepted'
       });
@@ -328,13 +335,13 @@ class CommunityController {
       // Get all friends
       const friendInteractions = await FriendInteraction.find({
         $or: [
-          { user1: userId, status: 'accepted' },
-          { user2: userId, status: 'accepted' }
+          { sender: userId, status: 'accepted' },
+          { recipient: userId, status: 'accepted' }
         ]
       });
 
       const friendIds = friendInteractions.map(interaction => 
-        interaction.user1.toString() === userId ? interaction.user2 : interaction.user1
+        interaction.sender.toString() === userId ? interaction.recipient : interaction.sender
       );
 
       // Include current user in leaderboard
@@ -372,13 +379,13 @@ class CommunityController {
       // Get all friends
       const friendInteractions = await FriendInteraction.find({
         $or: [
-          { user1: userId, status: 'accepted' },
-          { user2: userId, status: 'accepted' }
+          { sender: userId, status: 'accepted' },
+          { recipient: userId, status: 'accepted' }
         ]
       });
 
       const friendIds = friendInteractions.map(interaction => 
-        interaction.user1.toString() === userId ? interaction.user2 : interaction.user1
+        interaction.sender.toString() === userId ? interaction.recipient : interaction.sender
       );
 
       // Get recent activities

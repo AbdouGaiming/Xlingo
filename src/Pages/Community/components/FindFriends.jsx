@@ -1,62 +1,77 @@
 import React, { useState } from 'react';
+import { API_URL } from '../../../config/index';
 
 const FindFriends = ({ onSendRequest }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [sentRequestIds, setSentRequestIds] = useState(new Set());
+  const [error, setError] = useState(null);
 
   // Handle search form submission
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    
     if (!searchQuery.trim()) return;
     
     setIsSearching(true);
+    setError(null);
     
-    // Simulate API call with setTimeout
-    setTimeout(() => {
-      // Mock search results
-      const results = [
-        {
-          id: 6,
-          username: "LanguageNerd",
-          firstName: "David",
-          lastName: "Chen",
-          profileImage: null
-        },
-        {
-          id: 7,
-          username: "LearnDaily",
-          firstName: "Sarah",
-          lastName: "Jones",
-          profileImage: null
-        },
-        {
-          id: 8,
-          username: "GlobalTalker",
-          firstName: "James",
-          lastName: "Wilson",
-          profileImage: null
+    try {
+      const token = localStorage.getItem('xlingoToken');
+      const response = await fetch(`${API_URL}/community/users/search?query=${encodeURIComponent(searchQuery)}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      ].filter(user => 
-        user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      
-      setSearchResults(results);
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // Ensure we store the complete MongoDB _id
+        setSearchResults(data.users.map(user => ({
+          ...user,
+          id: user._id || user.id // Handle both _id and id fields
+        })));
+      } else {
+        setError(data.message || 'Failed to search users');
+      }
+    } catch (err) {
+      setError('Failed to search users. Please try again.');
+    } finally {
       setIsSearching(false);
-    }, 800);
+    }
   };
 
   // Handle sending friend request
-  const handleSendRequest = (user) => {
-    onSendRequest(user);
-    setSentRequestIds(prev => new Set([...prev, user.id]));
+  const handleSendRequest = async (user) => {
+    try {
+      const token = localStorage.getItem('xlingoToken');
+      const response = await fetch(`${API_URL}/community/friends/request`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          targetUserId: user._id || user.id // Use the MongoDB _id
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSentRequestIds(prev => new Set([...prev, user._id || user.id]));
+        onSendRequest(user);
+      } else {
+        setError(data.message || 'Failed to send friend request');
+      }
+    } catch (err) {
+      setError('Failed to send friend request. Please try again.');
+    }
   };
 
   return (
     <div className="find-friends">
+      {error && <div className="error-message">{error}</div>}
+      
       <div className="search-section">
         <form onSubmit={handleSearch} className="search-form">
           <input
@@ -90,8 +105,8 @@ const FindFriends = ({ onSendRequest }) => {
             {!isSearching && (
               <div className="results-list">
                 {searchResults.length > 0 ? (
-                  searchResults.map(user => (
-                    <div className="user-card" key={user.id}>
+                  searchResults.map((user) => (
+                    <div className="user-card" key={user._id || user.id}>
                       <div className="user-avatar">
                         {user.profileImage 
                           ? <img src={user.profileImage} alt={user.username} /> 
@@ -106,7 +121,7 @@ const FindFriends = ({ onSendRequest }) => {
                         <p className="user-username">@{user.username}</p>
                       </div>
                       <div className="user-actions">
-                        {sentRequestIds.has(user.id) ? (
+                        {sentRequestIds.has(user._id || user.id) ? (
                           <button className="action-button pending" disabled>
                             <span className="action-icon">✓</span>
                             Request Sent
