@@ -10,10 +10,13 @@ const mongoose = require("mongoose");
 
 // Import routes
 const authRoutes = require("./Routes/authRoutes");
+<<<<<<< HEAD
 const achievementRoutes = require("./Routes/achievementRoutes");
 const activityRoutes = require("./Routes/activityRoutes");
 const vocabularyRoutes = require("./Routes/vocabularyRoutes"); // Add vocabulary routes
+=======
 const communityRoutes = require("./Routes/communityRoutes");
+>>>>>>> 2ca9d61705c6682806e61f4a803a933afc0ef523
 
 // Load environment variables
 dotenv.config();
@@ -72,10 +75,13 @@ app.get("/health", (req, res) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
+<<<<<<< HEAD
 app.use("/api/achievements", achievementRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/vocabulary", vocabularyRoutes); // Register vocabulary routes
+=======
 app.use("/api/community", communityRoutes);
+>>>>>>> 2ca9d61705c6682806e61f4a803a933afc0ef523
 
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === "production") {
