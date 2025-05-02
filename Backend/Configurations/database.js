@@ -5,7 +5,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 // Get MongoDB connection string from environment variables
-const MONGODB_URI = process.env.MONGODB_URI;
+// Try to use MONGODB_URI first, if not available, use MONGODB_URI_ATLAS as fallback
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGODB_URI_ATLAS;
 
 // Database connection options
 const options = {
