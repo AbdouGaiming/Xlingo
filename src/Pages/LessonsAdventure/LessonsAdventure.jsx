@@ -248,6 +248,19 @@ const LessonsAdventure = () => {
     }
   };
 
+  // Handle path click to move to connected lesson
+  const handlePathClick = (path) => {
+    // Find the lesson at the end of this path
+    const endLesson = lessons.find(
+      (lesson) =>
+        lesson.position.x === path.end.x && lesson.position.y === path.end.y
+    );
+
+    if (endLesson && endLesson.status !== "locked") {
+      handleNodeClick(endLesson);
+    }
+  };
+
   // Handle character position reached
   const handlePositionReached = () => {
     setCharacterState("celebrating");
@@ -256,15 +269,27 @@ const LessonsAdventure = () => {
 
   // Handle starting a lesson
   const handleStartLesson = () => {
-    // In a real app, this would navigate to the actual lesson content
     if (selectedLesson) {
       setShowPopup(false);
       setCharacterState("jumping");
 
-      // Simulate going to the lesson
+      // Store the selected lesson in localStorage to access it in LessonPractice
+      localStorage.setItem(
+        "currentLesson",
+        JSON.stringify({
+          id: selectedLesson.id,
+          title: selectedLesson.title,
+          description: selectedLesson.description,
+          icon: selectedLesson.icon,
+          unitIndex: selectedLesson.unitIndex,
+          lessonType: selectedLesson.lessonType,
+          xpReward: selectedLesson.xpReward,
+        })
+      );
+
+      // Navigate to the lesson practice component
       setTimeout(() => {
-        alert(`Starting lesson: ${selectedLesson.title}`);
-        // navigate(`/lesson-content/${selectedLesson.id}`);
+        navigate(`/lesson-practice/${selectedLesson.id}`);
       }, 1000);
     }
   };
@@ -461,7 +486,11 @@ const LessonsAdventure = () => {
           </div>
 
           {/* Paths connecting lesson nodes */}
-          <LessonPath paths={pathData} decorations={decorations} />
+          <LessonPath
+            paths={pathData}
+            decorations={decorations}
+            onPathClick={handlePathClick}
+          />
 
           {/* Character */}
           <AdventureCharacter
