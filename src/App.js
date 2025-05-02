@@ -33,7 +33,6 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  // Check if user is logged in
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -79,17 +78,14 @@ function App() {
     localStorage.removeItem("xlingoToken");
     localStorage.removeItem("lastLoginTime");
     setUser(null);
-    // Using Navigate in the Navbar component instead of window.location for smooth transitions
   };
 
   const handleSelectLanguage = useCallback(
     (language) => {
       if (user) {
-        // Update user's selected language
         const updatedUser = { ...user, currentLanguage: language };
         localStorage.setItem("xlingoUser", JSON.stringify(updatedUser));
         setUser(updatedUser);
-        // Don't use window.location.href - it causes page refreshes
       }
     },
     [user]
