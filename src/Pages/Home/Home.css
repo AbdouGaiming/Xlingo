@@ -130,7 +130,7 @@
 
 /* Thought bubble tail */
 .language-tooltip:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   left: 50%;
@@ -167,18 +167,42 @@
 }
 
 /* Generate different animation delays for each flag */
-.section2 .languages .language-container:nth-child(1) { animation-delay: 0s; }
-.section2 .languages .language-container:nth-child(2) { animation-delay: -0.7s; }
-.section2 .languages .language-container:nth-child(3) { animation-delay: -1.4s; }
-.section2 .languages .language-container:nth-child(4) { animation-delay: -2.1s; }
-.section2 .languages .language-container:nth-child(5) { animation-delay: -2.8s; }
-.section2 .languages .language-container:nth-child(6) { animation-delay: -3.5s; }
-.section2 .languages .language-container:nth-child(7) { animation-delay: -4.2s; }
-.section2 .languages .language-container:nth-child(8) { animation-delay: -4.9s; }
-.section2 .languages .language-container:nth-child(9) { animation-delay: -5.6s; }
-.section2 .languages .language-container:nth-child(10) { animation-delay: -0.5s; }
-.section2 .languages .language-container:nth-child(11) { animation-delay: -1.2s; }
-.section2 .languages .language-container:nth-child(12) { animation-delay: -1.9s; }
+.section2 .languages .language-container:nth-child(1) {
+  animation-delay: 0s;
+}
+.section2 .languages .language-container:nth-child(2) {
+  animation-delay: -0.7s;
+}
+.section2 .languages .language-container:nth-child(3) {
+  animation-delay: -1.4s;
+}
+.section2 .languages .language-container:nth-child(4) {
+  animation-delay: -2.1s;
+}
+.section2 .languages .language-container:nth-child(5) {
+  animation-delay: -2.8s;
+}
+.section2 .languages .language-container:nth-child(6) {
+  animation-delay: -3.5s;
+}
+.section2 .languages .language-container:nth-child(7) {
+  animation-delay: -4.2s;
+}
+.section2 .languages .language-container:nth-child(8) {
+  animation-delay: -4.9s;
+}
+.section2 .languages .language-container:nth-child(9) {
+  animation-delay: -5.6s;
+}
+.section2 .languages .language-container:nth-child(10) {
+  animation-delay: -0.5s;
+}
+.section2 .languages .language-container:nth-child(11) {
+  animation-delay: -1.2s;
+}
+.section2 .languages .language-container:nth-child(12) {
+  animation-delay: -1.9s;
+}
 
 /* Different animations for even and odd elements */
 .section2 .languages .language-container:nth-child(odd) {
@@ -230,7 +254,8 @@
   .section1 {
     flex-direction: column;
   }
-  .left, .right {
+  .left,
+  .right {
     width: 100%;
   }
   .right img {

@@ -14,7 +14,7 @@ const Dashboard = () => {
     dailyGoal: 50,
     dailyProgress: 30,
   });
-  
+
   // References for scroll buttons
   const activitiesContainerRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
@@ -40,20 +40,21 @@ const Dashboard = () => {
     const checkScroll = () => {
       const container = activitiesContainerRef.current;
       if (!container) return;
-      
+
       setShowLeftScroll(container.scrollLeft > 20);
       setShowRightScroll(
-        container.scrollLeft < container.scrollWidth - container.clientWidth - 20
+        container.scrollLeft <
+          container.scrollWidth - container.clientWidth - 20
       );
     };
 
     const container = activitiesContainerRef.current;
     if (container) {
-      container.addEventListener('scroll', checkScroll);
+      container.addEventListener("scroll", checkScroll);
       // Initial check
       checkScroll();
-      
-      return () => container.removeEventListener('scroll', checkScroll);
+
+      return () => container.removeEventListener("scroll", checkScroll);
     }
   }, []);
 
@@ -61,11 +62,11 @@ const Dashboard = () => {
   const scrollActivities = (direction) => {
     const container = activitiesContainerRef.current;
     if (!container) return;
-    
+
     const scrollAmount = container.clientWidth * 0.75;
     container.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
     });
   };
 
@@ -79,7 +80,7 @@ const Dashboard = () => {
       totalWords: 30,
       completed: 21,
       timeEstimate: "5 min",
-      isRecommended: true
+      isRecommended: true,
     },
     {
       id: 2,
@@ -88,7 +89,7 @@ const Dashboard = () => {
       progress: 45,
       exercises: 20,
       completed: 9,
-      timeEstimate: "10 min"
+      timeEstimate: "10 min",
     },
     {
       id: 3,
@@ -97,7 +98,7 @@ const Dashboard = () => {
       progress: 20,
       duration: "15 min",
       completed: "3 min",
-      timeEstimate: "7 min"
+      timeEstimate: "7 min",
     },
     {
       id: 4,
@@ -107,7 +108,7 @@ const Dashboard = () => {
       phrases: 15,
       completed: 9,
       timeEstimate: "8 min",
-      isNew: true
+      isNew: true,
     },
     {
       id: 5,
@@ -116,7 +117,7 @@ const Dashboard = () => {
       progress: 35,
       totalWords: 40,
       completed: 14,
-      timeEstimate: "6 min"
+      timeEstimate: "6 min",
     },
     {
       id: 6,
@@ -125,7 +126,7 @@ const Dashboard = () => {
       progress: 15,
       exercises: 25,
       completed: 4,
-      timeEstimate: "15 min"
+      timeEstimate: "15 min",
     },
   ];
 
@@ -183,14 +184,21 @@ const Dashboard = () => {
 
   // Get appropriate icon for activity type
   const getActivityIcon = (type) => {
-    switch(type) {
-      case "vocabulary": return "📚";
-      case "grammar": return "📝";
-      case "listening": return "🎧";
-      case "speaking": return "🎤";
-      case "reading": return "📖";
-      case "writing": return "✍️";
-      default: return "🎯";
+    switch (type) {
+      case "vocabulary":
+        return "📚";
+      case "grammar":
+        return "📝";
+      case "listening":
+        return "🎧";
+      case "speaking":
+        return "🎤";
+      case "reading":
+        return "📖";
+      case "writing":
+        return "✍️";
+      default:
+        return "🎯";
     }
   };
 
@@ -273,15 +281,15 @@ const Dashboard = () => {
 
           <div className="activities-carousel">
             {showLeftScroll && (
-              <button 
-                className="scroll-button left" 
-                onClick={() => scrollActivities('left')}
+              <button
+                className="scroll-button left"
+                onClick={() => scrollActivities("left")}
                 aria-label="Scroll left"
               >
                 ◀
               </button>
             )}
-            
+
             <div className="activities-grid" ref={activitiesContainerRef}>
               {learningActivities.map((activity) => (
                 <div
@@ -296,7 +304,9 @@ const Dashboard = () => {
                       <div className="activity-header">
                         <h4>{activity.title}</h4>
                         {activity.isRecommended && (
-                          <span className="activity-badge recommended">Recommended</span>
+                          <span className="activity-badge recommended">
+                            Recommended
+                          </span>
                         )}
                         {activity.isNew && (
                           <span className="activity-badge new">New</span>
@@ -320,7 +330,8 @@ const Dashboard = () => {
                             `${activity.completed}/${activity.phrases} phrases`}
                         </p>
                         <span className="time-estimate">
-                          <span className="time-icon">⏱️</span> {activity.timeEstimate}
+                          <span className="time-icon">⏱️</span>{" "}
+                          {activity.timeEstimate}
                         </span>
                       </div>
                     </div>
@@ -334,27 +345,29 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-            
+
             {showRightScroll && (
-              <button 
-                className="scroll-button right" 
-                onClick={() => scrollActivities('right')}
+              <button
+                className="scroll-button right"
+                onClick={() => scrollActivities("right")}
                 aria-label="Scroll right"
               >
                 ▶
               </button>
             )}
           </div>
-          
+
           <div className="carousel-indicators">
             <div className="carousel-dots">
-              {[...Array(Math.ceil(learningActivities.length / 3))].map((_, i) => (
-                <button 
-                  key={i} 
-                  className={`carousel-dot ${i === 0 ? 'active' : ''}`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
+              {[...Array(Math.ceil(learningActivities.length / 3))].map(
+                (_, i) => (
+                  <button
+                    key={i}
+                    className={`carousel-dot ${i === 0 ? "active" : ""}`}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                )
+              )}
             </div>
           </div>
         </section>

@@ -5,63 +5,63 @@ const languageData = [
   {
     id: "en",
     name: "English",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/langfr-250px-Flag_of_the_United_Kingdom_%283-5%29.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/langfr-250px-Flag_of_the_United_Kingdom_%283-5%29.svg.png",
   },
   {
     id: "fr",
     name: "French",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/800px-Flag_of_France.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/800px-Flag_of_France.svg.png",
   },
   {
     id: "de",
     name: "German",
-    flag: "https://img.freepik.com/vecteurs-libre/illustration-du-drapeau-allemand_53876-27101.jpg?semt=ais_hybrid&w=740"
+    flag: "https://img.freepik.com/vecteurs-libre/illustration-du-drapeau-allemand_53876-27101.jpg?semt=ais_hybrid&w=740",
   },
   {
     id: "it",
     name: "Italian",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/langfr-250px-Flag_of_Italy.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/langfr-250px-Flag_of_Italy.svg.png",
   },
   {
     id: "jp",
     name: "Japanese",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Flag_of_Japan.svg/langfr-250px-Flag_of_Japan.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Flag_of_Japan.svg/langfr-250px-Flag_of_Japan.svg.png",
   },
   {
     id: "es",
     name: "Spanish",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/2560px-Flag_of_Spain.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/2560px-Flag_of_Spain.svg.png",
   },
   {
     id: "kr",
     name: "Korean",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/1200px-Flag_of_South_Korea.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/1200px-Flag_of_South_Korea.svg.png",
   },
   {
     id: "tr",
     name: "Turkish",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/2560px-Flag_of_Turkey.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/2560px-Flag_of_Turkey.svg.png",
   },
   {
     id: "sa",
     name: "Arabic",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/1200px-Flag_of_Saudi_Arabia.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/1200px-Flag_of_Saudi_Arabia.svg.png",
   },
   {
     id: "br",
     name: "Portuguese",
-    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/1200px-Flag_of_Brazil.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/1200px-Flag_of_Brazil.svg.png",
   },
   {
     id: "ru",
     name: "Russian",
-    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/1200px-Flag_of_Russia.svg.png"
+    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/1200px-Flag_of_Russia.svg.png",
   },
   {
     id: "nl",
     name: "Dutch",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/1200px-Flag_of_the_Netherlands.svg.png"
-  }
+    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/1200px-Flag_of_the_Netherlands.svg.png",
+  },
 ];
 
 export default function Home() {
@@ -94,19 +94,13 @@ export default function Home() {
         <div className="text">I want to learn</div>
         <div className="languages">
           {languageData.map((language) => (
-            <div 
-              key={language.id} 
+            <div
+              key={language.id}
               className="language-container"
               onClick={() => handleLanguageClick(language)}
             >
-              <div className="language-tooltip">
-                {language.name}
-              </div>
-              <img
-                src={language.flag}
-                alt={language.name}
-                className="logo"
-              />
+              <div className="language-tooltip">{language.name}</div>
+              <img src={language.flag} alt={language.name} className="logo" />
             </div>
           ))}
         </div>

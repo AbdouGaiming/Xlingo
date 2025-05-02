@@ -25,7 +25,7 @@ $hover-transition: all 0.3s ease;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  
+
   .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -35,7 +35,7 @@ $hover-transition: all 0.3s ease;
     text-align: left;
     width: 100%;
     box-sizing: border-box;
-    
+
     .user-welcome {
       h1 {
         margin: 0;
@@ -45,7 +45,7 @@ $hover-transition: all 0.3s ease;
         font-family: "Paprika", system-ui;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
-      
+
       p {
         margin: 5px 0 0;
         font-size: 1.2rem;
@@ -53,7 +53,7 @@ $hover-transition: all 0.3s ease;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       }
     }
-    
+
     .current-language {
       display: flex;
       align-items: center;
@@ -62,22 +62,22 @@ $hover-transition: all 0.3s ease;
       border-radius: $border-radius;
       box-shadow: $box-shadow;
       border: 2px solid $accent-blue;
-      
+
       .language-flag {
         font-size: 2.5rem;
         margin-right: 15px;
       }
-      
+
       .language-info {
         text-align: left;
-        
+
         h2 {
           margin: 0;
           font-size: 1.3rem;
           font-family: "Paprika", system-ui;
           color: $primary-blue;
         }
-        
+
         .level-badge {
           font-size: 0.9rem;
           font-weight: 600;
@@ -91,7 +91,7 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -100,7 +100,7 @@ $hover-transition: all 0.3s ease;
     padding: 0 40px 40px;
     width: 100%;
     box-sizing: border-box;
-    
+
     section {
       background: white;
       border-radius: $border-radius;
@@ -111,18 +111,18 @@ $hover-transition: all 0.3s ease;
       min-height: 200px; // Reduced height for more compact sections
       display: flex;
       flex-direction: column;
-      
+
       &:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
       }
-      
+
       .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-        
+
         h3 {
           margin: 0;
           font-size: 1.6rem;
@@ -130,12 +130,12 @@ $hover-transition: all 0.3s ease;
           font-family: "Paprika", system-ui;
           color: $primary-blue;
         }
-        
+
         .see-all-link {
           color: $accent-blue;
           font-weight: 500;
           font-size: 1rem;
-          
+
           &:hover {
             text-decoration: underline;
           }
@@ -143,21 +143,21 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .progress-section {
     grid-column: 1 / -1;
-    
+
     .progress-stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
-      
+
       .progress-card {
         background: rgba(255, 255, 255, 0.7);
         border-radius: $border-radius;
         padding: 20px;
         border: 1px solid rgba(74, 144, 226, 0.2);
-        
+
         h4 {
           margin-top: 0;
           margin-bottom: 15px;
@@ -166,23 +166,23 @@ $hover-transition: all 0.3s ease;
           font-family: "Paprika", system-ui;
           color: $primary-blue;
         }
-        
+
         &.streak {
           display: flex;
           align-items: center;
-          
+
           .streak-icon {
             font-size: 2.5rem;
             margin-right: 20px;
           }
-          
+
           .streak-info {
             h4 {
               margin: 0;
               font-size: 1.4rem;
               color: $primary-blue;
             }
-            
+
             p {
               margin: 5px 0 0;
               font-size: 1rem;
@@ -190,28 +190,28 @@ $hover-transition: all 0.3s ease;
             }
           }
         }
-        
+
         .progress-bar-container {
           height: 12px;
           background: #e0e0e0;
           border-radius: 6px;
           overflow: hidden;
           margin-bottom: 10px;
-          
+
           .progress-bar {
             height: 100%;
             background: linear-gradient(120deg, $primary-blue, $secondary-blue);
             border-radius: 6px;
           }
         }
-        
+
         .progress-details {
           display: flex;
           justify-content: space-between;
           font-size: 1rem;
           margin-bottom: 10px;
         }
-        
+
         p {
           margin: 5px 0 0;
           font-size: 0.9rem;
@@ -220,19 +220,19 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .activities-section {
     position: relative;
-    
+
     .section-header {
       margin-bottom: 15px !important;
     }
-    
+
     .activities-carousel {
       position: relative;
       width: 100%;
       margin-bottom: 10px;
-      
+
       .scroll-button {
         position: absolute;
         top: 50%;
@@ -251,23 +251,23 @@ $hover-transition: all 0.3s ease;
         font-size: 0.8rem;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         transition: all 0.2s ease;
-        
+
         &:hover {
           background: white;
           box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
           transform: translateY(-50%) scale(1.1);
         }
-        
+
         &.left {
           left: -15px;
         }
-        
+
         &.right {
           right: -15px;
         }
       }
     }
-    
+
     .activities-grid {
       display: flex;
       overflow-x: auto;
@@ -276,13 +276,13 @@ $hover-transition: all 0.3s ease;
       margin: 0 -5px;
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
-      -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
-      scrollbar-width: none;  /* Hide scrollbar for Firefox */
-      
+      -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+      scrollbar-width: none; /* Hide scrollbar for Firefox */
+
       &::-webkit-scrollbar {
         display: none; /* Hide scrollbar for Chrome, Safari and Opera */
       }
-      
+
       .activity-card {
         background: rgba(255, 255, 255, 0.95);
         border-radius: $border-radius;
@@ -296,17 +296,17 @@ $hover-transition: all 0.3s ease;
         flex: 0 0 auto;
         scroll-snap-align: start;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        
+
         &:hover {
           transform: translateY(-5px);
           box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
           border-color: $accent-blue;
         }
-        
+
         .activity-card-content {
           display: flex;
           margin-bottom: 15px;
-          
+
           .activity-icon {
             font-size: 2rem;
             margin-right: 15px;
@@ -319,21 +319,21 @@ $hover-transition: all 0.3s ease;
             justify-content: center;
             flex-shrink: 0;
             transition: transform 0.2s ease;
-            
+
             .activity-card:hover & {
               transform: scale(1.1) rotate(5deg);
             }
           }
-          
+
           .activity-info {
             flex: 1;
-            
+
             .activity-header {
               display: flex;
               flex-wrap: wrap;
               align-items: center;
               margin-bottom: 8px;
-              
+
               h4 {
                 margin: 0;
                 font-size: 1.1rem;
@@ -342,33 +342,33 @@ $hover-transition: all 0.3s ease;
                 flex: 1 1 auto;
                 text-align: left;
               }
-              
+
               .activity-badge {
                 font-size: 0.7rem;
                 font-weight: 600;
                 padding: 2px 8px;
                 border-radius: 10px;
                 margin-left: 5px;
-                
+
                 &.recommended {
                   background-color: rgba(74, 144, 226, 0.2);
                   color: $primary-blue;
                 }
-                
+
                 &.new {
                   background-color: rgba(46, 204, 113, 0.2);
                   color: #27ae60;
                 }
               }
             }
-            
+
             .activity-progress-bar {
               height: 6px;
               background: #e0e0e0;
               border-radius: 4px;
               margin-bottom: 10px;
               overflow: hidden;
-              
+
               .progress-fill {
                 height: 100%;
                 border-radius: 4px;
@@ -376,19 +376,19 @@ $hover-transition: all 0.3s ease;
                 transition: width 1s ease-in-out;
               }
             }
-            
+
             .activity-stats {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              
+
               .activity-details {
                 margin: 0;
                 font-size: 0.85rem;
                 color: $light-text;
                 text-align: left;
               }
-              
+
               .time-estimate {
                 font-size: 0.8rem;
                 color: $primary-blue;
@@ -398,7 +398,7 @@ $hover-transition: all 0.3s ease;
                 border-radius: 12px;
                 display: flex;
                 align-items: center;
-                
+
                 .time-icon {
                   font-size: 0.9rem;
                   margin-right: 3px;
@@ -407,7 +407,7 @@ $hover-transition: all 0.3s ease;
             }
           }
         }
-        
+
         .continue-button {
           background: linear-gradient(120deg, $primary-blue, $secondary-blue);
           color: white;
@@ -420,56 +420,60 @@ $hover-transition: all 0.3s ease;
           text-align: center;
           transition: all 0.3s ease;
           transform-origin: center;
-          
+
           &:hover {
-            background: linear-gradient(120deg, $primary-blue 30%, $accent-blue 100%);
+            background: linear-gradient(
+              120deg,
+              $primary-blue 30%,
+              $accent-blue 100%
+            );
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(5, 5, 181, 0.4);
           }
         }
-        
+
         // Color coding for different activity types
-        &.vocabulary .activity-icon { 
-          color: $primary-blue; 
+        &.vocabulary .activity-icon {
+          color: $primary-blue;
           background-color: rgba(5, 5, 181, 0.1);
         }
-        
-        &.grammar .activity-icon { 
-          color: #2980b9; 
+
+        &.grammar .activity-icon {
+          color: #2980b9;
           background-color: rgba(41, 128, 185, 0.1);
         }
-        
-        &.listening .activity-icon { 
-          color: #8e44ad; 
+
+        &.listening .activity-icon {
+          color: #8e44ad;
           background-color: rgba(142, 68, 173, 0.1);
         }
-        
-        &.speaking .activity-icon { 
-          color: #c0392b; 
+
+        &.speaking .activity-icon {
+          color: #c0392b;
           background-color: rgba(192, 57, 43, 0.1);
         }
-        
-        &.reading .activity-icon { 
-          color: #16a085; 
+
+        &.reading .activity-icon {
+          color: #16a085;
           background-color: rgba(22, 160, 133, 0.1);
         }
-        
-        &.writing .activity-icon { 
-          color: #f39c12; 
+
+        &.writing .activity-icon {
+          color: #f39c12;
           background-color: rgba(243, 156, 18, 0.1);
         }
       }
     }
-    
+
     .carousel-indicators {
       display: flex;
       justify-content: center;
       margin-top: 15px;
-      
+
       .carousel-dots {
         display: flex;
         gap: 8px;
-        
+
         .carousel-dot {
           width: 8px;
           height: 8px;
@@ -479,12 +483,12 @@ $hover-transition: all 0.3s ease;
           padding: 0;
           cursor: pointer;
           transition: all 0.2s ease;
-          
+
           &.active {
             background-color: $primary-blue;
             transform: scale(1.2);
           }
-          
+
           &:hover {
             background-color: rgba(5, 5, 181, 0.4);
           }
@@ -492,7 +496,7 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .challenges-section {
     .challenges-list {
       display: flex;
@@ -501,19 +505,19 @@ $hover-transition: all 0.3s ease;
       max-height: 290px;
       overflow-y: auto;
       padding-right: 5px;
-      
+
       /* Scrollbar styling */
       &::-webkit-scrollbar {
         width: 6px;
         background-color: #f5f5f5;
         border-radius: 3px;
       }
-      
+
       &::-webkit-scrollbar-thumb {
         background-color: $accent-blue;
         border-radius: 3px;
       }
-      
+
       .challenge-card {
         display: flex;
         align-items: center;
@@ -522,22 +526,22 @@ $hover-transition: all 0.3s ease;
         padding: 12px;
         border: 1px solid rgba(74, 144, 226, 0.2);
         transition: $hover-transition;
-        
+
         &:hover {
           transform: translateY(-2px);
           box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
         }
-        
+
         &.completed {
           background: rgba(5, 5, 181, 0.05);
           border: 1px solid rgba(74, 144, 226, 0.2);
-          
+
           .challenge-icon {
             background-color: rgba(46, 204, 113, 0.15);
             color: #27ae60;
           }
         }
-        
+
         .challenge-icon {
           font-size: 1.5rem;
           margin-right: 15px;
@@ -550,35 +554,35 @@ $hover-transition: all 0.3s ease;
           justify-content: center;
           flex-shrink: 0;
         }
-        
+
         .challenge-info {
           flex: 1;
-          
+
           h4 {
             margin: 0 0 4px;
             font-size: 0.95rem;
             font-family: "Paprika", system-ui;
             color: $primary-blue;
           }
-          
+
           p {
             margin: 0 0 6px;
             font-size: 0.85rem;
             color: $light-text;
             line-height: 1.3;
           }
-          
+
           .challenge-reward {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            
+
             .xp-reward {
               font-weight: 600;
               color: $primary-blue;
               font-size: 0.9rem;
             }
-            
+
             .completed-badge {
               font-size: 0.7rem;
               font-weight: 600;
@@ -592,30 +596,34 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .leaderboard-section {
     .leaderboard-list {
       display: flex;
       flex-direction: column;
-      
+
       .leaderboard-item {
         display: flex;
         align-items: center;
         padding: 14px 0;
         border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-        
+
         &:last-child {
           border-bottom: none;
         }
-        
+
         &.current-user {
-          background: linear-gradient(120deg, rgba(5, 5, 181, 0.05), rgba(27, 27, 222, 0.05));
+          background: linear-gradient(
+            120deg,
+            rgba(5, 5, 181, 0.05),
+            rgba(27, 27, 222, 0.05)
+          );
           margin: 0 -25px;
           padding: 14px 25px;
           border-radius: 5px;
           box-shadow: 0 0 0 1px rgba(74, 144, 226, 0.3);
         }
-        
+
         .rank {
           width: 35px;
           height: 35px;
@@ -629,7 +637,7 @@ $hover-transition: all 0.3s ease;
           margin-right: 15px;
           color: white;
         }
-        
+
         .user-avatar {
           font-size: 1.5rem;
           margin-right: 15px;
@@ -642,7 +650,7 @@ $hover-transition: all 0.3s ease;
           justify-content: center;
           border: 2px solid $accent-blue;
         }
-        
+
         .user-name {
           flex: 1;
           font-weight: 500;
@@ -651,7 +659,7 @@ $hover-transition: all 0.3s ease;
           font-family: "Paprika", system-ui;
           color: $primary-blue;
         }
-        
+
         .user-xp {
           font-weight: 600;
           font-size: 1rem;
@@ -659,11 +667,11 @@ $hover-transition: all 0.3s ease;
         }
       }
     }
-    
+
     .leaderboard-footer {
       text-align: center;
       margin-top: 15px;
-      
+
       p {
         margin: 0;
         font-size: 0.95rem;
@@ -671,7 +679,7 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .quick-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -679,7 +687,7 @@ $hover-transition: all 0.3s ease;
     padding: 0 40px 40px;
     width: 100%;
     box-sizing: border-box;
-    
+
     .action-button {
       display: flex;
       flex-direction: column;
@@ -697,22 +705,22 @@ $hover-transition: all 0.3s ease;
       transition: transform 0.3s, box-shadow 0.3s;
       font-family: "Paprika", system-ui;
       height: 130px;
-      
+
       &:hover {
         transform: translateY(-5px);
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
       }
-      
+
       .action-icon {
         font-size: 2.5rem;
         margin-bottom: 15px;
       }
-      
+
       .action-text {
         font-weight: 600;
         font-size: 1.2rem;
       }
-      
+
       &.lesson-btn {
         background: linear-gradient(
           120deg,
@@ -720,7 +728,7 @@ $hover-transition: all 0.3s ease;
           rgba(27, 27, 222, 0.8) 100%
         );
       }
-      
+
       &.community-btn {
         background: linear-gradient(
           120deg,
@@ -730,28 +738,28 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   @media (max-width: 1200px) {
     .dashboard-grid {
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       padding: 0 30px 30px;
     }
-    
+
     .quick-actions {
       padding: 0 30px 30px;
     }
   }
-  
+
   @media (max-width: 768px) {
     .dashboard-header {
       flex-direction: column;
       align-items: flex-start;
       padding: 20px 30px;
-      
+
       .user-welcome h1 {
         font-size: 2rem;
       }
-      
+
       .current-language {
         margin-top: 20px;
         width: 100%;
@@ -759,23 +767,23 @@ $hover-transition: all 0.3s ease;
         box-sizing: border-box;
       }
     }
-    
+
     .dashboard-grid {
       grid-template-columns: 1fr;
       padding: 0 20px 20px;
       gap: 20px;
     }
-    
+
     .progress-stats {
       grid-template-columns: 1fr !important;
     }
-    
+
     .quick-actions {
       grid-template-columns: 1fr;
       padding: 0 20px 20px;
       gap: 20px;
     }
-    
+
     .activities-grid .activity-card {
       min-width: 240px;
     }
