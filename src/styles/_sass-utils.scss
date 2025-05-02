@@ -1,0 +1,33 @@
+// SASS Utils - Modern functions to replace deprecated ones
+@use "sass:color";
+@use "sass:math";
+
+// Replacement for lighten()
+@function lighten-color($color, $percentage) {
+  @return color.adjust($color, $lightness: $percentage);
+}
+
+// Replacement for darken()
+@function darken-color($color, $percentage) {
+  @return color.adjust($color, $lightness: -$percentage);
+}
+
+// Replacement for transparentize()
+@function make-transparent($color, $amount) {
+  @return color.adjust($color, $alpha: -$amount);
+}
+
+// Replacement for desaturate()
+@function desaturate-color($color, $amount) {
+  @return color.adjust($color, $saturation: -$amount);
+}
+
+// Replacement for random() function
+@function random-number($range) {
+  @return math.random($range);
+}
+
+// Replacement for division with / operator
+@function safe-divide($dividend, $divisor) {
+  @return math.div($dividend, $divisor);
+}
