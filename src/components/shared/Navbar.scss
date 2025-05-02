@@ -1,0 +1,382 @@
+// Variables - using the same color scheme as your Login page
+$primary-color: #2c3e50;
+$secondary-color: #eef2f7;
+$accent-color: #3498db;
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$danger-color: #e74c3c;
+$text-color: #333;
+$light-text: #666;
+$border-radius: 8px;
+$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+$hover-transition: all 0.3s ease;
+
+// Mixins
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Navbar styles
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  
+  .navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.75rem 1.5rem;
+    
+    @media (max-width: 992px) {
+      padding: 0.75rem 1rem;
+    }
+  }
+  
+  // Logo styles
+  .navbar-logo {
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: $primary-color;
+      
+      .logo-icon {
+        font-size: 1.75rem;
+        margin-right: 0.5rem;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+  
+  // Mobile menu toggle button
+  .navbar-toggle {
+    display: none;
+    cursor: pointer;
+    width: 30px;
+    height: 25px;
+    position: relative;
+    
+    .toggle-icon {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      height: 3px;
+      background-color: $primary-color;
+      border-radius: 3px;
+      @include transition;
+      
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background-color: $primary-color;
+        border-radius: 3px;
+        @include transition;
+      }
+      
+      &::before {
+        top: -10px;
+      }
+      
+      &::after {
+        bottom: -10px;
+      }
+      
+      &.active {
+        background-color: transparent;
+        
+        &::before {
+          transform: rotate(45deg);
+          top: 0;
+        }
+        
+        &::after {
+          transform: rotate(-45deg);
+          bottom: 0;
+        }
+      }
+    }
+    
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+  
+  // Menu container
+  .navbar-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    margin-left: 2rem;
+    
+    @media (max-width: 768px) {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 64px);
+      flex-direction: column;
+      background-color: white;
+      margin-left: 0;
+      padding: 1.5rem;
+      transform: translateX(100%);
+      opacity: 0;
+      visibility: hidden;
+      @include transition;
+      overflow-y: auto;
+      
+      &.active {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+  
+  // Navigation links
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+    
+    .nav-item {
+      margin: 0 0.75rem;
+      position: relative;
+      
+      @media (max-width: 768px) {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+      }
+      
+      a {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        color: $text-color;
+        text-decoration: none;
+        font-weight: 500;
+        border-radius: $border-radius;
+        @include transition;
+        
+        .nav-icon {
+          font-size: 1.25rem;
+          margin-right: 0.5rem;
+        }
+        
+        &:hover {
+          color: $accent-color;
+          background-color: transparentize($accent-color, 0.9);
+        }
+        
+        @media (max-width: 768px) {
+          padding: 1rem;
+          justify-content: center;
+        }
+      }
+      
+      &.active a {
+        color: $accent-color;
+        background-color: transparentize($accent-color, 0.9);
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -5px;
+          left: 50%;
+          width: 20px;
+          height: 3px;
+          background-color: $accent-color;
+          border-radius: 3px;
+          transform: translateX(-50%);
+          
+          @media (max-width: 768px) {
+            bottom: 0;
+          }
+        }
+      }
+    }
+  }
+  
+  // User actions (profile, login buttons)
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    // User profile section
+    .user-profile {
+      margin-right: 1rem;
+      
+      @media (max-width: 768px) {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+      
+      a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: $border-radius;
+        @include transition;
+        
+        &:hover {
+          background-color: $secondary-color;
+        }
+        
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background-color: $accent-color;
+          color: white;
+          margin-right: 0.75rem;
+          @include flex-center;
+          font-weight: 600;
+          font-size: 1.1rem;
+          overflow: hidden;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        
+        .user-info {
+          display: flex;
+          flex-direction: column;
+          
+          .user-name {
+            color: $primary-color;
+            font-weight: 500;
+            font-size: 0.95rem;
+          }
+          
+          .user-level {
+            color: $light-text;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+    
+    // Logout button
+    .logout-button {
+      display: flex;
+      align-items: center;
+      background-color: transparent;
+      border: 1px solid $light-text;
+      color: $light-text;
+      padding: 0.5rem 0.75rem;
+      border-radius: $border-radius;
+      font-size: 0.9rem;
+      cursor: pointer;
+      @include transition;
+      
+      &:hover {
+        background-color: $secondary-color;
+        border-color: $primary-color;
+        color: $primary-color;
+      }
+      
+      .logout-icon {
+        margin-right: 0.35rem;
+        font-size: 1rem;
+      }
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem;
+      }
+    }
+    
+    // Auth buttons
+    .auth-buttons {
+      display: flex;
+      gap: 0.75rem;
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        flex-direction: column;
+      }
+      
+      .login-button, .register-button {
+        padding: 0.5rem 1rem;
+        border-radius: $border-radius;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        @include transition;
+        
+        @media (max-width: 768px) {
+          width: 100%;
+          text-align: center;
+          padding: 0.75rem;
+        }
+      }
+      
+      .login-button {
+        background-color: transparent;
+        border: 1px solid $accent-color;
+        color: $accent-color;
+        
+        &:hover {
+          background-color: transparentize($accent-color, 0.9);
+        }
+      }
+      
+      .register-button {
+        background-color: $accent-color;
+        color: white;
+        
+        &:hover {
+          background-color: darken($accent-color, 10%);
+        }
+      }
+    }
+  }
+}
+
+// Add margin-top to main content to account for fixed navbar
+.main-content {
+  margin-top: 64px; // Adjust based on navbar height
+  
+  @media (max-width: 768px) {
+    margin-top: 60px; // Adjust for mobile if needed
+  }
+}

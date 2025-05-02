@@ -33,7 +33,7 @@ const Login = () => {
     if (loginSuccess) {
       const redirectTimer = setTimeout(() => {
         console.log("Login successful, redirecting to home page");
-        navigate("/");
+        navigate("/home");
       }, 1000); // Slightly longer delay for better UX
 
       return () => clearTimeout(redirectTimer);
