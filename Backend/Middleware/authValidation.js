@@ -25,11 +25,7 @@ exports.registerValidation = [
     .notEmpty()
     .withMessage("Password is required")
     .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters long")
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/)
-    .withMessage(
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    ),
+    .withMessage("Password must be at least 6 characters long"),
 ];
 
 // Login request validation
@@ -58,11 +54,7 @@ exports.resetPasswordValidation = [
     .notEmpty()
     .withMessage("Password is required")
     .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters long")
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/)
-    .withMessage(
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    ),
+    .withMessage("Password must be at least 6 characters long"),
 
   check("confirmPassword")
     .notEmpty()
@@ -86,10 +78,6 @@ exports.changePasswordValidation = [
     .withMessage("New password is required")
     .isLength({ min: 6 })
     .withMessage("New password must be at least 6 characters long")
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/)
-    .withMessage(
-      "New password must contain at least one uppercase letter, one lowercase letter, and one number"
-    )
     .custom((value, { req }) => {
       if (value === req.body.currentPassword) {
         throw new Error("New password cannot be the same as current password");

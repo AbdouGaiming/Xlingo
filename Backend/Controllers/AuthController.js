@@ -21,10 +21,20 @@ exports.register = async (req, res) => {
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log("Validation errors:", errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, email, password } = req.body;
+  const { username, email, password, firstName, lastName } = req.body;
+  
+  // Log registration attempt for debugging
+  console.log("Registration attempt with:", { 
+    username, 
+    email, 
+    firstName,
+    lastName,
+    passwordLength: password ? password.length : 0 
+  });
 
   try {
     // Check if user already exists
@@ -32,8 +42,10 @@ exports.register = async (req, res) => {
 
     if (user) {
       if (user.email === email) {
+        console.log("Registration failed: Email already in use");
         return res.status(400).json({ message: "Email already in use" });
       }
+      console.log("Registration failed: Username already taken");
       return res.status(400).json({ message: "Username already taken" });
     }
 
@@ -45,6 +57,8 @@ exports.register = async (req, res) => {
       username,
       email,
       password,
+      firstName,
+      lastName,
       verificationToken,
     });
 
@@ -68,6 +82,7 @@ exports.register = async (req, res) => {
     // Sign token
     jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRE }, (err, token) => {
       if (err) throw err;
+      console.log("User registered successfully:", user.username);
       res.status(201).json({
         message: "User registered successfully",
         token,
@@ -81,6 +96,29 @@ exports.register = async (req, res) => {
     });
   } catch (err) {
     console.error("Registration error:", err.message);
+    
+    // Check for mongoose validation errors
+    if (err.name === 'ValidationError') {
+      const validationErrors = Object.values(err.errors).map(error => ({
+        field: error.path,
+        message: error.message
+      }));
+      console.log("Mongoose validation errors:", validationErrors);
+      return res.status(400).json({ 
+        message: "Validation error", 
+        errors: validationErrors 
+      });
+    }
+    
+    // Check for duplicate key error
+    if (err.code === 11000) {
+      console.log("Duplicate key error:", err.keyValue);
+      const field = Object.keys(err.keyValue)[0];
+      return res.status(400).json({ 
+        message: `${field} already exists` 
+      });
+    }
+    
     res.status(500).json({ message: "Server error during registration" });
   }
 };
