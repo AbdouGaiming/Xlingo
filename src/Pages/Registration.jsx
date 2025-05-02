@@ -16,6 +16,7 @@ const Registration = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -66,6 +67,19 @@ const Registration = () => {
       isValid = false;
     }
 
+    // Username validation
+    if (!formData.username.trim()) {
+      tempErrors.username = "Username is required";
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      tempErrors.username =
+        "Username can only contain letters, numbers, and underscores";
+      isValid = false;
+    } else if (formData.username.length < 3 || formData.username.length > 30) {
+      tempErrors.username = "Username must be between 3 and 30 characters";
+      isValid = false;
+    }
+
     // Email validation
     if (!formData.email.trim()) {
       tempErrors.email = "Email is required";
@@ -106,16 +120,17 @@ const Registration = () => {
 
     // Clear any previous errors
     setErrors({});
-    let hasErrors = false;
-    const newErrors = {};
 
     // Validation
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      setIsLoading(false);
+      return;
+    }
 
-    setIsLoading(true);
     try {
       const response = await withLoading(
         axios.post(`${API_URL}/auth/register`, {
+          username: formData.username, // Add username field for backend
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
@@ -141,9 +156,24 @@ const Registration = () => {
       }, 2000);
     } catch (error) {
       setIsLoading(false);
-      if (error.response && error.response.data.message) {
-        setErrors({ general: error.response.data.message });
-        showErrorAlert("Registration Failed", error.response.data.message);
+      console.error("Registration error:", error.response?.data || error.message);
+
+      if (error.response && error.response.data) {
+        // Handle validation errors from backend
+        if (error.response.data.errors && Array.isArray(error.response.data.errors)) {
+          const fieldErrors = {};
+          error.response.data.errors.forEach((err) => {
+            fieldErrors[err.param] = err.msg;
+          });
+          setErrors({ ...fieldErrors });
+          showErrorAlert("Registration Failed", "Please check the form for errors.");
+        } else if (error.response.data.message) {
+          setErrors({ general: error.response.data.message });
+          showErrorAlert("Registration Failed", error.response.data.message);
+        } else {
+          setErrors({ general: "Registration failed. Please try again." });
+          showErrorAlert("Registration Failed", "Registration failed. Please try again.");
+        }
       } else {
         setErrors({ general: "Registration failed. Please try again later." });
         showErrorAlert(
@@ -231,6 +261,29 @@ const Registration = () => {
                   <span className="error">{errors.lastName}</span>
                 )}
               </div>
+            </div>
+
+            <div className="form-group">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                placeholder="Username"
+                className={errors.username ? "input-error" : ""}
+                disabled={isLoading}
+                autoComplete="username"
+              />
+              <label
+                htmlFor="username"
+                className={formData.username ? "active" : ""}
+              >
+                Username
+              </label>
+              {errors.username && (
+                <span className="error">{errors.username}</span>
+              )}
             </div>
 
             <div className="form-group">
