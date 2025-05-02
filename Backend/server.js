@@ -6,29 +6,40 @@ const path = require("path");
 const rateLimit = require("express-rate-limit");
 const dotenv = require("dotenv");
 const connectDB = require("./Configurations/database");
+const mongoose = require("mongoose");
 
 // Import routes
 const authRoutes = require("./Routes/authRoutes");
+<<<<<<< HEAD
+const achievementRoutes = require("./Routes/achievementRoutes");
+const activityRoutes = require("./Routes/activityRoutes");
+const vocabularyRoutes = require("./Routes/vocabularyRoutes"); // Add vocabulary routes
+=======
+const communityRoutes = require("./Routes/communityRoutes");
+>>>>>>> 2ca9d61705c6682806e61f4a803a933afc0ef523
 
 // Load environment variables
 dotenv.config();
 
 // Initialize express app
 const app = express();
-
 // Connect to MongoDB
 connectDB();
 
 // Set up basic security with helmet
 app.use(helmet());
 
-// Configure CORS
+// Configure CORS to accept requests from both ports 3000 and 4000
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:4000", // Updated default React port to 4000
+    origin: [
+      process.env.CLIENT_URL || "http://localhost:4000",
+      
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-auth-token"],
+    exposedHeaders: ["x-auth-token"],
   })
 );
 
@@ -55,11 +66,22 @@ app.use("/api", apiLimiter);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok", message: "Server is running" });
+  res.status(200).json({ 
+    status: "ok", 
+    message: "Server is running",
+    dbStatus: mongoose.connection.readyState === 1 ? "connected" : "disconnected"
+  });
 });
 
 // API Routes
 app.use("/api/auth", authRoutes);
+<<<<<<< HEAD
+app.use("/api/achievements", achievementRoutes);
+app.use("/api/activities", activityRoutes);
+app.use("/api/vocabulary", vocabularyRoutes); // Register vocabulary routes
+=======
+app.use("/api/community", communityRoutes);
+>>>>>>> 2ca9d61705c6682806e61f4a803a933afc0ef523
 
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === "production") {
@@ -90,26 +112,48 @@ app.use((err, req, res, next) => {
 });
 
 // Set port
-const PORT = process.env.BACKEND_PORT || 8000; // Changed default port to 8000
+const PORT = process.env.BACKEND_PORT || 8000;
 
-// Start server
-app.listen(PORT, () => {
-  console.log(
-    `Server running in ${
-      process.env.NODE_ENV || "development"
-    } mode on port ${PORT}`
-  );
-});
+// Start server and connect to database
+const startServer = async () => {
+  try {
+    // Attempt to connect to MongoDB
+    await connectDB();
+    
+    // Start server only after successful database connection
+    app.listen(PORT, () => {
+      console.log(
+        `Server running in ${
+          process.env.NODE_ENV || "development"
+        } mode on port ${PORT}`
+      );
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    // Keep the server running even if database connection fails
+    app.listen(PORT, () => {
+      console.log(
+        `Server running in ${
+          process.env.NODE_ENV || "development"
+        } mode on port ${PORT} (Database connection failed)`
+      );
+    });
+  }
+};
+
+// Start the server
+startServer();
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err) => {
   console.error("UNHANDLED REJECTION:", err);
-  // Don't crash the server on unhandled rejections, but log them
 });
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (err) => {
   console.error("UNCAUGHT EXCEPTION:", err);
-  // Exit process on uncaught exceptions as the application state might be corrupted
-  process.exit(1);
+  // Give the server time to send any pending responses before exiting
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
 });

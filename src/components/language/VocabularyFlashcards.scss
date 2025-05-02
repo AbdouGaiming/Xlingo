@@ -1,3 +1,5 @@
+@import "../../Pages/variables.scss";
+
 // Variables
 $primary-color: #2c3e50;
 $secondary-color: #eef2f7;
@@ -12,71 +14,114 @@ $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 $card-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 $hover-transition: all 0.3s ease;
 
+// Additional variables for flashcards
+$card-flip-transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+$front-card-bg: linear-gradient(145deg, #ffffff, #f5f7fa);
+$back-card-bg: linear-gradient(145deg, $primary-blue, $accent-blue);
+$button-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+$hint-bg: rgba(243, 156, 18, 0.1);
+$hint-border: 3px solid $warning-color;
+$progress-fill-animation: progress-fill 0.5s ease;
+$flashcard-hover-glow: 0 0 20px rgba(74, 144, 226, 0.2);
+
 .vocabulary-flashcards-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
 
   .flashcards-header {
     text-align: center;
     margin-bottom: 2rem;
-    
+
     h2 {
-      color: $primary-color;
-      font-size: 2rem;
+      color: $text-color;
+      font-size: 1.8rem;
+      font-weight: 600;
       margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: $primary-blue;
+        border-radius: 1.5px;
+      }
     }
-    
+
     .session-progress {
-      max-width: 500px;
+      max-width: 600px;
       margin: 0 auto;
-      
+
       .progress-text {
         display: flex;
         justify-content: space-between;
         font-size: 0.9rem;
         color: $light-text;
-        margin-bottom: 0.5rem;
-        
+        margin-bottom: 0.6rem;
+        font-weight: 500;
+
         .session-timer {
-          font-family: monospace;
-          font-weight: 500;
+          background-color: rgba(74, 144, 226, 0.1);
+          padding: 2px 8px;
+          border-radius: 100px;
+          font-family: "Roboto Mono", monospace;
+          color: $primary-blue;
         }
       }
-      
+
       .progress-bar {
         height: 6px;
-        background-color: $secondary-color;
+        background-color: rgba(133, 133, 133, 0.15);
         border-radius: 3px;
         overflow: hidden;
-        
+
         .progress-fill {
           height: 100%;
-          background-color: $accent-color;
+          background: linear-gradient(90deg, $primary-blue, $accent-blue);
           border-radius: 3px;
           transition: width 0.5s ease;
+          animation: $progress-fill-animation;
+
+          @keyframes progress-fill {
+            from {
+              width: 0;
+            }
+          }
         }
       }
     }
   }
-  
+
   .flashcard-content {
-    perspective: 1000px;
-    
+    perspective: 1500px;
+    margin-bottom: 2rem;
+
     .flashcard {
       width: 100%;
-      height: 250px;
+      height: 280px;
       position: relative;
-      transition: transform 0.6s;
+      transition: $card-flip-transition;
       transform-style: preserve-3d;
       cursor: pointer;
       margin-bottom: 2rem;
-      
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+
+      &:hover {
+        box-shadow: $flashcard-hover-glow;
+      }
+
       &.flipped {
         transform: rotateY(180deg);
       }
-      
-      .flashcard-front, .flashcard-back {
+
+      .flashcard-front,
+      .flashcard-back {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -87,233 +132,437 @@ $hover-transition: all 0.3s ease;
         justify-content: center;
         align-items: center;
         padding: 2rem;
-        box-shadow: $card-shadow;
+        overflow: hidden;
       }
-      
+
       .flashcard-front {
-        background-color: white;
+        background: $front-card-bg;
         z-index: 2;
-        
-        .word {
-          font-size: 2.5rem;
-          color: $primary-color;
-          text-align: center;
-          font-weight: 500;
+
+        &::after {
+          content: "";
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          width: 24px;
+          height: 24px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234A90E2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3H5a2 2 0 0 0-2 2v4'%3E%3C/path%3E%3Cpath d='M19 3h4a2 2 0 0 1 2 2v4'%3E%3C/path%3E%3Cpath d='M21 19h-4'%3E%3C/path%3E%3Cpath d='M15 21h-4a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpath d='M3 15v4a2 2 0 0 0 2 2h4'%3E%3C/path%3E%3Cpath d='M21 9v4'%3E%3C/path%3E%3C/svg%3E");
+          opacity: 0.6;
         }
-        
+
+        .word {
+          font-size: 2.6rem;
+          color: $text-color;
+          text-align: center;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          max-width: 90%;
+          word-wrap: break-word;
+        }
+
         .hint-container {
-          margin-top: 1.5rem;
-          background-color: transparentize($warning-color, 0.9);
-          padding: 1rem;
+          margin-top: 1.8rem;
+          background-color: $hint-bg;
+          padding: 1.2rem;
           border-radius: $border-radius;
-          width: 80%;
-          max-width: 350px;
-          border-left: 3px solid $warning-color;
-          
-          .hint-label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: darken($warning-color, 10%);
-            margin-bottom: 0.25rem;
+          width: 85%;
+          max-width: 400px;
+          border-left: $hint-border;
+          animation: fadeIn 0.3s ease;
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
-          
+
+          .hint-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: $warning-color;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+          }
+
           .hint-text {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: $text-color;
             text-align: center;
+            line-height: 1.4;
+            font-style: italic;
           }
         }
       }
-      
+
       .flashcard-back {
-        background-color: $accent-color;
+        background: $back-card-bg;
         color: white;
         transform: rotateY(180deg);
-        
+
         .translation {
-          font-size: 2.25rem;
-          font-weight: 500;
+          font-size: 2.4rem;
+          font-weight: 600;
           margin-bottom: 1.5rem;
           text-align: center;
         }
-        
+
         .example {
-          font-size: 1.1rem;
+          font-size: 1.2rem;
           font-style: italic;
           text-align: center;
-          opacity: 0.9;
-          max-width: 90%;
           line-height: 1.4;
+          max-width: 85%;
+          padding-top: 1rem;
+          position: relative;
+
+          &::before {
+            content: '"';
+            font-size: 2.5rem;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            opacity: 0.4;
+          }
         }
       }
     }
-    
+
     .flashcard-actions {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      
+      gap: 1.2rem;
+
       .hint-button {
         align-self: center;
         background-color: transparent;
-        border: 1px solid $light-text;
+        border: 1.5px solid rgba(133, 133, 133, 0.3);
         color: $light-text;
-        padding: 0.5rem 1rem;
-        border-radius: $border-radius;
+        padding: 0.6rem 1.2rem;
+        border-radius: 100px;
         font-size: 0.9rem;
+        font-weight: 500;
         cursor: pointer;
         transition: $hover-transition;
-        
+
         &:hover:not(:disabled) {
-          background-color: $secondary-color;
-          border-color: $primary-color;
-          color: $primary-color;
+          background-color: rgba(243, 156, 18, 0.1);
+          border-color: $warning-color;
+          color: $warning-color;
         }
-        
+
         &:disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
       }
-      
+
       .knowledge-actions {
         display: flex;
-        gap: 1rem;
-        
+        gap: 1.2rem;
+        margin-top: 0.5rem;
+
         @media (max-width: 576px) {
           flex-direction: column;
+          gap: 0.8rem;
         }
-        
+
         button {
           flex: 1;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 1rem;
-          border-radius: $border-radius;
+          border-radius: 12px;
           border: none;
           font-size: 1rem;
-          font-weight: 500;
+          font-weight: 600;
           cursor: pointer;
-          transition: $hover-transition;
-          
+          transition: all 0.2s ease;
+          box-shadow: $button-shadow;
+
           .button-icon {
             font-size: 1.25rem;
-            margin-right: 0.5rem;
+            margin-right: 0.8rem;
           }
-          
+
           &.review-button {
-            background-color: $secondary-color;
+            background-color: white;
             color: $light-text;
-            
+            border: 1.5px solid rgba(133, 133, 133, 0.2);
+
             &:hover {
-              background-color: darken($secondary-color, 5%);
-              color: $primary-color;
+              background-color: rgba(133, 133, 133, 0.05);
+              color: $text-color;
+              transform: translateY(-2px);
+              box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            }
+
+            &:active {
+              transform: translateY(0);
             }
           }
-          
+
           &.know-button {
-            background-color: $success-color;
+            background: linear-gradient(
+              135deg,
+              $success-color,
+              darken($success-color, 10%)
+            );
             color: white;
-            
+
             &:hover {
-              background-color: darken($success-color, 10%);
+              transform: translateY(-2px);
+              box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+            }
+
+            &:active {
+              transform: translateY(0);
             }
           }
         }
       }
     }
   }
-  
+
   .session-results {
     background-color: white;
     border-radius: $border-radius;
-    padding: 2rem;
+    padding: 2.5rem;
     box-shadow: $box-shadow;
     text-align: center;
-    
+
     h3 {
-      color: $primary-color;
-      font-size: 1.75rem;
-      margin-bottom: 1.5rem;
+      color: $text-color;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
       position: relative;
-      
+      display: inline-block;
+
       &:after {
-        content: '🎉';
+        content: "🎉";
         position: absolute;
         margin-left: 0.5rem;
+        animation: bounce 1s infinite alternate;
+
+        @keyframes bounce {
+          from {
+            transform: translateY(0);
+          }
+          to {
+            transform: translateY(-5px);
+          }
+        }
       }
     }
-    
+
     .results-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-      
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+
       .result-item {
-        background-color: $secondary-color;
-        padding: 1rem;
+        background-color: $background-color;
+        padding: 1.2rem 1rem;
         border-radius: $border-radius;
-        
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+
         .result-label {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           color: $light-text;
           margin-bottom: 0.5rem;
+          font-weight: 500;
         }
-        
+
         .result-value {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: $primary-color;
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: $primary-blue;
+
+          &:after {
+            content: "";
+            display: block;
+            width: 40%;
+            height: 3px;
+            background: linear-gradient(
+              90deg,
+              rgba(74, 144, 226, 0.2),
+              rgba(74, 144, 226, 0)
+            );
+            margin: 0.5rem auto 0;
+            border-radius: 1.5px;
+          }
         }
       }
     }
-    
+
     .result-actions {
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      
+      max-width: 400px;
+      margin: 0 auto;
+
       button {
-        padding: 1rem;
-        border-radius: $border-radius;
+        padding: 1.1rem;
+        border-radius: 12px;
         border: none;
         font-size: 1rem;
-        font-weight: 500;
+        font-weight: 600;
         cursor: pointer;
         transition: $hover-transition;
-        
+        box-shadow: $button-shadow;
+        letter-spacing: 0.3px;
+
         &.review-missed-button {
-          background-color: $warning-color;
+          background: linear-gradient(
+            135deg,
+            $warning-color,
+            darken($warning-color, 10%)
+          );
           color: white;
-          
+
           &:hover {
-            background-color: darken($warning-color, 10%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(243, 156, 18, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
           }
         }
-        
+
         &.restart-button {
-          background-color: $accent-color;
+          background: linear-gradient(135deg, $primary-blue, $accent-blue);
           color: white;
-          
+
           &:hover {
-            background-color: darken($accent-color, 10%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
           }
         }
       }
     }
   }
-  
-  .no-cards-message {
-    background-color: $secondary-color;
-    border-radius: $border-radius;
-    padding: 2rem;
-    text-align: center;
-    
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(133, 133, 133, 0.2);
+      border-top-color: $primary-blue;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    }
+
     p {
       color: $light-text;
       font-size: 1.1rem;
+    }
+  }
+
+  .error-state {
+    text-align: center;
+    padding: 2rem;
+    background-color: rgba(231, 76, 60, 0.05);
+    border-radius: $border-radius;
+    border-left: 4px solid $error-color;
+
+    p {
+      color: $text-color;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    .retry-button {
+      background-color: white;
+      border: 1.5px solid $error-color;
+      color: $error-color;
+      padding: 0.8rem 1.5rem;
+      border-radius: $border-radius;
+      font-weight: 600;
+      cursor: pointer;
+      transition: $hover-transition;
+
+      &:hover {
+        background-color: $error-color;
+        color: white;
+      }
+    }
+  }
+
+  .no-cards-message {
+    background-color: $background-color;
+    border-radius: $border-radius;
+    padding: 3rem 2rem;
+    text-align: center;
+    border: 1px dashed rgba(133, 133, 133, 0.3);
+
+    p {
+      color: $light-text;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: $tablet-width) {
+    .flashcard-content .flashcard {
+      height: 250px;
+    }
+
+    .flashcard-content .flashcard .flashcard-front .word {
+      font-size: 2.2rem;
+    }
+
+    .flashcard-content .flashcard .flashcard-back .translation {
+      font-size: 2rem;
+    }
+
+    .session-results .results-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: $mobile-width) {
+    .flashcard-content .flashcard {
+      height: 220px;
+    }
+
+    .flashcard-content .flashcard .flashcard-front .word {
+      font-size: 1.8rem;
+    }
+
+    .flashcard-content .flashcard .flashcard-back .translation {
+      font-size: 1.7rem;
+    }
+
+    .flashcard-content .flashcard .flashcard-back .example {
+      font-size: 1rem;
     }
   }
 }

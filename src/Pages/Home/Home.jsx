@@ -1,6 +1,12 @@
 import React from "react";
 import "./Home.css";
+<<<<<<< HEAD
 import { FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
+=======
+import Footer from "../../components/shared/Footer";
+import { useNavigate } from "react-router-dom";
+
+>>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
 const languageData = [
   {
     id: "en",
@@ -65,9 +71,21 @@ const languageData = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const handleLanguageClick = (language) => {
     console.log(`Selected language: ${language.name}`);
-    // Could redirect to language selection page or trigger language selection
+
+    // Store the selected language in localStorage for future use
+    localStorage.setItem("selectedLanguage", JSON.stringify(language));
+
+    // Redirect to registration page when Spanish is selected,
+    // or when any language is selected (you can adjust this as needed)
+    if (language.id === "es") {
+      navigate("/register");
+    } else {
+      navigate("/register");
+    }
   };
 
   return (
@@ -121,6 +139,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+<<<<<<< HEAD
       <div className="section4">
         <div className="footer-section">
           <div className="footer-content">
@@ -170,6 +189,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+=======
+      <div className="footer-wrapper">
+        <Footer />
+>>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
       </div>
     </div>
   );

@@ -1,0 +1,235 @@
+.section4 {
+  width: 100%;
+  position: relative;
+  padding: 60px 0;
+  z-index: 0;
+  overflow: hidden;
+
+  box-sizing: border-box;
+  left: 0;
+  right: 0;
+  margin: 0;
+  margin-top: 80px;
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.section4::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://png.pngtree.com/png-vector/20220718/ourmid/pngtree-group-of-people-talking-different-languages-saying-hi-png-image_5923591.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.footer-section {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 34px;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.footer-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-section {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.social-category {
+  text-align: center;
+}
+
+.social-category h2 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-family: "Kalam", cursive;
+}
+
+.footer-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.social-icon {
+  font-size: 60px;
+  color: white;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.social-icon:hover {
+  transform: translateY(-3px) scale(1.1);
+  color: #48a0f7;
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(72, 160, 247, 0.5));
+}
+
+.contact-section {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-section h4 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-family: "Kalam", cursive;
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.contact-item:hover {
+  opacity: 1;
+  background: rgba(72, 160, 247, 0.2);
+  transform: translateY(-2px);
+}
+
+.contact-icon {
+  font-size: 20px;
+}
+
+.footer-main {
+  padding: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-text-content {
+  text-align: center;
+  color: white;
+}
+
+.mission-statement {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.mission-statement h3 {
+  font-family: "Kalam", cursive;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  background: linear-gradient(120deg, #ffffff, #48a0f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mission-statement p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  color: white;
+}
+
+.achievement-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #48a0f7;
+  font-family: "Kalam", cursive;
+}
+
+.stat-label {
+  font-size: 1rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin: 0 0 10px;
+}
+
+.tagline {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-family: "Kalam", cursive;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .mission-statement h3 {
+    font-size: 1.5rem;
+  }
+
+  .mission-statement p {
+    font-size: 1rem;
+  }
+
+  .social-icon {
+    font-size: 22px;
+  }
+
+  .footer-section {
+    padding: 0 20px;
+  }
+
+  .section4 {
+    margin-top: 60px;
+    padding: 40px 0;
+  }
+}

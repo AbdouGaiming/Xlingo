@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './Community.scss';
+import { API_URL } from '../../config/index';
 
 // Import components
 import FriendList from './components/FriendList';
@@ -25,170 +26,78 @@ const Community = () => {
   // If we have a userId in the params, we should be showing the friend profile
   const showingProfile = !!userId;
 
-  // Generate mock friends data
+  // Fetch friends and friend requests
   useEffect(() => {
-    // This would be a server call in a real app
-    const fetchData = () => {
-      setTimeout(() => {
-        try {
-          // Generate mock friends data
-          const mockFriends = [
-            {
-              id: 1,
-              username: "LanguageLover",
-              firstName: "Emma",
-              lastName: "Smith",
-              profileImage: null,
-              friendSince: new Date(Date.now() - 30 * 24 * 3600000).toISOString(), // 30 days ago
-              streak: { count: 15 },
-              languages: [
-                { language: "es", name: "Spanish", flag: "🇪🇸", level: 6 },
-                { language: "fr", name: "French", flag: "🇫🇷", level: 4 }
-              ],
-              learningProgress: [
-                { language: "es", xp: 2500, level: 6 },
-                { language: "fr", xp: 1200, level: 4 }
-              ]
-            },
-            {
-              id: 2,
-              username: "TravelTalker",
-              firstName: "James",
-              lastName: "Williams",
-              profileImage: null,
-              friendSince: new Date(Date.now() - 60 * 24 * 3600000).toISOString(), // 60 days ago
-              streak: { count: 45 },
-              languages: [
-                { language: "de", name: "German", flag: "🇩🇪", level: 8 },
-                { language: "it", name: "Italian", flag: "🇮🇹", level: 3 }
-              ],
-              learningProgress: [
-                { language: "de", xp: 4200, level: 8 },
-                { language: "it", xp: 950, level: 3 }
-              ]
-            },
-            {
-              id: 3,
-              username: "WordWizard",
-              firstName: "Olivia",
-              lastName: "Brown",
-              profileImage: null,
-              friendSince: new Date(Date.now() - 15 * 24 * 3600000).toISOString(), // 15 days ago
-              streak: { count: 12 },
-              languages: [
-                { language: "es", name: "Spanish", flag: "🇪🇸", level: 5 },
-                { language: "fr", name: "French", flag: "🇫🇷", level: 2 }
-              ],
-              learningProgress: [
-                { language: "es", xp: 1870, level: 5 },
-                { language: "fr", xp: 550, level: 2 }
-              ]
-            },
-            {
-              id: 4,
-              username: "LingoMaster",
-              firstName: "Noah",
-              lastName: "Johnson",
-              profileImage: null,
-              friendSince: new Date(Date.now() - 45 * 24 * 3600000).toISOString(), // 45 days ago
-              streak: { count: 32 },
-              languages: [
-                { language: "es", name: "Spanish", flag: "🇪🇸", level: 9 },
-                { language: "de", name: "German", flag: "🇩🇪", level: 7 }
-              ],
-              learningProgress: [
-                { language: "es", xp: 5400, level: 9 },
-                { language: "de", xp: 3200, level: 7 }
-              ]
-            },
-            {
-              id: 5,
-              username: "PolyglotPro",
-              firstName: "Sofia",
-              lastName: "Martinez",
-              profileImage: null,
-              friendSince: new Date(Date.now() - 75 * 24 * 3600000).toISOString(), // 75 days ago
-              streak: { count: 65 },
-              languages: [
-                { language: "fr", name: "French", flag: "🇫🇷", level: 10 },
-                { language: "it", name: "Italian", flag: "🇮🇹", level: 8 },
-                { language: "es", name: "Spanish", flag: "🇪🇸", level: 6 }
-              ],
-              learningProgress: [
-                { language: "fr", xp: 6800, level: 10 },
-                { language: "it", xp: 4300, level: 8 },
-                { language: "es", xp: 2900, level: 6 }
-              ]
-            }
-          ];
-
-          // Generate mock friend requests
-          const mockFriendRequests = {
-            incoming: [
-              {
-                id: 6,
-                username: "VerbVoyager",
-                firstName: "Lucas",
-                lastName: "Anderson",
-                profileImage: null,
-                requestDate: new Date(Date.now() - 2 * 24 * 3600000).toISOString() // 2 days ago
-              },
-              {
-                id: 7,
-                username: "SyntaxSeeker",
-                firstName: "Ava",
-                lastName: "Thompson",
-                profileImage: null,
-                requestDate: new Date(Date.now() - 5 * 24 * 3600000).toISOString() // 5 days ago
-              }
-            ],
-            outgoing: [
-              {
-                id: 8,
-                username: "GrammarGuru",
-                firstName: "Ethan",
-                lastName: "Davis",
-                profileImage: null,
-                requestDate: new Date(Date.now() - 1 * 24 * 3600000).toISOString() // 1 day ago
-              }
-            ]
-          };
-
-          setFriends(mockFriends);
-          setFriendRequests(mockFriendRequests);
-          setLoading(false);
-        } catch (error) {
-          setError("Failed to load community data. Please try again later.");
-          setLoading(false);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('xlingoToken');
+        
+        // Fetch friend requests
+        const requestsResponse = await fetch(`${API_URL}/community/friends/requests`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const requestsData = await requestsResponse.json();
+        
+        if (requestsData.success) {
+          setFriendRequests(requestsData.requests);
         }
-      }, 1000); // Simulate network delay
+
+        // Fetch friends list
+        const friendsResponse = await fetch(`${API_URL}/community/friends`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const friendsData = await friendsResponse.json();
+        
+        if (friendsData.success) {
+          setFriends(friendsData.friends);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to load community data. Please try again later.");
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, []);
 
   // Handle friend actions
-  const handleRemoveFriend = (friendId) => {
-    setFriends(friends.filter(friend => friend.id !== friendId));
+  const handleRemoveFriend = async (friendId) => {
+    try {
+      const token = localStorage.getItem('xlingoToken');
+      const response = await fetch(`${API_URL}/community/friends/${friendId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setFriends(friends.filter(friend => friend.id !== friendId));
+      }
+    } catch (error) {
+      console.error('Failed to remove friend:', error);
+    }
   };
 
-  const handleAcceptRequest = (userId) => {
-    // Move from incoming requests to friends
-    const newFriend = friendRequests.incoming.find(req => req.id === userId);
-    if (newFriend) {
-      const updatedFriend = {
-        ...newFriend,
-        friendSince: new Date().toISOString(),
-        streak: { count: Math.floor(Math.random() * 10) },
-        languages: [
-          { language: "es", name: "Spanish", flag: "🇪🇸", level: Math.floor(Math.random() * 5) + 1 }
-        ],
-        learningProgress: [
-          { language: "es", xp: Math.floor(Math.random() * 1500) + 500, level: Math.floor(Math.random() * 5) + 1 }
-        ]
-      };
-      
-      setFriends([...friends, updatedFriend]);
+  const handleAcceptRequest = async (userId) => {
+    const request = friendRequests.incoming.find(req => req.id === userId);
+    if (request) {
+      setFriends([...friends, {
+        id: request.id,
+        username: request.username,
+        firstName: request.firstName,
+        lastName: request.lastName,
+        profileImage: request.profileImage,
+        friendSince: new Date().toISOString()
+      }]);
       setFriendRequests({
         ...friendRequests,
         incoming: friendRequests.incoming.filter(req => req.id !== userId)
@@ -211,19 +120,16 @@ const Community = () => {
   };
 
   const handleSendFriendRequest = (user) => {
-    // Add to outgoing requests
-    const newRequest = {
-      id: user.id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      profileImage: user.profileImage,
-      requestDate: new Date().toISOString()
-    };
-    
     setFriendRequests({
       ...friendRequests,
-      outgoing: [...friendRequests.outgoing, newRequest]
+      outgoing: [...friendRequests.outgoing, {
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImage: user.profileImage,
+        requestDate: new Date().toISOString()
+      }]
     });
   };
 
@@ -234,7 +140,6 @@ const Community = () => {
   // Notification count for friend requests tab
   const requestCount = friendRequests.incoming.length;
 
-  // If a profile userId is provided, show the profile page
   if (showingProfile) {
     return <FriendProfile />;
   }
@@ -247,141 +152,89 @@ const Community = () => {
       </div>
 
       <div className="community-content">
-        {error && (
+        {loading ? (
+          <div className="loading-spinner">Loading...</div>
+        ) : error ? (
           <div className="error-message">
             <p>{error}</p>
           </div>
-        )}
-
-        <div className="community-tabs">
-          <button 
-            className={`tab-button ${activeTab === 'friends' ? 'active' : ''}`}
-            onClick={() => setActiveTab('friends')}
-          >
-            <span className="tab-icon">👥</span>
-            Friends
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`}
-            onClick={() => setActiveTab('requests')}
-          >
-            <span className="tab-icon">📨</span>
-            Friend Requests
-            {requestCount > 0 && (
-              <span className="notification-badge">{requestCount}</span>
-            )}
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'find' ? 'active' : ''}`}
-            onClick={() => setActiveTab('find')}
-          >
-            <span className="tab-icon">🔍</span>
-            Find Friends
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'leaderboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('leaderboard')}
-          >
-            <span className="tab-icon">🏆</span>
-            Leaderboard
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'activity' ? 'active' : ''}`}
-            onClick={() => setActiveTab('activity')}
-          >
-            <span className="tab-icon">📊</span>
-            Activity
-          </button>
-        </div>
-
-        <div className="tab-content">
-          {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Loading community data...</p>
+        ) : (
+          <>
+            <div className="community-tabs">
+              <button 
+                className={`tab-button ${activeTab === 'friends' ? 'active' : ''}`}
+                onClick={() => setActiveTab('friends')}
+              >
+                <span className="tab-icon">👥</span>
+                Friends
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`}
+                onClick={() => setActiveTab('requests')}
+              >
+                <span className="tab-icon">📨</span>
+                Friend Requests
+                {requestCount > 0 && (
+                  <span className="request-count">{requestCount}</span>
+                )}
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'find' ? 'active' : ''}`}
+                onClick={() => setActiveTab('find')}
+              >
+                <span className="tab-icon">🔍</span>
+                Find Friends
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'leaderboard' ? 'active' : ''}`}
+                onClick={() => setActiveTab('leaderboard')}
+              >
+                <span className="tab-icon">🏆</span>
+                Leaderboard
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'activity' ? 'active' : ''}`}
+                onClick={() => setActiveTab('activity')}
+              >
+                <span className="tab-icon">📊</span>
+                Activity
+              </button>
             </div>
-          ) : (
-            <>
-              {activeTab === 'friends' && (
-                <FriendList 
-                  friends={friends} 
-                  onRemoveFriend={handleRemoveFriend}
-                  onViewProfile={handleViewProfile}
-                />
-              )}
 
-              {activeTab === 'requests' && (
-                <FriendRequests 
-                  requests={friendRequests}
-                  onAccept={handleAcceptRequest}
-                  onReject={handleRejectRequest}
-                  onCancel={handleCancelRequest}
-                />
-              )}
+            {activeTab === 'friends' && (
+              <FriendList 
+                friends={friends} 
+                onRemoveFriend={handleRemoveFriend}
+                onViewProfile={handleViewProfile}
+              />
+            )}
 
-              {activeTab === 'find' && (
-                <FindFriends 
-                  currentFriends={friends}
-                  pendingRequests={[...friendRequests.incoming, ...friendRequests.outgoing]}
-                  onSendRequest={handleSendFriendRequest}
-                />
-              )}
+            {activeTab === 'requests' && (
+              <FriendRequests 
+                requests={friendRequests}
+                onAccept={handleAcceptRequest}
+                onReject={handleRejectRequest}
+                onCancel={handleCancelRequest}
+              />
+            )}
 
-              {activeTab === 'leaderboard' && (
-                <FriendLeaderboard friends={friends} />
-              )}
+            {activeTab === 'find' && (
+              <FindFriends 
+                currentFriends={friends}
+                pendingRequests={[...friendRequests.incoming, ...friendRequests.outgoing]}
+                onSendRequest={handleSendFriendRequest}
+              />
+            )}
 
-              {activeTab === 'activity' && (
-                <FriendActivity friends={friends} />
-              )}
-            </>
-          )}
-        </div>
+            {activeTab === 'leaderboard' && (
+              <FriendLeaderboard friends={friends} />
+            )}
 
-        <div className="community-info">
-          <div className="info-box">
-            <h3>Benefits of Learning Together</h3>
-            <ul>
-              <li>Stay motivated by tracking your friends' progress</li>
-              <li>Compete on the leaderboard for extra motivation</li>
-              <li>Share language learning tips and experiences</li>
-              <li>Find native speakers or language partners</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="community-footer">
-        <div className="footer-content">
-          <div className="footer-logo">
-            <span className="logo-icon">🌐</span>
-            <span>Xlingo</span>
-          </div>
-          
-          <div className="footer-links">
-            <a href="#">Community Guidelines</a>
-            <a href="#">Support</a>
-            <a href="#">FAQ</a>
-          </div>
-          
-          <div className="footer-social">
-            <a href="#" className="social-link">📱</a>
-            <a href="#" className="social-link">💬</a>
-            <a href="#" className="social-link">📧</a>
-          </div>
-        </div>
-        
-        <div className="footer-bottom">
-          <div className="copyright">
-            © 2025 Xlingo. All rights reserved.
-          </div>
-          
-          <div className="footer-policies">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Cookie Policy</a>
-          </div>
-        </div>
+            {activeTab === 'activity' && (
+              <FriendActivity friends={friends} />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

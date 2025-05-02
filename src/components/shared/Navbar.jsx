@@ -99,13 +99,17 @@ const Navbar = ({ user, onLogout }) => {
 
   const isActive = useCallback(
     (path) => {
+      // Exact match for dashboard
       if (path === "/dashboard" && location.pathname === "/dashboard") {
         return true;
       }
+      // StartsWith match for others, ensuring it's not just a partial match of another top-level route
       if (path !== "/dashboard" && location.pathname.startsWith(path)) {
-        return true;
+        // Check if the next character is a '/' or the end of the string
+        const nextChar = location.pathname[path.length];
+        return nextChar === "/" || nextChar === undefined;
       }
-      return location.pathname === path;
+      return false; // No match
     },
     [location.pathname]
   );
