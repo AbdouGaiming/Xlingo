@@ -47,7 +47,12 @@
     "dev:server": "nodemon Backend/server.js",
     "dev:client": "set PORT=4000 && react-scripts start",
     "dev:all": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "server": "node Backend/server.js"
+    "server": "node Backend/server.js",
+    "seed:achievements": "node Backend/Seeders/achievementSeeder.js",
+    "seed:users": "node Backend/Seeders/userSeeder.js",
+    "seed:activities": "node Backend/Seeders/activitySeeder.js",
+    "seed:friendInteractions": "node Backend/Seeders/friendInteractionSeeder.js",
+    "seed:all": "node Backend/Seeders/runAllSeeders.js"
   },
   "eslintConfig": {
     "extends": [
