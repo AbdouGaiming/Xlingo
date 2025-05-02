@@ -77,16 +77,33 @@ export default function Home() {
           <h1>
             <span>X</span>lingo
           </h1>
-          <div className="text">Code the World in Every Language</div>
+          <div className="text">Speak to the World in Every Language</div>
         </div>
         <div className="right">
           <img
             src="https://www.busuu.com/user/pages/home/_01-header/busuu-header-hello.png"
             alt=""
             className="logo"
-            width={740}
-            height={450}
+            style={{ width: "94%", height: "90%" }}
           />
+        </div>
+      </div>{" "}
+      <div className="section3">
+        <div className="left">
+          <img
+            src="https://cdni.iconscout.com/illustration/premium/thumb/online-language-learning-illustration-download-in-svg-png-gif-file-formats--course-application-app-school-pack-education-illustrations-5319561.png"
+            alt=""
+            className="logo"
+            style={{ width: "140%", height: "120%" }}
+          />
+        </div>
+        <div className="right">
+          <h1>Free. Fun. Effective.</h1>
+          <div className="text">
+            Learning with Xlingo is fun, and research shows that it works! With
+            quick, bite-sized lessons, you’ll earn points and unlock new levels
+            while gaining real-world communication skills.
+          </div>
         </div>
       </div>
       <div className="section2">
