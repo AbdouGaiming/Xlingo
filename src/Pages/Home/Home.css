@@ -16,7 +16,11 @@
     rgba(27, 27, 222, 1) 50%,
     rgba(255, 255, 255, 1) 100%
   );
+<<<<<<< HEAD
+
+=======
   padding: 22px 34px 0 34px;
+>>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
   min-height: 100vh;
 }
 .section1 {
@@ -25,6 +29,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  padding: 10px 34px;
 }
 
 .section1 .right {
@@ -163,148 +168,204 @@
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-/* Tooltip/Thought bubble styling */
-.language-tooltip {
-  position: absolute;
-  top: -65px;
-  left: 50%;
-  transform: translateX(-50%) scale(0);
-  background-color: white;
-  color: #0505b5;
-  padding: 8px 15px;
-  border-radius: 18px;
-  font-family: "Paprika", system-ui;
-  font-weight: 500;
-  font-size: 14px;
-  white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  opacity: 0;
-  transition: transform 0.3s, opacity 0.3s;
-  z-index: 10;
-  pointer-events: none;
+.section4 {
+  width: 100%;
+  margin-top: 80px;
+  position: relative;
+  padding: 60px 0;
+  z-index: 0;
+  overflow: hidden;
 }
 
-/* Thought bubble tail */
-.language-tooltip:after {
+.section4::before {
   content: "";
   position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 16px;
-  height: 16px;
-  background-color: white;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://png.pngtree.com/png-vector/20220718/ourmid/pngtree-group-of-people-talking-different-languages-saying-hi-png-image_5923591.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  z-index: -1;
 }
 
-/* Show tooltip on hover */
-.language-container:hover .language-tooltip {
-  transform: translateX(-50%) scale(1);
+.footer-section {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  z-index: 1;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.social-section {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.social-category {
+  text-align: center;
+}
+
+.social-category h4 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-family: "Kalam", cursive;
+}
+
+.footer-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.social-icon {
+  font-size: 24px;
+  color: white;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.social-icon:hover {
+  transform: translateY(-3px) scale(1.1);
+  color: #48a0f7;
   opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(72, 160, 247, 0.5));
 }
 
-/* Animate tooltip appearance */
-@keyframes tooltipPop {
-  0% {
-    transform: translateX(-50%) scale(0.5);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(-50%) scale(1.1);
-  }
-  100% {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-  }
+.contact-section {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.language-container:hover .language-tooltip {
-  animation: tooltipPop 0.3s forwards;
+.contact-section h4 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-family: "Kalam", cursive;
 }
 
-/* Generate different animation delays for each flag */
-.section2 .languages .language-container:nth-child(1) {
-  animation-delay: 0s;
-}
-.section2 .languages .language-container:nth-child(2) {
-  animation-delay: -0.7s;
-}
-.section2 .languages .language-container:nth-child(3) {
-  animation-delay: -1.4s;
-}
-.section2 .languages .language-container:nth-child(4) {
-  animation-delay: -2.1s;
-}
-.section2 .languages .language-container:nth-child(5) {
-  animation-delay: -2.8s;
-}
-.section2 .languages .language-container:nth-child(6) {
-  animation-delay: -3.5s;
-}
-.section2 .languages .language-container:nth-child(7) {
-  animation-delay: -4.2s;
-}
-.section2 .languages .language-container:nth-child(8) {
-  animation-delay: -4.9s;
-}
-.section2 .languages .language-container:nth-child(9) {
-  animation-delay: -5.6s;
-}
-.section2 .languages .language-container:nth-child(10) {
-  animation-delay: -0.5s;
-}
-.section2 .languages .language-container:nth-child(11) {
-  animation-delay: -1.2s;
-}
-.section2 .languages .language-container:nth-child(12) {
-  animation-delay: -1.9s;
+.contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
 }
 
-/* Different animations for even and odd elements */
-.section2 .languages .language-container:nth-child(odd) {
-  animation-name: floatOdd;
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.section2 .languages .language-container:nth-child(even) {
-  animation-name: floatEven;
+.contact-item:hover {
+  opacity: 1;
+  background: rgba(72, 160, 247, 0.2);
+  transform: translateY(-2px);
 }
 
-@keyframes floatOdd {
-  0% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-15px) translateX(5px) rotate(5deg);
-  }
-  50% {
-    transform: translateY(0) translateX(12px) rotate(0deg);
-  }
-  75% {
-    transform: translateY(10px) translateX(5px) rotate(-5deg);
-  }
-  100% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
+.contact-icon {
+  font-size: 20px;
 }
 
-@keyframes floatEven {
-  0% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(15px) translateX(-5px) rotate(-5deg);
-  }
-  50% {
-    transform: translateY(0) translateX(-12px) rotate(0deg);
-  }
-  75% {
-    transform: translateY(-10px) translateX(-5px) rotate(5deg);
-  }
-  100% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
+.footer-main {
+  padding: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.footer-text-content {
+  text-align: center;
+  color: white;
+}
+
+.mission-statement {
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+.mission-statement h3 {
+  font-family: "Kalam", cursive;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  background: linear-gradient(120deg, #ffffff, #48a0f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mission-statement p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.achievement-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #48a0f7;
+  font-family: "Kalam", cursive;
+}
+
+.stat-label {
+  font-size: 1rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin: 0 0 10px;
+}
+
+.tagline {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-family: "Kalam", cursive;
+  margin: 0;
+}
+
+<<<<<<< HEAD
+=======
 /* Footer positioning specific styles */
 .home .footer-wrapper {
   position: relative;
@@ -315,6 +376,7 @@
 }
 
 /* Responsive adjustments */
+>>>>>>> 45e2616ac3cbdff56940f7c6164ce3af42c016d8
 @media (max-width: 768px) {
   .section1 {
     flex-direction: column;
@@ -333,5 +395,52 @@
   .section2 .languages img {
     width: 70px;
     height: 70px;
+  }
+  .footer-main {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-image {
+    width: 200px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .footer-links,
+  .legal-links {
+    justify-content: center;
+  }
+
+  .social-section {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .contact-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-item {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+
+  .mission-statement h3 {
+    font-size: 1.5rem;
+  }
+
+  .achievement-stats {
+    gap: 30px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
   }
 }

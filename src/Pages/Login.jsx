@@ -150,6 +150,11 @@ const Login = ({ onLoginSuccess }) => {
         // Call the onLoginSuccess prop to update user state in App component
         if (onLoginSuccess && typeof onLoginSuccess === "function") {
           onLoginSuccess(data.user);
+          
+          // Navigate to dashboard after successful login
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 1500);
         }
       } else {
         showErrorAlert(
