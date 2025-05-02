@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Registration.scss";
 
-// API URL - you can move this to an environment variable or config file later
-const API_URL = "http://localhost:5000/api";
+// API URL - Configure based on environment, matching Login.jsx
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -96,8 +96,16 @@ const Registration = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setErrors({});
 
     try {
+      console.log("Attempting registration with:", {
+        username: formData.username,
+        email: formData.email,
+        password: "***",
+      });
+      console.log("API URL:", `${API_URL}/auth/register`);
+
       // Make API call to register endpoint
       const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
@@ -109,22 +117,20 @@ const Registration = () => {
           email: formData.email,
           password: formData.password,
         }),
+        credentials: "include", // Include cookies in the request
       });
 
       const data = await response.json();
+      console.log("Registration response:", data);
 
       if (!response.ok) {
-        // Handle validation errors from server
+        // Handle error response
         if (data.errors) {
-          const serverErrors = {};
-          data.errors.forEach((error) => {
-            serverErrors[error.param] = error.msg;
-          });
-          setErrors(serverErrors);
-        } else if (data.message) {
-          setErrors({ general: data.message });
+          setErrors(data.errors);
         } else {
-          setErrors({ general: "Registration failed. Please try again." });
+          setErrors({
+            general: data.message || "Registration failed. Please try again.",
+          });
         }
         return;
       }

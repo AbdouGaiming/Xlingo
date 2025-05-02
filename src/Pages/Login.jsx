@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.scss";
 
-// API URL - using relative URL to avoid CORS issues
-const API_URL = "/api";
+// API URL - Configure based on environment
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,10 +20,25 @@ const Login = () => {
   // Check if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem("xlingoToken");
-    if (token) {
+    const user = localStorage.getItem("xlingoUser");
+
+    if (token && user) {
+      console.log("User already logged in, redirecting to home");
       navigate("/");
     }
   }, [navigate]);
+
+  // Handle navigation after successful login
+  useEffect(() => {
+    if (loginSuccess) {
+      const redirectTimer = setTimeout(() => {
+        console.log("Login successful, redirecting to home page");
+        navigate("/");
+      }, 1000); // Slightly longer delay for better UX
+
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [loginSuccess, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -72,6 +87,7 @@ const Login = () => {
 
     try {
       console.log("Attempting login with:", { ...formData, password: "***" });
+      console.log("API URL:", `${API_URL}/auth/login-frontend`);
 
       // Make API call to login endpoint
       const response = await fetch(`${API_URL}/auth/login-frontend`, {
@@ -88,17 +104,18 @@ const Login = () => {
 
       if (!response.ok) {
         // Handle error response
-        setErrors(
-          data.errors || { general: "Login failed. Please try again." }
-        );
+        if (data.errors) {
+          setErrors(data.errors);
+        } else {
+          setErrors({
+            general: data.message || "Login failed. Please try again.",
+          });
+        }
         return;
       }
 
       // Handle successful login
       if (data.success && data.user) {
-        // Set success state
-        setLoginSuccess(true);
-
         // Save user data to localStorage
         localStorage.setItem("xlingoUser", JSON.stringify(data.user));
 
@@ -110,13 +127,12 @@ const Login = () => {
         // Update last login time
         localStorage.setItem("lastLoginTime", new Date().toISOString());
 
-        // Show success message briefly before redirecting
-        setTimeout(() => {
-          // Redirect to home page after successful login
-          window.location.href = "/"; // Using window.location for a full page refresh
-        }, 500);
+        // Set success state - this will trigger the useEffect for redirection
+        setLoginSuccess(true);
       } else {
-        setErrors({ general: "Something went wrong. Please try again." });
+        setErrors({
+          general: data.message || "Something went wrong. Please try again.",
+        });
       }
     } catch (error) {
       console.error("Login failed:", error);

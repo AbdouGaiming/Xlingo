@@ -1,13 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const morgan = require("morgan");
 const helmet = require("helmet");
+const morgan = require("morgan");
+const path = require("path");
 const rateLimit = require("express-rate-limit");
 const dotenv = require("dotenv");
-
-// Load configurations
 const connectDB = require("./Configurations/database");
-const serverConfig = require("./Configurations/server");
 
 // Import routes
 const authRoutes = require("./Routes/authRoutes");
@@ -15,62 +13,103 @@ const authRoutes = require("./Routes/authRoutes");
 // Load environment variables
 dotenv.config();
 
-// Initialize Express app
+// Initialize express app
 const app = express();
 
 // Connect to MongoDB
 connectDB();
 
-// Middleware
-app.use(helmet()); // Security headers
-app.use(cors(serverConfig.cors)); // CORS configuration
-app.use(express.json()); // Body parser
+// Set up basic security with helmet
+app.use(helmet());
+
+// Configure CORS
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:4000", // Updated default React port to 4000
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// Set up request logging
+app.use(morgan("dev"));
+
+// Parse JSON bodies
+app.use(express.json());
+
+// Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging in development mode
-if (serverConfig.nodeEnv === "development") {
-  app.use(morgan("dev"));
-}
+// Rate limiting middleware
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again after 15 minutes",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-// Rate limiting
-const limiter = rateLimit(serverConfig.rateLimit);
-app.use("/api/", limiter);
+// Apply rate limiter to all API routes
+app.use("/api", apiLimiter);
 
-// Routes
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Server is running" });
+});
+
+// API Routes
 app.use("/api/auth", authRoutes);
 
-// Base route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Xlingo API" });
-});
+// Serve static files from the React app in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../build", "index.html"));
+  });
+}
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ message: "API endpoint not found" });
+  res.status(404).json({ message: "Resource not found" });
 });
 
-// Error handler
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    message: "Internal server error",
-    error: serverConfig.nodeEnv === "development" ? err.message : undefined,
+  console.error(err);
+
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(statusCode).json({
+    success: false,
+    message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 });
 
+// Set port
+const PORT = process.env.BACKEND_PORT || 8000; // Changed default port to 8000
+
 // Start server
-const PORT = serverConfig.port;
 app.listen(PORT, () => {
-  console.log(`Server running in ${serverConfig.nodeEnv} mode on port ${PORT}`);
+  console.log(
+    `Server running in ${
+      process.env.NODE_ENV || "development"
+    } mode on port ${PORT}`
+  );
 });
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Promise Rejection:", err);
-  // Don't crash the server in production, but log the error
-  if (serverConfig.nodeEnv === "development") {
-    process.exit(1);
-  }
+  console.error("UNHANDLED REJECTION:", err);
+  // Don't crash the server on unhandled rejections, but log them
 });
 
-module.exports = app;
+// Handle uncaught exceptions
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+  // Exit process on uncaught exceptions as the application state might be corrupted
+  process.exit(1);
+});
