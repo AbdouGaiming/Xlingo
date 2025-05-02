@@ -56,9 +56,7 @@ function App() {
             {/* Registration route */}
             <Route
               path="/register"
-              element={
-                user ? <Navigate to="/dashboard" /> : <Registration />
-              }
+              element={user ? <Navigate to="/dashboard" /> : <Registration />}
             />
 
             {/* Language Selection */}
@@ -76,13 +74,7 @@ function App() {
             {/* Dashboard route */}
             <Route
               path="/dashboard"
-              element={
-                user ? (
-                  <Dashboard />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={user ? <Dashboard /> : <Navigate to="/login" />}
             />
 
             {/* Practice routes */}
@@ -99,7 +91,7 @@ function App() {
                 )
               }
             />
-            
+
             <Route
               path="/practice/vocabulary"
               element={

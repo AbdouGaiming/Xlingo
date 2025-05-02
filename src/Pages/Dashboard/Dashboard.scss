@@ -1,6 +1,6 @@
 // Variables
 $primary-color: #2c3e50;
-$secondary-color: #eef2f7; 
+$secondary-color: #eef2f7;
 $accent-color: #3498db;
 $success-color: #2ecc71;
 $warning-color: #f39c12;
@@ -15,28 +15,28 @@ $hover-transition: all 0.3s ease;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  
+
   .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
     text-align: left;
-    
+
     .user-welcome {
       h1 {
         margin: 0;
         font-size: 2.2rem;
         font-weight: 700;
       }
-      
+
       p {
         margin: 5px 0 0;
         font-size: 1.1rem;
         color: #555;
       }
     }
-    
+
     .current-language {
       display: flex;
       align-items: center;
@@ -44,20 +44,20 @@ $hover-transition: all 0.3s ease;
       padding: 10px 15px;
       border-radius: 12px;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-      
+
       .language-flag {
         font-size: 2rem;
         margin-right: 10px;
       }
-      
+
       .language-info {
         text-align: left;
-        
+
         h2 {
           margin: 0;
           font-size: 1.3rem;
         }
-        
+
         .level-badge {
           font-size: 0.9rem;
           font-weight: 600;
@@ -71,37 +71,37 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-template-rows: auto;
     gap: 25px;
     margin-bottom: 30px;
-    
+
     section {
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       padding: 20px;
-      
+
       .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 15px;
-        
+
         h3 {
           margin: 0;
           font-size: 1.4rem;
           font-weight: 600;
         }
-        
+
         .see-all-link {
           color: #4b8bf4;
           font-weight: 500;
           font-size: 0.9rem;
-          
+
           &:hover {
             text-decoration: underline;
           }
@@ -109,69 +109,69 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .progress-section {
     grid-column: 1 / -1;
-    
+
     .progress-stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
-      
+
       .progress-card {
         background: #f9f9f9;
         border-radius: 10px;
         padding: 15px;
-        
+
         h4 {
           margin-top: 0;
           margin-bottom: 15px;
           font-size: 1.1rem;
           font-weight: 600;
         }
-        
+
         &.streak {
           display: flex;
           align-items: center;
-          
+
           .streak-icon {
             font-size: 2.2rem;
             margin-right: 15px;
           }
-          
+
           .streak-info {
             h4 {
               margin: 0;
             }
-            
+
             p {
               margin: 5px 0 0;
               color: #555;
             }
           }
         }
-        
+
         .progress-bar-container {
           height: 10px;
           background: #e0e0e0;
           border-radius: 5px;
           overflow: hidden;
           margin-bottom: 8px;
-          
+
           .progress-bar {
             height: 100%;
             background: linear-gradient(45deg, #4b8bf4, #4bb4f4);
             border-radius: 5px;
           }
         }
-        
+
         .progress-details {
           display: flex;
           justify-content: space-between;
           font-size: 0.9rem;
           margin-bottom: 10px;
         }
-        
+
         p {
           margin: 5px 0 0;
           font-size: 0.85rem;
@@ -180,52 +180,52 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .activities-section {
     .activities-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
-      
+
       .activity-card {
         background: #f9f9f9;
         border-radius: 10px;
         padding: 15px;
         display: flex;
         flex-direction: column;
-        
+
         .activity-icon {
           font-size: 1.8rem;
           margin-bottom: 10px;
         }
-        
+
         .activity-info {
           flex: 1;
-          
+
           h4 {
             margin: 0 0 10px;
             font-size: 1rem;
           }
-          
+
           .activity-progress-bar {
             height: 6px;
             background: #e0e0e0;
             border-radius: 3px;
             margin-bottom: 8px;
-            
+
             .progress-fill {
               height: 100%;
               border-radius: 3px;
             }
           }
-          
+
           .activity-details {
             margin: 0;
             font-size: 0.85rem;
             color: #555;
           }
         }
-        
+
         .continue-button {
           margin-top: 15px;
           padding: 8px 0;
@@ -234,74 +234,90 @@ $hover-transition: all 0.3s ease;
           text-align: center;
           font-weight: 500;
           font-size: 0.9rem;
-          
+
           &:hover {
             background: #e5e5e5;
           }
         }
-        
-        &.vocabulary .activity-icon { color: #4b8bf4; }
-        &.vocabulary .progress-fill { background: #4b8bf4; }
-        
-        &.grammar .activity-icon { color: #f4b63c; }
-        &.grammar .progress-fill { background: #f4b63c; }
-        
-        &.listening .activity-icon { color: #6c5ce7; }
-        &.listening .progress-fill { background: #6c5ce7; }
-        
-        &.speaking .activity-icon { color: #eb4d4b; }
-        &.speaking .progress-fill { background: #eb4d4b; }
+
+        &.vocabulary .activity-icon {
+          color: #4b8bf4;
+        }
+        &.vocabulary .progress-fill {
+          background: #4b8bf4;
+        }
+
+        &.grammar .activity-icon {
+          color: #f4b63c;
+        }
+        &.grammar .progress-fill {
+          background: #f4b63c;
+        }
+
+        &.listening .activity-icon {
+          color: #6c5ce7;
+        }
+        &.listening .progress-fill {
+          background: #6c5ce7;
+        }
+
+        &.speaking .activity-icon {
+          color: #eb4d4b;
+        }
+        &.speaking .progress-fill {
+          background: #eb4d4b;
+        }
       }
     }
   }
-  
+
   .challenges-section {
     .challenges-list {
       display: flex;
       flex-direction: column;
       gap: 15px;
-      
+
       .challenge-card {
         display: flex;
         align-items: center;
         background: #f9f9f9;
         border-radius: 10px;
         padding: 12px;
-        
+
         &.completed {
           background: #f0f9f0;
         }
-        
+
         .challenge-icon {
           font-size: 1.8rem;
           margin-right: 15px;
         }
-        
+
         .challenge-info {
           flex: 1;
-          
+
           h4 {
             margin: 0 0 5px;
             font-size: 1rem;
           }
-          
+
           p {
             margin: 0 0 8px;
             font-size: 0.85rem;
             color: #555;
           }
-          
+
           .challenge-reward {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            
+
             .xp-reward {
               font-weight: 600;
               color: #4b8bf4;
               font-size: 0.9rem;
             }
-            
+
             .completed-badge {
               font-size: 0.8rem;
               font-weight: 600;
@@ -315,22 +331,22 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .leaderboard-section {
     .leaderboard-list {
       display: flex;
       flex-direction: column;
-      
+
       .leaderboard-item {
         display: flex;
         align-items: center;
         padding: 12px 0;
         border-bottom: 1px solid #eee;
-        
+
         &:last-child {
           border-bottom: none;
         }
-        
+
         &.current-user {
           background: #f5f9ff;
           margin: 0 -20px;
@@ -338,7 +354,7 @@ $hover-transition: all 0.3s ease;
           border-radius: 5px;
           box-shadow: 0 0 0 1px #e0e8f5;
         }
-        
+
         .rank {
           width: 26px;
           height: 26px;
@@ -351,19 +367,19 @@ $hover-transition: all 0.3s ease;
           font-size: 0.9rem;
           margin-right: 12px;
         }
-        
+
         .user-avatar {
           font-size: 1.3rem;
           margin-right: 10px;
         }
-        
+
         .user-name {
           flex: 1;
           font-weight: 500;
           font-size: 0.95rem;
           text-align: left;
         }
-        
+
         .user-xp {
           font-weight: 600;
           font-size: 0.9rem;
@@ -371,11 +387,11 @@ $hover-transition: all 0.3s ease;
         }
       }
     }
-    
+
     .leaderboard-footer {
       text-align: center;
       margin-top: 15px;
-      
+
       p {
         margin: 0;
         font-size: 0.85rem;
@@ -383,13 +399,13 @@ $hover-transition: all 0.3s ease;
       }
     }
   }
-  
+
   .quick-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     margin-top: 20px;
-    
+
     .action-button {
       display: flex;
       flex-direction: column;
@@ -401,58 +417,58 @@ $hover-transition: all 0.3s ease;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(75, 139, 244, 0.3);
       transition: transform 0.3s, box-shadow 0.3s;
-      
+
       &:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 18px rgba(75, 139, 244, 0.4);
       }
-      
+
       .action-icon {
         font-size: 2rem;
         margin-bottom: 10px;
       }
-      
+
       .action-text {
         font-weight: 600;
         font-size: 1.1rem;
       }
-      
+
       &.lesson-btn {
         background: linear-gradient(45deg, #f4b63c, #f4934b);
         box-shadow: 0 4px 15px rgba(244, 182, 60, 0.3);
-        
+
         &:hover {
           box-shadow: 0 6px 18px rgba(244, 182, 60, 0.4);
         }
       }
-      
+
       &.community-btn {
         background: linear-gradient(45deg, #6c5ce7, #8c7ae6);
         box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
-        
+
         &:hover {
           box-shadow: 0 6px 18px rgba(108, 92, 231, 0.4);
         }
       }
     }
   }
-  
+
   @media (max-width: 768px) {
     .dashboard-header {
       flex-direction: column;
       align-items: flex-start;
-      
+
       .current-language {
         margin-top: 20px;
         width: 100%;
         justify-content: center;
       }
     }
-    
+
     .dashboard-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .progress-stats {
       grid-template-columns: 1fr !important;
     }
