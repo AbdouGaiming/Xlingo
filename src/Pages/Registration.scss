@@ -126,7 +126,6 @@ $border-radius: 18px;
     box-shadow: $box-shadow;
     padding: 25px 25px;
     transform-style: preserve-3d;
-    animation: float 6s ease-in-out infinite;
     position: relative;
     z-index: 2;
     border: 3px solid rgba(255, 255, 255, 0.8);
@@ -151,7 +150,6 @@ $border-radius: 18px;
       box-shadow: 0 4px 20px rgba(5, 5, 181, 0.4);
       z-index: 3;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      animation: pulse 3s infinite;
       border: 3px solid $white;
     }
 
@@ -698,7 +696,6 @@ $border-radius: 18px;
 
     .registration-form-wrapper {
       padding: 25px 15px 20px;
-      animation: none;
 
       &::before {
         width: 80px;
