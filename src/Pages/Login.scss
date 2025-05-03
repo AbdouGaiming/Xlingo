@@ -64,7 +64,10 @@ $border-radius: 18px;
   @include flex-center;
   min-height: 100vh;
   @include gradient-background;
-  padding: 20px;
+  padding: 0;
+  margin: 0;
+  margin-top: 0; // Reset any margins
+  padding-top: 64px; // Add padding equal to navbar height
   perspective: 1500px;
   position: relative;
   overflow: hidden;
@@ -119,24 +122,24 @@ $border-radius: 18px;
   // Form wrapper
   .login-form-wrapper {
     width: 100%;
-    max-width: 430px;
+    max-width: 380px; // Reduced from 430px
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: $border-radius;
     box-shadow: $box-shadow;
-    padding: 40px 30px;
+    padding: 40px 25px 30px; // Reduced bottom padding
     transform-style: preserve-3d;
-    // Animation removed to make the form stable
     position: relative;
     z-index: 2;
     border: 3px solid rgba(255, 255, 255, 0.8);
     overflow: visible;
+    margin-top: 45px; // Added to make space for the X logo
 
     // X logo on top of the form
     &::before {
       content: "X";
       position: absolute;
-      top: -60px;
+      top: -50px; // Adjusted from -60px
       left: 50%;
       transform: translateX(-50%);
       width: 100px;
@@ -151,15 +154,14 @@ $border-radius: 18px;
       box-shadow: 0 4px 20px rgba(5, 5, 181, 0.4);
       z-index: 3;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      // Animation removed
       border: 3px solid $white;
     }
 
     // Header
     .login-header {
       text-align: center;
-      margin-top: 40px;
-      margin-bottom: 30px;
+      margin-top: 15px; // Reduced from 40px
+      margin-bottom: 20px; // Reduced from 30px
 
       h1 {
         color: $primary-blue;
@@ -561,7 +563,8 @@ $border-radius: 18px;
 // Responsive adjustments
 @media (max-width: 480px) {
   .login-container {
-    padding: 20px 15px;
+    padding: 0;
+    padding-top: 60px; // Match mobile navbar height
 
     .x-logo-bg {
       font-size: 300px;

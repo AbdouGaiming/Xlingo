@@ -1,3 +1,5 @@
+@use "../variables" as vars;
+@use "sass:color"; // Import sass:color module
 @import url("https://fonts.googleapis.com/css2?family=Paprika&display=swap");
 
 // Variables
@@ -178,7 +180,7 @@ $desert-theme: #c7a758;
           background: linear-gradient(
             to right,
             $lesson-completed,
-            lighten($lesson-completed, 10%)
+            color.adjust($lesson-completed, $lightness: 10%) // Use color.adjust
           );
           border-radius: 5px;
           transition: width 0.8s ease-in-out;
@@ -411,9 +413,13 @@ $desert-theme: #c7a758;
           background: linear-gradient(
             135deg,
             $lesson-completed,
-            darken($lesson-completed, 15%)
+            color.adjust($lesson-completed, $lightness: -15%)
+              // Use color.adjust
           );
-          border-color: lighten($lesson-completed, 20%);
+          border-color: color.adjust(
+            $lesson-completed,
+            $lightness: 20%
+          ); // Use color.adjust
 
           &::after {
             content: "✓";
@@ -439,9 +445,12 @@ $desert-theme: #c7a758;
           background: linear-gradient(
             135deg,
             $lesson-unlocked,
-            darken($lesson-unlocked, 15%)
+            color.adjust($lesson-unlocked, $lightness: -15%) // Use color.adjust
           );
-          border-color: lighten($lesson-unlocked, 20%);
+          border-color: color.adjust(
+            $lesson-unlocked,
+            $lightness: 20%
+          ); // Use color.adjust
           animation: pulse 2s infinite;
 
           &::after {
@@ -468,9 +477,12 @@ $desert-theme: #c7a758;
           background: linear-gradient(
             135deg,
             $lesson-locked,
-            darken($lesson-locked, 20%)
+            color.adjust($lesson-locked, $lightness: -20%) // Use color.adjust
           );
-          border-color: lighten($lesson-locked, 10%);
+          border-color: color.adjust(
+            $lesson-locked,
+            $lightness: 10%
+          ); // Use color.adjust
           opacity: 0.7;
 
           &::before {
@@ -589,12 +601,18 @@ $desert-theme: #c7a758;
 
               &.unlocked {
                 background-color: rgba(250, 173, 20, 0.15);
-                color: darken($lesson-unlocked, 15%);
+                color: color.adjust(
+                  $lesson-unlocked,
+                  $lightness: -15%
+                ); // Use color.adjust
               }
 
               &.locked {
                 background-color: rgba(189, 189, 189, 0.15);
-                color: darken($lesson-locked, 30%);
+                color: color.adjust(
+                  $lesson-locked,
+                  $lightness: -30%
+                ); // Use color.adjust
               }
             }
 
@@ -653,6 +671,8 @@ $desert-theme: #c7a758;
 
     .popup-content {
       padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
 
       p {
         margin: 0 0 15px;
@@ -692,6 +712,108 @@ $desert-theme: #c7a758;
         }
       }
 
+      // Learning Tips Button
+      .learning-tips-button {
+        width: 100%;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        border-radius: 20px;
+        border: 2px solid $accent-blue;
+        background: rgba($accent-blue, 0.1);
+        color: $accent-blue;
+        font-family: "Paprika", system-ui;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &::before {
+          content: "💡";
+          margin-right: 8px;
+          font-size: 1.1rem;
+        }
+
+        &:hover {
+          background: rgba($accent-blue, 0.2);
+          transform: translateY(-2px);
+        }
+      }
+
+      // Learning Tips Panel
+      .learning-tips-panel {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #e0e0e0;
+
+        h3 {
+          margin: 0 0 10px;
+          color: $primary-blue;
+          font-size: 1rem;
+          display: flex;
+          align-items: center;
+
+          &::before {
+            content: "🤖";
+            margin-right: 8px;
+          }
+        }
+
+        .loading-tips {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+          color: #666;
+          font-style: italic;
+
+          &::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid $accent-blue;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+          }
+        }
+
+        .tips-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+
+          .tip-item {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .tip-title {
+              display: block;
+              font-weight: 600;
+              color: $accent-blue;
+              margin-bottom: 5px;
+              font-size: 0.95rem;
+            }
+
+            .tip-description {
+              color: #555;
+              font-size: 0.85rem;
+              line-height: 1.4;
+              margin: 0;
+            }
+          }
+        }
+      }
+
       button {
         width: 100%;
         padding: 12px;
@@ -717,7 +839,8 @@ $desert-theme: #c7a758;
           background: linear-gradient(
             135deg,
             $lesson-completed,
-            darken($lesson-completed, 15%)
+            color.adjust($lesson-completed, $lightness: -15%)
+              // Use color.adjust
           );
           color: white;
         }
@@ -804,6 +927,15 @@ $desert-theme: #c7a758;
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -898,13 +1030,40 @@ $desert-theme: #c7a758;
         font-size: 1.3rem;
       }
 
-      .popup-content p {
-        font-size: 0.9rem;
-      }
+      .popup-content {
+        p {
+          font-size: 0.9rem;
+        }
 
-      .popup-content button {
-        font-size: 0.9rem;
-        padding: 10px;
+        .learning-tips-button {
+          font-size: 0.8rem;
+          padding: 8px 12px;
+        }
+
+        .learning-tips-panel {
+          padding: 12px;
+
+          h3 {
+            font-size: 0.9rem;
+          }
+
+          .tips-list .tip-item {
+            padding: 8px;
+
+            .tip-title {
+              font-size: 0.85rem;
+            }
+
+            .tip-description {
+              font-size: 0.8rem;
+            }
+          }
+        }
+
+        button {
+          font-size: 0.9rem;
+          padding: 10px;
+        }
       }
     }
   }

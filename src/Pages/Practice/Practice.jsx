@@ -7,19 +7,13 @@ import "./Practice.scss";
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 const Practice = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState("es");
+  // Fixed language to Spanish only
+  const selectedLanguage = "es";
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState("vocabulary"); // vocabulary, pronunciation, etc.
-
-  // Available language options
-  const languages = [
-    { code: "es", name: "Spanish" },
-    { code: "fr", name: "French" },
-    { code: "de", name: "German" },
-  ];
 
   // Get token for authenticated requests
   const getAuthHeader = () => {
@@ -27,7 +21,7 @@ const Practice = () => {
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
-  // Fetch available categories for selected language
+  // Fetch available categories for Spanish
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -41,7 +35,7 @@ const Practice = () => {
 
         if (response.data && response.data.length > 0) {
           setCategories(response.data);
-          // If current category is not available in new language, reset it
+          // If current category is not available, reset it
           if (!response.data.includes(selectedCategory)) {
             setSelectedCategory(response.data[0]);
           }
@@ -60,7 +54,7 @@ const Practice = () => {
     };
 
     fetchCategories();
-  }, [selectedLanguage]);
+  }, []); // No dependency on selectedLanguage as it's now fixed
 
   // Format category names for display
   const formatCategoryName = (category) => {
@@ -114,29 +108,14 @@ const Practice = () => {
     };
 
     fetchUserStats();
-  }, [selectedLanguage]);
+  }, []);
 
   return (
     <div className="practice-page-container">
       <h1>Practice Zone</h1>
-      <p>Choose a language and practice type to enhance your skills!</p>
+      <p>Practice Spanish to enhance your skills!</p>
 
       <div className="practice-controls">
-        <div className="language-selector">
-          <label htmlFor="language-select">Language:</label>
-          <select
-            id="language-select"
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-          >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {isLoading && <div className="loading-spinner small"></div>}
       </div>
 
@@ -150,8 +129,8 @@ const Practice = () => {
           <h2>Vocabulary Flashcards</h2>
 
           <div className="practice-description">
-            Learn and review vocabulary words with interactive flashcards. Test
-            your memory and track your progress.
+            Learn and review Spanish vocabulary words with interactive
+            flashcards. Test your memory and track your progress.
           </div>
 
           {localStorage.getItem("xlingoToken") && (
@@ -204,8 +183,8 @@ const Practice = () => {
           <h2>Pronunciation Practice</h2>
 
           <div className="practice-description">
-            Improve your pronunciation by speaking words and phrases. Get
-            feedback on your accent and clarity.
+            Improve your Spanish pronunciation by speaking words and phrases.
+            Get feedback on your accent and clarity.
           </div>
 
           <div className="practice-actions">
@@ -225,7 +204,7 @@ const Practice = () => {
           <h2>Listening Exercises</h2>
 
           <div className="practice-description">
-            Train your ear to understand spoken language with various listening
+            Train your ear to understand spoken Spanish with various listening
             exercises and audio clips.
           </div>
 
