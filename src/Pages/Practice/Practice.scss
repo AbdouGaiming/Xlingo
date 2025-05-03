@@ -10,35 +10,50 @@ $section-active-border: 2px solid $primary-blue;
 $section-active-glow: 0 0 15px rgba(74, 144, 226, 0.25);
 $category-active-gradient: linear-gradient(135deg, $primary-blue, $accent-blue);
 
+.practice-container {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: "Paprika", system-ui;
+}
+
 .practice-page-container {
   padding: 3rem 2.5rem;
-  background-color: $background-color; // Use theme variable
+  background: #0505b5;
+  background: linear-gradient(
+    120deg,
+    rgba(5, 5, 181, 1) 0%,
+    rgba(27, 27, 222, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
   min-height: calc(100vh - 60px); // Adjust based on header height
 
   h1 {
-    color: $primary-blue; // Use theme variable
+    color: white; // Use theme variable
     text-align: center;
     margin-bottom: 1.5rem;
-    font-size: 2.4rem;
-    font-weight: 600;
+    font-size: 2.6rem;
+    font-weight: 500;
+    font-family: "Paprika", system-ui;
     position: relative;
 
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, $accent-blue, $primary-blue);
-      border-radius: 4px;
-    }
+    // &::after {
+    //   content: "";
+    //   position: absolute;
+    //   bottom: -12px;
+    //   left: 50%;
+    //   transform: translateX(-50%);
+    //   width: 80px;
+    //   height: 4px;
+    //   background: linear-gradient(90deg, $accent-blue, $primary-blue);
+    //   border-radius: 4px;
+    // }
   }
 
   p {
     text-align: center;
-    color: $light-text; // Use theme variable
+    color: rgba(223, 223, 223, 0.441); // Use theme variable
     margin-bottom: 2.5rem;
     font-size: $font-size-medium;
     max-width: 700px;
