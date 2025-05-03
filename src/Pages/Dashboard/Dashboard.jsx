@@ -22,11 +22,11 @@ const Dashboard = () => {
 
   // State for backend data
   const [loading, setLoading] = useState({
-    achievements: true,
-    activities: true,
-    leaderboard: true,
-    streakData: true,
     overall: true,
+    achievements: false,
+    activities: false,
+    leaderboard: false,
+    streakData: false
   });
   const [error, setError] = useState(null);
   const [achievements, setAchievements] = useState([]);

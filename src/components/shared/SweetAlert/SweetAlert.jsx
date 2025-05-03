@@ -381,16 +381,12 @@ export const withLoading = async (promise, options = {}) => {
   }
 };
 
-export default {
+const SweetAlertConfig = {
   showAlert,
   showSuccessAlert,
   showErrorAlert,
-  showInfoAlert,
-  showWarningAlert,
-  showLoadingAlert,
-  showCelebrationAlert,
-  showStreakCelebrationAlert,
-  showContinuationPrompt,
   closeAlert,
-  withLoading,
+  withLoading
 };
+
+export default SweetAlertConfig;
