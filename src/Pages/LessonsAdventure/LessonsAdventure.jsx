@@ -420,72 +420,126 @@ const LessonsAdventure = ({ user }) => {
 
   // Set initial position and focus on specific lesson if provided in URL
   useEffect(() => {
-    if (lessonId) {
-      const targetLesson = lessons.find(
-        (lesson) => lesson.id === parseInt(lessonId)
-      );
-      if (targetLesson && targetLesson.status !== "locked") {
-        setCharacterPosition(targetLesson.position);
-        setActiveNodeId(targetLesson.id);
-        setCurrentUnit(targetLesson.unitIndex);
+    // Initialize a flag to track if the component is still mounted
+    let isMounted = true;
 
-        // Center viewport on the target lesson
-        if (viewportRef.current && adventureWorldRef.current) {
-          viewportRef.current.scrollTo({
-            left: targetLesson.position.x - viewportRef.current.clientWidth / 2,
-            top: targetLesson.position.y - viewportRef.current.clientHeight / 2,
-            behavior: "smooth",
-          });
-        }
-      }
-    } else {
-      // Find the furthest unlocked/completed lesson as default position
-      const availableLessons = lessons.filter(
-        (lesson) => lesson.status !== "locked"
-      );
-      if (availableLessons.length > 0) {
-        const lastAvailableLesson =
-          availableLessons[availableLessons.length - 1];
-        setCharacterPosition(lastAvailableLesson.position);
-        setActiveNodeId(lastAvailableLesson.id);
-        setCurrentUnit(lastAvailableLesson.unitIndex);
+    const initializeViewport = () => {
+      if (!isMounted) return;
+      
+      if (lessonId) {
+        const targetLesson = lessons.find(
+          (lesson) => lesson.id === parseInt(lessonId)
+        );
+        if (targetLesson && targetLesson.status !== "locked") {
+          setCharacterPosition(targetLesson.position);
+          setActiveNodeId(targetLesson.id);
+          setCurrentUnit(targetLesson.unitIndex);
 
-        // Center viewport on the last available lesson
-        if (viewportRef.current && adventureWorldRef.current) {
+          // Center viewport on the target lesson after a delay to ensure DOM is ready
           setTimeout(() => {
-            viewportRef.current.scrollTo({
-              left:
-                lastAvailableLesson.position.x -
-                viewportRef.current.clientWidth / 2,
-              top:
-                lastAvailableLesson.position.y -
-                viewportRef.current.clientHeight / 2,
-              behavior: "smooth",
-            });
-          }, 100);
+            if (!isMounted || !viewportRef.current) return;
+            try {
+              viewportRef.current.scrollTo({
+                left: targetLesson.position.x - viewportRef.current.clientWidth / 2,
+                top: targetLesson.position.y - viewportRef.current.clientHeight / 2,
+                behavior: "smooth",
+              });
+            } catch (error) {
+              console.log("Viewport not ready yet, retrying...");
+              // If the viewport isn't ready, try again after a short delay
+              setTimeout(initializeViewport, 300);
+            }
+          }, 300);
+        }
+      } else {
+        // Find the furthest unlocked/completed lesson as default position
+        const availableLessons = lessons.filter(
+          (lesson) => lesson.status !== "locked"
+        );
+        if (availableLessons.length > 0) {
+          const lastAvailableLesson =
+            availableLessons[availableLessons.length - 1];
+          setCharacterPosition(lastAvailableLesson.position);
+          setActiveNodeId(lastAvailableLesson.id);
+          setCurrentUnit(lastAvailableLesson.unitIndex);
+
+          // Center viewport on the last available lesson after a delay
+          setTimeout(() => {
+            if (!isMounted || !viewportRef.current) return;
+            try {
+              viewportRef.current.scrollTo({
+                left:
+                  lastAvailableLesson.position.x -
+                  viewportRef.current.clientWidth / 2,
+                top:
+                  lastAvailableLesson.position.y -
+                  viewportRef.current.clientHeight / 2,
+                behavior: "smooth",
+              });
+            } catch (error) {
+              console.log("Viewport not ready yet, retrying...");
+              // If the viewport isn't ready, try again after a short delay
+              setTimeout(initializeViewport, 300);
+            }
+          }, 300);
         }
       }
-    }
-  }, [lessonId]);
+    };
+
+    // Start initialization with a delay to ensure DOM is ready
+    const initTimer = setTimeout(initializeViewport, 500);
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      clearTimeout(initTimer);
+    };
+  }, [lessonId, lessons]);
 
   // Effect to center viewport on character
   useEffect(() => {
-    if (viewportRef.current && adventureWorldRef.current && characterPosition) {
-      const viewportWidth = viewportRef.current.offsetWidth;
-      const viewportHeight = viewportRef.current.offsetHeight;
+    let isMounted = true;
+    
+    const centerCharacter = () => {
+      if (!isMounted) return;
+      
+      if (!viewportRef.current) {
+        // If viewport isn't available yet, retry after a delay
+        const retryTimer = setTimeout(centerCharacter, 300);
+        return () => clearTimeout(retryTimer);
+      }
+      
+      try {
+        const viewportWidth = viewportRef.current.offsetWidth;
+        const viewportHeight = viewportRef.current.offsetHeight;
 
-      // Calculate desired scroll position to center the character
-      const targetScrollLeft =
-        characterPosition.x * zoomLevel - viewportWidth / 2;
-      const targetScrollTop =
-        characterPosition.y * zoomLevel - viewportHeight / 2;
+        // Calculate desired scroll position to center the character
+        const targetScrollLeft =
+          characterPosition.x * zoomLevel - viewportWidth / 2;
+        const targetScrollTop =
+          characterPosition.y * zoomLevel - viewportHeight / 2;
 
-      viewportRef.current.scrollTo({
-        left: Math.max(0, targetScrollLeft), // Ensure scroll position isn't negative
-        top: Math.max(0, targetScrollTop),
-        behavior: "smooth", // Use 'smooth' for animated scrolling
-      });
-    }
+        viewportRef.current.scrollTo({
+          left: Math.max(0, targetScrollLeft), // Ensure scroll position isn't negative
+          top: Math.max(0, targetScrollTop),
+          behavior: "smooth", // Use 'smooth' for animated scrolling
+        });
+      } catch (error) {
+        console.log("Error centering character, will retry:", error);
+        // If there was an error, try again shortly
+        const retryTimer = setTimeout(centerCharacter, 300);
+        return () => clearTimeout(retryTimer);
+      }
+    };
+    
+    // Start centering with a delay to ensure DOM is ready
+    const timer = setTimeout(centerCharacter, 500);
+    
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, [characterPosition, zoomLevel]); // Re-run when character moves or zoom changes
 
   // Find current unit info for display

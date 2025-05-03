@@ -182,13 +182,7 @@ const FriendLeaderboard = ({ friends }) => {
             >
               <td className="rank-cell">{index + 1}</td>
               <td className="user-cell">
-                <div className="user-avatar">
-                  {user.profileImage ? (
-                    <img src={user.profileImage} alt={user.username} />
-                  ) : (
-                    user.username.charAt(0).toUpperCase()
-                  )}
-                </div>
+                {/* Removed the avatar div to show username directly */}
                 <span className="user-name">
                   {user.isCurrentUser
                     ? "You"

@@ -13,31 +13,11 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
     }
   };
 
-  // Helper function to create avatar initials - gets first letter or first two for better display
+  // Helper function to get the first letter of username
   const getAvatarInitials = (user) => {
     if (!user) return "?";
 
-    // If we have firstName and lastName, use both initials
-    if (user.firstName && user.lastName) {
-      return `${user.firstName.charAt(0)}${user.lastName.charAt(
-        0
-      )}`.toUpperCase();
-    }
-
-    // If only firstName is available, use its first letter
-    if (user.firstName) {
-      return user.firstName.charAt(0).toUpperCase();
-    }
-
-    // If username contains spaces (like "John Doe"), get first letter of first and last name
-    if (user.username && user.username.includes(" ")) {
-      const names = user.username.split(" ");
-      return `${names[0].charAt(0)}${names[names.length - 1].charAt(
-        0
-      )}`.toUpperCase();
-    }
-
-    // Otherwise just return the first letter of username
+    // Simply return first letter of username
     if (user.username) {
       return user.username.charAt(0).toUpperCase();
     }
@@ -126,15 +106,7 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
           {requests.incoming && requests.incoming.length > 0 ? (
             requests.incoming.map((request) => (
               <div className="request-card" key={request.id}>
-                <div className="request-avatar">
-                  {request.profileImage ? (
-                    <img src={request.profileImage} alt={request.username} />
-                  ) : (
-                    <div className="avatar-initials">
-                      {getAvatarInitials(request)}
-                    </div>
-                  )}
-                </div>
+                {/* Removed the request-avatar div to show username directly */}
                 <div className="request-info">
                   <h3 className="request-name">
                     {request.firstName && request.lastName
@@ -178,15 +150,7 @@ const FriendRequests = ({ requests, onAccept, onReject }) => {
           {requests.outgoing && requests.outgoing.length > 0 ? (
             requests.outgoing.map((request) => (
               <div className="request-card" key={request.id}>
-                <div className="request-avatar">
-                  {request.profileImage ? (
-                    <img src={request.profileImage} alt={request.username} />
-                  ) : (
-                    <div className="avatar-initials">
-                      {getAvatarInitials(request)}
-                    </div>
-                  )}
-                </div>
+                {/* Removed the request-avatar div to show username directly */}
                 <div className="request-info">
                   <h3 className="request-name">
                     {request.firstName && request.lastName
