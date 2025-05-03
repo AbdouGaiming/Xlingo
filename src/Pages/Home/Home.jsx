@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
 import Footer from "../../components/shared/Footer";
@@ -69,6 +69,17 @@ const languageData = [
 
 export default function Home() {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in by looking for token and user data in localStorage
+    const token = localStorage.getItem("xlingoToken");
+    const user = localStorage.getItem("xlingoUser");
+    
+    if (token && user) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const handleLanguageClick = (language) => {
     console.log(`Selected language: ${language.name}`);
@@ -116,25 +127,30 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="section2">
-        <div className="text">I want to learn</div>
-        <div className="languages">
-          {languageData.map((language) => (
-            <div
-              key={language.id}
-              className="language-container"
-              onClick={() => handleLanguageClick(language)}
-            >
-              <div className="language-tooltip">
-                <div className="tooltip-content">
-                  <span>{language.name}</span>
+      
+      {/* Only show language selection when user is not logged in */}
+      {!isLoggedIn && (
+        <div className="section2">
+          <div className="text">I want to learn</div>
+          <div className="languages">
+            {languageData.map((language) => (
+              <div
+                key={language.id}
+                className="language-container"
+                onClick={() => handleLanguageClick(language)}
+              >
+                <div className="language-tooltip">
+                  <div className="tooltip-content">
+                    <span>{language.name}</span>
+                  </div>
                 </div>
+                <img src={language.flag} alt={language.name} className="logo" />
               </div>
-              <img src={language.flag} alt={language.name} className="logo" />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+      
       <div className="footer-wrapper">
         <Footer />
       </div>
