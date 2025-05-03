@@ -13,6 +13,7 @@ class CommunityController {
         $or: [
           { sender: userId, status: 'accepted' },
           { recipient: userId, status: 'accepted' }
+          
         ]
       }).populate('sender recipient', 'username firstName lastName profileImage streak languages learningProgress');
 

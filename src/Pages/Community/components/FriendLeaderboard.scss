@@ -127,7 +127,7 @@ $hover-transition: all 0.3s ease;
   .leaderboard-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0;
+    border-spacing: 0 12px; /* Increased spacing between rows */
 
     thead {
       tr {
@@ -155,17 +155,23 @@ $hover-transition: all 0.3s ease;
     tbody {
       tr {
         transition: $hover-transition;
-
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Add subtle shadow to each row */
+        border-radius: $border-radius;
+        
         &:hover {
           background-color: rgba(5, 5, 181, 0.02);
+          transform: translateY(-2px); /* Slight lift effect on hover */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
         }
 
         &.current-user {
           background-color: rgba(74, 144, 226, 0.05);
           font-weight: 500;
+          box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
 
           &:hover {
             background-color: rgba(74, 144, 226, 0.08);
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.25);
           }
 
           td {
@@ -174,17 +180,22 @@ $hover-transition: all 0.3s ease;
         }
 
         td {
-          padding: 15px;
-          border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+          padding: 18px 15px; /* Increased vertical padding */
+          border: none; /* Remove borders between cells */
           font-size: 0.95rem;
           color: $text-color;
+          background-color: white; /* Ensure background is opaque */
 
           &:first-child {
             padding-left: 20px;
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
           }
 
           &:last-child {
             padding-right: 20px;
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
           }
 
           &.rank-cell {
@@ -249,8 +260,8 @@ $hover-transition: all 0.3s ease;
             .level-badge {
               background: linear-gradient(
                 120deg,
-                $primary-blue,
-                $secondary-blue
+                #27ae60,  /* Change to green gradient */
+                #2ecc71
               );
               color: white;
               padding: 5px 12px;
