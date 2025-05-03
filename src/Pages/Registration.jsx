@@ -2,11 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Registration.scss";
 import axios from "axios";
-import {
-  showSuccessAlert,
-  showErrorAlert,
-  withLoading,
-} from "../components/shared/SweetAlert/SweetAlert";
 
 // API URL - Configure based on environment
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
@@ -161,19 +156,13 @@ const Registration = () => {
     }
 
     try {
-      const response = await withLoading(
-        axios.post(`${API_URL}/auth/register`, {
-          username: formData.username,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-        }),
-        {
-          loadingTitle: "Creating Account",
-          loadingText: "Setting up your new Xlingo account...",
-        }
-      );
+      const response = await axios.post(`${API_URL}/auth/register`, {
+        username: formData.username,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
 
       // Try to automatically log in the user
       const autoLoginSuccess = await loginAfterRegistration(
@@ -184,25 +173,13 @@ const Registration = () => {
       setIsLoading(false);
 
       if (autoLoginSuccess) {
-        // Show success message
-        showSuccessAlert(
-          "Account Created!",
-          "Welcome to Xlingo! You've been automatically logged in."
-        );
-
         // Set success state and redirect to dashboard
         setRegistrationSuccess(true);
         setTimeout(() => {
           navigate("/dashboard");
         }, 1500);
       } else {
-        // If auto-login fails, show success but redirect to login
-        showSuccessAlert(
-          "Registration Successful!",
-          "Your account has been created. Please log in."
-        );
-
-        // Set success state and redirect to login after a delay
+        // If auto-login fails, redirect to login
         setRegistrationSuccess(true);
         setTimeout(() => {
           navigate("/login");
@@ -226,26 +203,13 @@ const Registration = () => {
             fieldErrors[err.param] = err.msg;
           });
           setErrors({ ...fieldErrors });
-          showErrorAlert(
-            "Registration Failed",
-            "Please check the form for errors."
-          );
         } else if (error.response.data.message) {
           setErrors({ general: error.response.data.message });
-          showErrorAlert("Registration Failed", error.response.data.message);
         } else {
           setErrors({ general: "Registration failed. Please try again." });
-          showErrorAlert(
-            "Registration Failed",
-            "Registration failed. Please try again."
-          );
         }
       } else {
         setErrors({ general: "Registration failed. Please try again later." });
-        showErrorAlert(
-          "Registration Failed",
-          "Registration failed. Please try again later."
-        );
       }
     }
   };

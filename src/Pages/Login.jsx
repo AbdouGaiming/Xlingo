@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.scss";
-import {
-  showSuccessAlert,
-  showErrorAlert,
-  withLoading,
-} from "../components/shared/SweetAlert/SweetAlert";
 
 // API URL - Configure based on environment
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
@@ -92,38 +87,27 @@ const Login = ({ onLoginSuccess }) => {
       console.log("Attempting login with:", { ...formData, password: "***" });
       console.log("API URL:", `${API_URL}/auth/login-frontend`);
 
-      // Use the withLoading utility to show a loading alert during the API call
-      const response = await withLoading(
-        fetch(`${API_URL}/auth/login-frontend`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-          credentials: "include", // Include cookies in the request
-        }),
-        {
-          loadingTitle: "Logging in",
-          loadingText: "Please wait while we verify your credentials...",
-        }
-      );
+      // Make API call
+      const response = await fetch(`${API_URL}/auth/login-frontend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include", // Include cookies in the request
+      });
 
       const data = await response.json();
       console.log("Login response:", data);
 
       if (!response.ok) {
-        // Handle error response with SweetAlert
+        // Handle error response
         if (data.errors) {
           setErrors(data.errors);
-          showErrorAlert("Login Failed", Object.values(data.errors)[0]);
         } else {
           setErrors({
             general: data.message || "Login failed. Please try again.",
           });
-          showErrorAlert(
-            "Login Failed",
-            data.message || "Login failed. Please try again."
-          );
         }
         return;
       }
@@ -141,9 +125,6 @@ const Login = ({ onLoginSuccess }) => {
         // Update last login time
         localStorage.setItem("lastLoginTime", new Date().toISOString());
 
-        // Show success message with SweetAlert
-        showSuccessAlert("Login Successful", "Welcome back to Xlingo!");
-
         // Set success state - this will trigger the useEffect for redirection
         setLoginSuccess(true);
 
@@ -157,20 +138,12 @@ const Login = ({ onLoginSuccess }) => {
           }, 1500);
         }
       } else {
-        showErrorAlert(
-          "Login Failed",
-          data.message || "Something went wrong. Please try again."
-        );
         setErrors({
           general: data.message || "Something went wrong. Please try again.",
         });
       }
     } catch (error) {
       console.error("Login failed:", error);
-      showErrorAlert(
-        "Network Error",
-        "Please check your connection and try again."
-      );
       setErrors({
         general: "Network error. Please check your connection and try again.",
       });

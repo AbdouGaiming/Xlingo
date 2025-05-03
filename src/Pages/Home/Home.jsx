@@ -75,7 +75,7 @@ export default function Home() {
     // Check if user is logged in by looking for token and user data in localStorage
     const token = localStorage.getItem("xlingoToken");
     const user = localStorage.getItem("xlingoUser");
-    
+
     if (token && user) {
       setIsLoggedIn(true);
     }
@@ -127,7 +127,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       {/* Only show language selection when user is not logged in */}
       {!isLoggedIn && (
         <div className="section2">
@@ -150,7 +150,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      
+
       <div className="footer-wrapper">
         <Footer />
       </div>
