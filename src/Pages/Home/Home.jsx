@@ -1,6 +1,5 @@
 import React from "react";
 import "./Home.css";
-import { FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
 import Footer from "../../components/shared/Footer";
 import { useNavigate } from "react-router-dom";
 
