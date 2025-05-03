@@ -1,0 +1,423 @@
+@import "../../variables.scss";
+@import url("https://fonts.googleapis.com/css2?family=Paprika&display=swap");
+
+// Variables to match Dashboard style
+$primary-blue: #0505b5;
+$secondary-blue: #1b1bde;
+$accent-blue: #4a90e2;
+$text-color: #333;
+$light-text: #666;
+$border-radius: 12px;
+$box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+$hover-transition: all 0.3s ease;
+
+.friend-leaderboard {
+  width: 100%;
+  font-family: "Paprika", system-ui;
+  background: white;
+  border-radius: $border-radius;
+  padding: 25px;
+  box-shadow: $box-shadow;
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  margin-bottom: 30px;
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(5, 5, 181, 0.1);
+      border-top: 5px solid $primary-blue;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: $light-text;
+      font-size: 1rem;
+    }
+  }
+
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+
+    .leaderboard-title {
+      font-size: 1.4rem;
+      color: $primary-blue;
+      margin: 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+
+      &:before {
+        content: "🏆";
+        margin-right: 10px;
+        font-size: 1.5rem;
+      }
+    }
+
+    .leaderboard-filters {
+      display: flex;
+      gap: 15px;
+
+      .filter-select {
+        padding: 10px 15px;
+        border: 2px solid rgba(74, 144, 226, 0.3);
+        border-radius: $border-radius;
+        font-family: "Paprika", system-ui;
+        font-size: 0.95rem;
+        color: $text-color;
+        background-color: white;
+        cursor: pointer;
+        transition: $hover-transition;
+
+        &:focus {
+          outline: none;
+          border-color: $accent-blue;
+          box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        option {
+          padding: 8px;
+          font-family: "Paprika", system-ui;
+        }
+      }
+    }
+  }
+
+  .empty-leaderboard {
+    text-align: center;
+    padding: 50px 20px;
+    background: rgba(5, 5, 181, 0.02);
+    border-radius: $border-radius;
+    border: 1px dashed rgba(5, 5, 181, 0.1);
+
+    .empty-icon {
+      font-size: 3rem;
+      color: $accent-blue;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+
+    .empty-message {
+      font-size: 1.2rem;
+      color: $primary-blue;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    p {
+      color: $light-text;
+      font-size: 1rem;
+    }
+  }
+
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    thead {
+      tr {
+        th {
+          padding: 15px;
+          text-align: left;
+          font-size: 0.95rem;
+          color: $primary-blue;
+          font-weight: 600;
+          border-bottom: 2px solid rgba(74, 144, 226, 0.2);
+
+          &:first-child {
+            padding-left: 20px;
+            border-top-left-radius: $border-radius;
+          }
+
+          &:last-child {
+            padding-right: 20px;
+            border-top-right-radius: $border-radius;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        transition: $hover-transition;
+
+        &:hover {
+          background-color: rgba(5, 5, 181, 0.02);
+        }
+
+        &.current-user {
+          background-color: rgba(74, 144, 226, 0.05);
+          font-weight: 500;
+
+          &:hover {
+            background-color: rgba(74, 144, 226, 0.08);
+          }
+
+          td {
+            border-bottom: 1px solid $accent-blue;
+          }
+        }
+
+        td {
+          padding: 15px;
+          border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+          font-size: 0.95rem;
+          color: $text-color;
+
+          &:first-child {
+            padding-left: 20px;
+          }
+
+          &:last-child {
+            padding-right: 20px;
+          }
+
+          &.rank-cell {
+            font-weight: 600;
+            color: $primary-blue;
+            text-align: center;
+            width: 50px;
+            font-size: 1rem;
+          }
+
+          &.user-cell {
+            display: flex;
+            align-items: center;
+
+            .user-avatar {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              background: linear-gradient(
+                120deg,
+                rgba(5, 5, 181, 0.1),
+                rgba(27, 27, 222, 0.1)
+              );
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.2rem;
+              color: $primary-blue;
+              margin-right: 15px;
+              flex-shrink: 0;
+              border: 2px solid white;
+              box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+              }
+            }
+
+            .user-name {
+              font-weight: 500;
+            }
+          }
+
+          &.xp-cell {
+            font-weight: 600;
+            color: $primary-blue;
+          }
+
+          &.streak-cell {
+            display: flex;
+            align-items: center;
+
+            .streak-icon {
+              margin-right: 8px;
+            }
+          }
+
+          &.level-cell {
+            .level-badge {
+              background: linear-gradient(
+                120deg,
+                $primary-blue,
+                $secondary-blue
+              );
+              color: white;
+              padding: 5px 12px;
+              border-radius: 20px;
+              font-size: 0.85rem;
+              font-weight: 500;
+              display: inline-block;
+            }
+          }
+        }
+
+        &:last-child {
+          td {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive styles
+  @media (max-width: 992px) {
+    .leaderboard-table {
+      thead {
+        tr {
+          th {
+            &:nth-child(4) {
+              // Hide streak column on smaller screens
+              display: none;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            &:nth-child(4) {
+              // Hide streak column on smaller screens
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px;
+
+    .leaderboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+
+      .leaderboard-filters {
+        width: 100%;
+        flex-direction: column;
+
+        .filter-select {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 650px) {
+    .leaderboard-table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+
+      thead {
+        tr {
+          th {
+            padding: 12px;
+
+            &:first-child {
+              padding-left: 15px;
+            }
+
+            &:last-child {
+              padding-right: 15px;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            padding: 12px;
+
+            &:first-child {
+              padding-left: 15px;
+            }
+
+            &:last-child {
+              padding-right: 15px;
+            }
+
+            &.user-cell {
+              .user-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+                margin-right: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    padding: 15px;
+
+    .leaderboard-header {
+      .leaderboard-title {
+        font-size: 1.2rem;
+      }
+    }
+
+    .leaderboard-table {
+      thead {
+        tr {
+          th {
+            font-size: 0.85rem;
+            padding: 10px;
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            font-size: 0.85rem;
+            padding: 10px;
+
+            &.user-cell {
+              .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+                margin-right: 8px;
+              }
+            }
+
+            &.level-cell {
+              .level-badge {
+                padding: 3px 8px;
+                font-size: 0.75rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
