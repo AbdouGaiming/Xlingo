@@ -12,6 +12,7 @@ export const showAlert = (options) => {
       cancelButton: "xlingo-swal-cancel-button",
     },
     buttonsStyling: false,
+    allowOutsideClick: true, // Allow clicking outside to close
     ...options,
   });
 };
@@ -25,6 +26,8 @@ export const showSuccessAlert = (titleOrOptions, text) => {
       icon: "success",
       timer: 3000,
       timerProgressBar: true,
+      showConfirmButton: true,
+      confirmButtonText: "OK",
       ...titleOrOptions,
     });
   } else {
@@ -34,6 +37,8 @@ export const showSuccessAlert = (titleOrOptions, text) => {
       icon: "success",
       timer: 3000,
       timerProgressBar: true,
+      showConfirmButton: true,
+      confirmButtonText: "OK",
     });
   }
 };
@@ -45,6 +50,8 @@ export const showErrorAlert = (titleOrOptions, text) => {
   if (typeof titleOrOptions === "object") {
     return showAlert({
       icon: "error",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
       ...titleOrOptions,
     });
   } else {
@@ -52,6 +59,8 @@ export const showErrorAlert = (titleOrOptions, text) => {
       title: titleOrOptions,
       text: text,
       icon: "error",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
     });
   }
 };
@@ -63,6 +72,8 @@ export const showInfoAlert = (titleOrOptions, text) => {
   if (typeof titleOrOptions === "object") {
     return showAlert({
       icon: "info",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
       ...titleOrOptions,
     });
   } else {
@@ -70,6 +81,8 @@ export const showInfoAlert = (titleOrOptions, text) => {
       title: titleOrOptions,
       text: text,
       icon: "info",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
     });
   }
 };
@@ -81,6 +94,8 @@ export const showWarningAlert = (titleOrOptions, text) => {
   if (typeof titleOrOptions === "object") {
     return showAlert({
       icon: "warning",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
       ...titleOrOptions,
     });
   } else {
@@ -88,6 +103,8 @@ export const showWarningAlert = (titleOrOptions, text) => {
       title: titleOrOptions,
       text: text,
       icon: "warning",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
     });
   }
 };
@@ -167,7 +184,9 @@ export const showCelebrationAlert = (options) => {
     showConfirmButton:
       options.showConfirmButton !== undefined
         ? options.showConfirmButton
-        : false,
+        : true,
+    confirmButtonText: "OK",
+    allowOutsideClick: true,
     customClass: {
       ...options.customClass,
       container: "xlingo-swal-container correct-alert",
@@ -176,7 +195,7 @@ export const showCelebrationAlert = (options) => {
       // Play celebration sound if provided
       if (options.sound) {
         const audio = new Audio(options.sound);
-        audio.play();
+        audio.play().catch((e) => console.warn("Audio play error:", e));
       }
 
       // Add animation to the toast
@@ -280,7 +299,9 @@ export const showStreakCelebrationAlert = (options) => {
     timer: config.timer,
     timerProgressBar: true,
     showConfirmButton:
-      config.showConfirmButton !== undefined ? config.showConfirmButton : false,
+      config.showConfirmButton !== undefined ? config.showConfirmButton : true,
+    confirmButtonText: "OK",
+    allowOutsideClick: true,
     customClass: {
       ...config.customClass,
       container: "xlingo-swal-container streak-alert",
@@ -290,7 +311,7 @@ export const showStreakCelebrationAlert = (options) => {
       // Play celebration sound
       if (config.sound) {
         const audio = new Audio(config.sound);
-        audio.play();
+        audio.play().catch((e) => console.warn("Audio play error:", e));
       }
 
       // Add animation
@@ -322,6 +343,7 @@ export const showContinuationPrompt = (options = {}) => {
     showCancelButton: true,
     confirmButtonText: config.confirmButtonText,
     cancelButtonText: config.cancelButtonText,
+    allowOutsideClick: true,
     customClass: {
       container: "xlingo-swal-container continuation-alert",
       popup: "xlingo-swal-popup continuation-popup",
