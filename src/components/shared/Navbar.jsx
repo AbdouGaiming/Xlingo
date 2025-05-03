@@ -196,7 +196,7 @@ const Navbar = ({ user, onLogout }) => {
                 >
                   <span className="nav-icon">🎯</span>
                   Practice
-                </Link>
+                </Link> 
               </li>
               <li
                 className={`nav-item ${isActive("/community") ? "active" : ""}`}
@@ -213,7 +213,7 @@ const Navbar = ({ user, onLogout }) => {
           ) : (
             <ul className="navbar-nav">
               {/* Empty navbar-nav to maintain layout when not logged in */}
-            </ul>
+            </ul> 
           )}
 
           <div className="navbar-actions">
