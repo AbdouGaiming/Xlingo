@@ -66,7 +66,7 @@
             setTimeout(() => {
                 const isValidSession = verifyTokenExpiration();
                 const currentPath = window.location.pathname;
-                const publicPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
+                const publicPaths = ['/', '/home', '/login', '/register', '/forgot-password', '/reset-password'];
                 const isPublicPath = publicPaths.some(path => currentPath.startsWith(path));
 
                 if (!isValidSession && !isPublicPath) {

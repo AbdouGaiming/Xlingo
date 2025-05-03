@@ -43,6 +43,7 @@ const Registration = () => {
     }
   }, [navigate]);
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -59,6 +60,7 @@ const Registration = () => {
     }
   };
 
+  // Form validation
   const validateForm = () => {
     let tempErrors = {};
     let isValid = true;
@@ -121,6 +123,30 @@ const Registration = () => {
     return isValid;
   };
 
+  // Direct login after registration
+  const loginAfterRegistration = async (email, password) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/login-frontend`, {
+        username: email, // Most login systems accept either username or email
+        password: password,
+        rememberMe: true,
+      });
+
+      if (response.data && response.data.success && response.data.user) {
+        // Save user data and token to localStorage
+        localStorage.setItem("xlingoUser", JSON.stringify(response.data.user));
+        localStorage.setItem("xlingoToken", response.data.user.token);
+        localStorage.setItem("lastLoginTime", new Date().toISOString());
+
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Auto-login failed:", error);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -137,7 +163,7 @@ const Registration = () => {
     try {
       const response = await withLoading(
         axios.post(`${API_URL}/auth/register`, {
-          username: formData.username, // Add username field for backend
+          username: formData.username,
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
@@ -149,18 +175,39 @@ const Registration = () => {
         }
       );
 
-      setIsLoading(false);
-      // Show success message
-      showSuccessAlert(
-        "Registration Successful!",
-        "Your account has been created. Please log in."
+      // Try to automatically log in the user
+      const autoLoginSuccess = await loginAfterRegistration(
+        formData.email,
+        formData.password
       );
 
-      // Set success state and redirect after a delay
-      setRegistrationSuccess(true);
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      setIsLoading(false);
+
+      if (autoLoginSuccess) {
+        // Show success message
+        showSuccessAlert(
+          "Account Created!",
+          "Welcome to Xlingo! You've been automatically logged in."
+        );
+
+        // Set success state and redirect to dashboard
+        setRegistrationSuccess(true);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+      } else {
+        // If auto-login fails, show success but redirect to login
+        showSuccessAlert(
+          "Registration Successful!",
+          "Your account has been created. Please log in."
+        );
+
+        // Set success state and redirect to login after a delay
+        setRegistrationSuccess(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      }
     } catch (error) {
       setIsLoading(false);
       console.error(
@@ -231,7 +278,7 @@ const Registration = () => {
 
         {registrationSuccess ? (
           <div className="success-message">
-            Registration successful! Redirecting to login page...
+            Registration successful! Logging you in...
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="registration-form">
