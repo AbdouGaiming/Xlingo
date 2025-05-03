@@ -12,6 +12,7 @@ import LanguageSelector from "./components/language/LanguageSelector";
 import VocabularyFlashcards from "./components/language/VocabularyFlashcards";
 import PronunciationPractice from "./Pages/Practice/PronunciationPractice";
 import Practice from "./Pages/Practice/Practice";
+import LessonPractice from "./Pages/LessonsAdventure/LessonPractice"; // Import LessonPractice
 import {
   BrowserRouter,
   Routes,
@@ -211,6 +212,16 @@ function AppContent({ user, setUser, handleLogout, handleSelectLanguage }) {
             element={
               <ProtectedRoute>
                 <LessonsAdventure />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Specific Lesson route - Navigates to LessonPractice */}
+          <Route
+            path="/lesson-practice/:lessonId"
+            element={
+              <ProtectedRoute>
+                <LessonPractice />
               </ProtectedRoute>
             }
           />

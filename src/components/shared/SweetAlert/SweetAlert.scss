@@ -1,66 +1,289 @@
 // SweetAlert custom styling for Xlingo
+
+// Container
 .xlingo-swal-container {
-  z-index: 9999;
+  z-index: 10000;
+
+  &.correct-alert {
+    .swal2-popup {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      color: white;
+    }
+  }
+
+  &.error-alert {
+    .swal2-popup {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      color: white;
+    }
+  }
+
+  &.streak-alert {
+    .swal2-popup {
+      background: linear-gradient(135deg, #ffd700, #ffa500);
+      color: #333;
+    }
+  }
+
+  &.continuation-alert {
+    .swal2-popup {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+    }
+  }
 }
 
+// Popup
 .xlingo-swal-popup {
   font-family: "Nunito", sans-serif;
   border-radius: 15px;
-  padding: 1.5rem;
-  background: #fff;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border: 2px solid #f0f0f0;
+  padding: 1.5em;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+  &.streak-popup {
+    padding: 2em;
+  }
+
+  &.continuation-popup {
+    max-width: 400px;
+  }
 }
 
+// Title
 .xlingo-swal-title {
-  color: #333;
   font-weight: 700;
   font-size: 1.5rem;
-  margin-top: 0.5rem;
+  margin-bottom: 0.5em;
 }
 
+// Buttons
 .xlingo-swal-confirm-button {
-  background: linear-gradient(135deg, #4a90e2, #2e5eaa);
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 10px 24px;
-  font-size: 1rem;
+  background: #4caf50;
+  border-radius: 8px;
   font-weight: 600;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 24px;
   transition: all 0.3s ease;
-  margin: 8px;
+  border: none;
+  color: white;
 
   &:hover {
-    background: linear-gradient(135deg, #5aa0f2, #3a6eba);
+    background: #45a049;
     transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   }
 
   &:focus {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
   }
 }
 
 .xlingo-swal-cancel-button {
-  background: #f7f7f7;
-  color: #666;
-  border: 1px solid #e0e0e0;
-  border-radius: 30px;
-  padding: 10px 24px;
-  font-size: 1rem;
+  background: #f44336;
+  border-radius: 8px;
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 10px 24px;
   transition: all 0.3s ease;
-  margin: 8px;
+  border: none;
+  color: white;
 
   &:hover {
-    background: #f0f0f0;
+    background: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   }
 
   &:focus {
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Confetti animations
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10001;
+}
+
+.confetti {
+  position: absolute;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: fall linear forwards;
+
+  &.square {
+    border-radius: 0;
+    width: 12px;
+    height: 12px;
+  }
+
+  &.triangle {
+    width: 0;
+    height: 0;
+    background-color: transparent !important;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 15px solid;
+    border-bottom-color: inherit;
+  }
+
+  &.star {
+    clip-path: polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+    width: 16px;
+    height: 16px;
+  }
+
+  &.glitter {
+    animation: fall linear forwards, glitter 0.5s ease-in-out infinite alternate;
+  }
+}
+
+// Streak celebration styling
+.streak-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em 0;
+}
+
+.streak-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  animation: bounce 1s infinite alternate;
+
+  &.gold-streak {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+    animation: bounce 1s infinite alternate, glow 1.5s infinite alternate;
+  }
+}
+
+.streak-count {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 10px 0;
+  color: #333;
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.streak-message {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+// Animations
+@keyframes fall {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseSuccess {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+@keyframes pulseError {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 1);
+  }
+}
+
+@keyframes glitter {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes floatAlert {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
@@ -86,4 +309,157 @@
 // Loading animation customization
 .swal2-loader {
   border-color: #4a90e2 transparent #4a90e2 transparent;
+}
+
+// Enhanced styling for correct/incorrect answers
+.correct-alert {
+  .xlingo-swal-popup {
+    border-color: #28a745 !important;
+    background: linear-gradient(to bottom, #ffffff, #f0fff4) !important;
+  }
+
+  .xlingo-swal-title {
+    color: #28a745 !important;
+    font-size: 1.7rem !important;
+  }
+}
+
+.incorrect-alert {
+  .xlingo-swal-popup {
+    border-color: #dc3545 !important;
+    background: linear-gradient(to bottom, #ffffff, #fff5f5) !important;
+  }
+
+  .xlingo-swal-title {
+    color: #dc3545 !important;
+    font-size: 1.7rem !important;
+  }
+}
+
+// Animation for success alerts
+@keyframes pulseSuccess {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+// Animation for error alerts
+@keyframes pulseError {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+  }
+
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 15px rgba(220, 53, 69, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+  }
+}
+
+// Animation for info alerts
+@keyframes floatAlert {
+  0% {
+    transform: translateY(5px);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+// Custom icon animations
+.custom-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+
+  &.celebration {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2328a745"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>')
+      center no-repeat;
+    animation: rotation 2s infinite linear;
+  }
+
+  &.try-again {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23dc3545"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>')
+      center no-repeat;
+    animation: shake 0.8s ease-in-out;
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-10px);
+  }
+  40%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+// Confetti effect for big achievements
+.confetti-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #f0f;
+  border-radius: 50%;
+  animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
 }
