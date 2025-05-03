@@ -14,6 +14,8 @@ const achievementRoutes = require("./Routes/achievementRoutes");
 const activityRoutes = require("./Routes/activityRoutes");
 const vocabularyRoutes = require("./Routes/vocabularyRoutes"); // Add vocabulary routes
 const communityRoutes = require("./Routes/communityRoutes");
+const userStatsRoutes = require("./Routes/userStatsRoutes"); // Add user stats routes
+const lessonRoutes = require("./Routes/lessonRoutes"); // Add lesson routes
 
 // Load environment variables
 dotenv.config();
@@ -76,6 +78,8 @@ app.use("/api/achievements", achievementRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/vocabulary", vocabularyRoutes); // Register vocabulary routes
 app.use("/api/community", communityRoutes);
+app.use("/api/stats", userStatsRoutes); // Register user stats routes
+app.use("/api/lessons", lessonRoutes); // Register lesson routes
 
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === "production") {

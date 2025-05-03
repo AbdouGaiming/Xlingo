@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./Dashboard.scss";
 
 const Dashboard = () => {
+  // Get location to detect navigation changes
+  const location = useLocation();
+  
   // State for user language data - default values for when no data exists
   const [currentLanguage, setCurrentLanguage] = useState({
     id: "es",
@@ -36,6 +39,8 @@ const Dashboard = () => {
   const [challengesData, setChallengesData] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
   const [streakData, setStreakData] = useState(0);
+  const [weeklyXP, setWeeklyXP] = useState([]);
+  const [showFriendsLeaderboard, setShowFriendsLeaderboard] = useState(false);
 
   // References for scroll buttons
   const activitiesContainerRef = useRef(null);
@@ -48,18 +53,26 @@ const Dashboard = () => {
   // Set up axios instance with auth token
   const setupAxios = (token) => {
     if (token) {
-      console.log("Setting up axios with token");
+      console.log("Setting up axios with token:", token.substring(0, 15) + "..."); // Show just the beginning of the token
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      console.log("No token provided for axios setup");
     }
   };
 
   // Load user data and selected language from localStorage on component mount
+  // and when the location changes (navigation back to dashboard)
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        console.log("Initializing Dashboard component...");
+        
+        // Check localStorage for user data
         const userFromStorage = localStorage.getItem("xlingoUser");
+        console.log("User data in localStorage:", userFromStorage ? "Found" : "Not found");
+        
         if (!userFromStorage) {
-          console.log("No user found in localStorage");
+          console.log("No user found in localStorage - not authenticated");
           setLoading({
             achievements: false,
             activities: false,
@@ -70,34 +83,64 @@ const Dashboard = () => {
           return;
         }
 
-        const user = JSON.parse(userFromStorage);
-        console.log("User loaded from localStorage:", user._id);
+        // Parse user data
+        let user;
+        try {
+          user = JSON.parse(userFromStorage);
+          console.log("User data parsed successfully:", { 
+            id: user._id ? user._id.substring(0, 8) + "..." : "missing", 
+            username: user.username || "missing",
+            hasToken: !!user.token 
+          });
+        } catch (parseError) {
+          console.error("Failed to parse user data from localStorage:", parseError);
+          setError("Invalid user data format. Please try signing in again.");
+          return;
+        }
 
         // Update user data in state
         if (user.currentLanguage) {
+          console.log("Setting language from storage:", user.currentLanguage.name);
           setCurrentLanguage((prevLang) => ({
             ...prevLang,
             ...user.currentLanguage,
           }));
+        } else {
+          console.log("No language data found in storage");
         }
 
         if (user._id) {
+          console.log("Setting user ID:", user._id.substring(0, 8) + "...");
           setUserId(user._id);
+        } else {
+          console.error("No user ID found in storage");
         }
 
         if (user.token) {
+          console.log("Setting token from storage", user.token.substring(0, 15) + "...");
           setToken(user.token);
           setupAxios(user.token);
+        } else {
+          console.error("No token found in storage");
         }
 
         if (user.username) {
+          console.log("Setting username:", user.username);
           setUsername(user.username);
         }
 
         // Fetch data if we have the user ID
         if (user._id) {
+          console.log("Starting to fetch dashboard data for user ID:", user._id.substring(0, 8) + "...");
           await fetchDashboardData(user._id, user.token || "");
+          
+          // Automatically fetch global leaderboard data initially
+          await fetchLeaderboard(user._id, user.token || "", false);
+          
+          // Set default leaderboard to show the global leaderboard without requiring a click
+          setShowFriendsLeaderboard(false);
         } else {
+          console.error("Cannot fetch dashboard data - missing user ID");
           setLoading({
             achievements: false,
             activities: false,
@@ -120,7 +163,26 @@ const Dashboard = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [location.pathname]); // Add location.pathname as dependency to refresh when navigating back
+
+  // Refresh interval state
+  const [refreshInterval] = useState(30000); // 30 seconds refresh interval
+
+  // Auto-refresh dashboard data
+  useEffect(() => {
+    if (!userId || !token) return;
+
+    // Initial fetch
+    fetchDashboardData(userId, token);
+
+    // Set up interval for periodic refresh
+    const intervalId = setInterval(() => {
+      fetchDashboardData(userId, token);
+    }, refreshInterval);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, [userId, token, refreshInterval]); // Dependencies array
 
   // Fetch all dashboard data from backend
   const fetchDashboardData = async (userId, token) => {
@@ -133,35 +195,108 @@ const Dashboard = () => {
       overall: true,
     });
     setError(null);
-    console.log(`Fetching dashboard data for user: ${userId}`);
-
-    // Prepare headers for authenticated requests
-    const headers = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-      console.log("Using token for API requests");
-    } else {
-      console.warn("No token found, API requests might fail");
-    }
+    console.log('[fetchDashboardData] Starting fetch...');
 
     try {
+      // Fetch user progress data directly from the progress endpoint
+      try {
+        console.log(`[fetchDashboardData] Fetching user progress from: ${API_BASE_URL}/stats/progress`);
+        const progressRes = await axios.get(
+          `${API_BASE_URL}/stats/progress`,
+          { 
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        
+        // --- Enhanced Logging --- 
+        console.log("[fetchDashboardData] Progress API Raw Response Status:", progressRes.status);
+        console.log("[fetchDashboardData] Progress API Raw Response Data:", JSON.stringify(progressRes.data, null, 2));
+        // --- End Enhanced Logging ---
+        
+        const progressData = progressRes.data || {};
+        
+        // Store the full progress data
+        console.log("[fetchDashboardData] Setting userProgress state with:", progressData);
+        setUserProgress(progressData); // Set userProgress state first
+
+        // Update language state based on progress data
+        console.log("[fetchDashboardData] Updating currentLanguage state...");
+        setCurrentLanguage((prev) => {
+          const updated = {
+            ...prev,
+            streak: progressData.streak ?? prev.streak ?? 0,
+            level: progressData.level ?? prev.level ?? 1,
+            xp: progressData.totalXp ?? prev.xp ?? 0,
+            nextLevelXp: calculateNextLevelXp(progressData.level ?? prev.level ?? 1),
+            // Use defaults directly here if needed, but userProgress state is preferred source
+            dailyGoal: progressData.dailyGoals?.xpTarget ?? 30, 
+            dailyProgress: progressData.dailyProgress?.xpEarned ?? 0,
+          };
+          console.log("[fetchDashboardData] Updated currentLanguage state:", updated);
+          return updated;
+        });
+        
+        // Update streak data separately if needed for specific components
+        setStreakData(progressData.streak ?? 0);
+        
+        // Store weekly XP data if available
+        if (progressData.weeklyXP && progressData.weeklyXP.length > 0) {
+          console.log("[fetchDashboardData] Setting weekly XP data:", progressData.weeklyXP);
+          setWeeklyXP(progressData.weeklyXP);
+        }
+        
+      } catch (error) {
+        console.error(
+          "[fetchDashboardData] Error fetching user progress:",
+          error.response?.data || error.message
+        );
+        console.error("[fetchDashboardData] Full error object:", error);
+        // Set userProgress to null or an empty object on error?
+        setUserProgress(null); 
+      } finally {
+        setLoading((prev) => ({ ...prev, streakData: false }));
+      }
+
+      // Fetch user's weekly progress for chart
+      try {
+        console.log(`Fetching weekly progress from: ${API_BASE_URL}/stats/weekly/${userId}`);
+        const headers = {
+          Authorization: `Bearer ${token}`
+        };
+        
+        const weeklyRes = await axios.get(
+          `${API_BASE_URL}/stats/weekly/${userId}`,
+          { headers }
+        );
+        
+        if (weeklyRes.data && weeklyRes.data.length > 0) {
+          setWeeklyXP(weeklyRes.data);
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching weekly progress:",
+          error.response?.data || error.message
+        );
+        // Use empty weekly data if fetch fails
+      }
+
       // Fetch achievements data
       try {
         console.log(
           `Fetching achievements from: ${API_BASE_URL}/achievements/user/${userId}`
         );
+        const headers = {
+          Authorization: `Bearer ${token}`
+        };
         const achievementsRes = await axios.get(
           `${API_BASE_URL}/achievements/user/${userId}`,
-          { headers } // Pass headers explicitly
+          { headers }
         );
         console.log(
           "Achievements API response status:",
           achievementsRes.status
-        );
-        // Log the raw data received
-        console.log(
-          "Raw achievements data received:",
-          JSON.stringify(achievementsRes.data, null, 2)
         );
 
         const achievementsData = achievementsRes.data || [];
@@ -175,138 +310,30 @@ const Dashboard = () => {
         // Process achievement data for challenges section
         const challengesFromAchievements =
           processAchievementsForChallenges(achievementsData);
-        console.log(
-          "Processed challenges data:",
-          challengesFromAchievements.length,
-          "items"
-        );
-        // Log the processed data
-        console.log(
-          "Processed challenges for UI:",
-          JSON.stringify(challengesFromAchievements, null, 2)
-        );
         setChallengesData(challengesFromAchievements);
       } catch (error) {
         console.error(
           "Error fetching achievements:",
           error.response?.data || error.message
         );
-        // Log the error object for more details
-        console.error("Full error object:", error);
         setError("Failed to load achievements. Please try again.");
-        // Set empty achievements array if fetch fails
         setAchievements([]);
         setChallengesData([]);
       } finally {
         setLoading((prev) => ({ ...prev, achievements: false }));
       }
 
-      // Fetch specific streak milestone activities
+      // Fetch all user activities for learning sections
       try {
-        const streakRes = await axios.get(
-          `${API_BASE_URL}/activities/type/${userId}/streak_milestone`,
-          { headers } // Pass headers explicitly
-        );
-        const streakActivities = streakRes.data || [];
-
-        // Get most recent streak milestone
-        if (streakActivities.length > 0) {
-          const latestStreak = streakActivities.sort(
-            (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-          )[0];
-
-          const currentStreak = latestStreak.details?.streakCount || 0;
-          setStreakData(currentStreak);
-
-          // Update language with streak data
-          setCurrentLanguage((prev) => ({
-            ...prev,
-            streak: currentStreak,
-          }));
-        }
-      } catch (error) {
-        console.error(
-          "Error fetching streak data:",
-          error.response?.data || error.message
-        );
-        // Keep default streak value if fetch fails
-      } finally {
-        setLoading((prev) => ({ ...prev, streakData: false }));
-      }
-
-      // Fetch level up activities
-      try {
-        const levelRes = await axios.get(
-          `${API_BASE_URL}/activities/type/${userId}/level_up`,
-          { headers } // Pass headers explicitly
-        );
-        const levelActivities = levelRes.data || [];
-
-        // Get most recent level up
-        if (levelActivities.length > 0) {
-          const latestLevel = levelActivities.sort(
-            (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-          )[0];
-
-          const currentLevel = latestLevel.details?.level || 1;
-
-          // Update language with level data
-          setCurrentLanguage((prev) => ({
-            ...prev,
-            level: currentLevel,
-          }));
-        }
-      } catch (error) {
-        console.error(
-          "Error fetching level data:",
-          error.response?.data || error.message
-        );
-        // Keep default level value if fetch fails
-      }
-
-      // Fetch all user activities for daily progress and XP
-      try {
+        const headers = {
+          Authorization: `Bearer ${token}`
+        };
         const activitiesRes = await axios.get(
           `${API_BASE_URL}/activities/user/${userId}`,
-          { headers } // Pass headers explicitly
+          { headers }
         );
         const activitiesData = activitiesRes.data || [];
         setActivities(activitiesData);
-
-        // Process activities for daily XP and total XP
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        // Calculate daily XP
-        const dailyXP = activitiesData
-          .filter((activity) => {
-            const activityDate = new Date(activity.timestamp);
-            activityDate.setHours(0, 0, 0, 0);
-            return (
-              activityDate.getTime() === today.getTime() &&
-              activity.details &&
-              activity.details.xpEarned
-            );
-          })
-          .reduce(
-            (total, activity) => total + (activity.details.xpEarned || 0),
-            0
-          );
-
-        // Calculate total XP
-        const totalXP = activitiesData
-          .filter((activity) => activity.details && activity.details.xpEarned)
-          .reduce(
-            (total, activity) => total + (activity.details.xpEarned || 0),
-            0
-          );
-
-        // Update language with XP data
-        setCurrentLanguage((prev) => ({
-          ...prev,
-          dailyProgress: dailyXP || 0,
-          xp: totalXP || 0,
-        }));
 
         // Process activities for display in learning section
         const processedActivities = processActivitiesData(activitiesData);
@@ -317,41 +344,19 @@ const Dashboard = () => {
           error.response?.data || error.message
         );
         setError("Failed to load learning activities.");
-        // Set empty activities array if fetch fails
         setActivities([]);
         setRecentActivities([]);
       } finally {
         setLoading((prev) => ({ ...prev, activities: false }));
       }
 
-      // Fetch leaderboard data
-      try {
-        const leaderboardRes = await axios.get(
-          `${API_BASE_URL}/activities/leaderboard`,
-          { headers } // Pass headers explicitly
-        );
-        const leaderboardData = leaderboardRes.data || [];
-        const processedLeaderboard = processLeaderboardData(
-          leaderboardData,
-          userId
-        );
-        setLeaderboardData(processedLeaderboard);
-      } catch (error) {
-        console.error(
-          "Error fetching leaderboard:",
-          error.response?.data || error.message
-        );
-        setError("Failed to load leaderboard.");
-        // Set empty leaderboard array if fetch fails
-        setLeaderboardData([]);
-      } finally {
-        setLoading((prev) => ({ ...prev, leaderboard: false }));
-      }
+      // Fetch global leaderboard data 
+      await fetchLeaderboard(userId, token, false);
 
       // Update overall loading state
       setLoading((prev) => ({ ...prev, overall: false }));
     } catch (err) {
-      console.error("Error fetching dashboard data:", err);
+      console.error("Error in fetchDashboardData:", err);
       setError("Failed to load dashboard data. Please try again later.");
       setLoading({
         achievements: false,
@@ -361,6 +366,106 @@ const Dashboard = () => {
         overall: false,
       });
     }
+  };
+
+  // Helper function to calculate XP needed for next level
+  const calculateNextLevelXp = (currentLevel) => {
+    // XP increases with each level
+    const baseXp = 100;
+    const xpMultiplier = 1.5;
+    return Math.round(baseXp * Math.pow(xpMultiplier, currentLevel - 1));
+  };
+  
+  // Separate function to fetch leaderboard data
+  const fetchLeaderboard = async (userId, token, friendsOnly = false) => {
+    try {
+      setLoading((prev) => ({ ...prev, leaderboard: true }));
+      
+      let url;
+      if (friendsOnly) {
+        // Use the community API endpoint to get friends data for the leaderboard
+        url = `${API_BASE_URL}/community/friends`;
+      } else {
+        // Use the regular leaderboard endpoint for global rankings
+        url = `${API_BASE_URL}/stats/leaderboard?userId=${userId}&limit=10&friendsOnly=false`;
+      }
+      
+      console.log(`Fetching leaderboard from: ${url}`);
+      
+      const headers = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      
+      const leaderboardRes = await axios.get(url, { headers });
+      
+      console.log("Leaderboard API response status:", leaderboardRes.status);
+      
+      let leaderboardData;
+      
+      if (friendsOnly) {
+        // Process friends data into leaderboard format
+        if (leaderboardRes.data && leaderboardRes.data.friends) {
+          // Map the friends data to the same format as the leaderboard data
+          leaderboardData = leaderboardRes.data.friends.map(friend => ({
+            _id: friend.id,
+            username: friend.username,
+            firstName: friend.firstName,
+            lastName: friend.lastName,
+            profileImage: friend.profileImage,
+            totalXp: friend.totalXp || 0,
+            streak: friend.streak || 0,
+            isCurrentUser: false
+          }));
+          
+          // Add the current user to the friends leaderboard
+          const currentUser = leaderboardData.find(user => user._id === userId);
+          if (!currentUser) {
+            // Add current user to the friends leaderboard if not already included
+            const user = JSON.parse(localStorage.getItem("xlingoUser"));
+            if (user) {
+              leaderboardData.push({
+                _id: userId,
+                username: user.username || "You",
+                profileImage: user.profileImage || "👤",
+                totalXp: currentLanguage.xp || 0,
+                streak: currentLanguage.streak || 0,
+                isCurrentUser: true
+              });
+            }
+          }
+          
+          // Sort the friends leaderboard by XP
+          leaderboardData.sort((a, b) => (b.totalXp || 0) - (a.totalXp || 0));
+        } else {
+          leaderboardData = [];
+        }
+      } else {
+        // For global leaderboard, use the data as returned by the API
+        leaderboardData = leaderboardRes.data?.rankings || [];
+      }
+      
+      console.log("Leaderboard data processed:", leaderboardData.length, "users");
+      
+      setLeaderboardData(leaderboardData);
+      setShowFriendsLeaderboard(friendsOnly);
+    } catch (error) {
+      console.error(
+        "Error fetching leaderboard:",
+        error.response?.data || error.message
+      );
+      
+      // Fall back to processed leaderboard data if the API fails
+      const fallbackLeaderboard = getDefaultLeaderboard(userId);
+      setLeaderboardData(fallbackLeaderboard);
+    } finally {
+      setLoading((prev) => ({ ...prev, leaderboard: false }));
+    }
+  };
+
+  // Toggle between global and friends leaderboard
+  const toggleLeaderboardType = () => {
+    fetchLeaderboard(userId, token, !showFriendsLeaderboard);
   };
 
   // Process activities data for the UI
@@ -514,6 +619,18 @@ const Dashboard = () => {
       })
       .slice(0, 5) // Take only the top 5 for the dashboard
       .map((achievement) => {
+        // Calculate progress percentage for achievements in progress
+        let progressPercentage = 0;
+        
+        if (achievement.isCompleted) {
+          progressPercentage = 100;
+        } else if (achievement.currentValue && achievement.requirements && achievement.requirements.value) {
+          progressPercentage = Math.min(
+            Math.floor((achievement.currentValue / achievement.requirements.value) * 100),
+            99 // Cap at 99% if not complete
+          );
+        }
+        
         return {
           id: achievement._id,
           title: achievement.name,
@@ -522,6 +639,9 @@ const Dashboard = () => {
           xp: achievement.xpReward || 10,
           completed: achievement.isCompleted || false,
           icon: achievement.icon || getDifficultyIcon(achievement.rarity),
+          progressPercentage,
+          currentValue: achievement.currentValue || 0,
+          targetValue: achievement.requirements?.value || 0,
         };
       });
   };
@@ -707,12 +827,132 @@ const Dashboard = () => {
     100
   );
 
+  // Calculate daily goal percentage with explicit handling based on targets
+  const calculateDailyGoalPercentage = () => {
+    if (!userProgress || !userProgress.dailyGoals || !userProgress.dailyProgress) {
+      // If no user progress data, use the simplified calculation
+      return Math.min((currentLanguage.dailyProgress / dailyGoal) * 100, 100);
+    }
+    
+    // Get the target values from dailyGoals
+    const { xpTarget = 30, lessonsTarget = 2, vocabularyTarget = 10 } = userProgress.dailyGoals;
+    
+    // Get the current progress values
+    const xpProgress = userProgress.dailyProgress.xpEarned || 0;
+    const lessonsProgress = userProgress.dailyProgress.lessonsCompleted || 0;
+    const vocabProgress = userProgress.dailyProgress.vocabularyLearned || 0;
+    
+    // Calculate percentage for each component
+    const xpPercentage = Math.min((xpProgress / xpTarget) * 100, 100);
+    const lessonsPercentage = Math.min((lessonsProgress / lessonsTarget) * 100, 100);
+    const vocabPercentage = Math.min((vocabProgress / vocabularyTarget) * 100, 100);
+    
+    // Calculate combined percentage (weighted average)
+    // XP is weighted more heavily (50%), lessons and vocabulary are 25% each
+    const combinedPercentage = (xpPercentage * 0.5) + (lessonsPercentage * 0.25) + (vocabPercentage * 0.25);
+    
+    return Math.min(combinedPercentage, 100);
+  };
+
+  // Calculate combined daily goal progress percentage based on all 3 parameters
+  const calculateDailyGoalProgress = () => {
+    // Default target values if userProgress is not available
+    const xpTarget = userProgress?.dailyGoals?.xpTarget || 30;
+    const lessonsTarget = userProgress?.dailyGoals?.lessonsTarget || 2;
+    const vocabularyTarget = userProgress?.dailyGoals?.vocabularyTarget || 10;
+    
+    // Current progress values
+    const xpEarned = userProgress?.dailyProgress?.xpEarned || currentLanguage.dailyProgress || 0;
+    const lessonsCompleted = userProgress?.dailyProgress?.lessonsCompleted || 0;
+    const vocabularyLearned = userProgress?.dailyProgress?.vocabularyLearned || 0;
+    
+    // Calculate individual percentages (cap at 100%)
+    const xpPercentage = Math.min((xpEarned / xpTarget) * 100, 100);
+    const lessonsPercentage = Math.min((lessonsCompleted / lessonsTarget) * 100, 100);
+    const vocabPercentage = Math.min((vocabularyLearned / vocabularyTarget) * 100, 100);
+    
+    // Get the weighted average progress (can adjust weights as needed)
+    const weights = {
+      xp: 0.5,           // XP is 50% of progress
+      lessons: 0.3,       // Lessons are 30% of progress
+      vocabulary: 0.2     // Vocabulary is 20% of progress
+    };
+    
+    const weightedProgress = (
+      xpPercentage * weights.xp + 
+      lessonsPercentage * weights.lessons + 
+      vocabPercentage * weights.vocabulary
+    );
+    
+    // Return object with all progress details for use in UI
+    return {
+      overall: Math.min(Math.round(weightedProgress), 100),
+      xp: {
+        current: xpEarned,
+        target: xpTarget,
+        percentage: xpPercentage,
+        isComplete: xpEarned >= xpTarget
+      },
+      lessons: {
+        current: lessonsCompleted,
+        target: lessonsTarget,
+        percentage: lessonsPercentage,
+        isComplete: lessonsCompleted >= lessonsTarget
+      },
+      vocabulary: {
+        current: vocabularyLearned,
+        target: vocabularyTarget,
+        percentage: vocabPercentage,
+        isComplete: vocabularyLearned >= vocabularyTarget
+      }
+    };
+  };
+
+  // Simple function to calculate progress percentage for daily goals
+  const calculateDailyProgressPercentage = () => {
+    // No need for extensive logging here anymore if we ensure userProgress exists before calling
+    if (!userProgress) {
+      console.warn("[calculateDailyProgressPercentage] Called with null userProgress. Returning 0.");
+      return 0; // Return 0 if state is null/undefined
+    }
+
+    // Get target values (fallback to defaults if not available)
+    const xpTarget = userProgress.dailyGoals?.xpTarget || 30;
+    const lessonsTarget = userProgress.dailyGoals?.lessonsTarget || 2;
+    const vocabularyTarget = userProgress.dailyGoals?.vocabularyTarget || 10;
+
+    // Get current progress values
+    const xpEarned = userProgress.dailyProgress?.xpEarned || 0; 
+    const lessonsCompleted = userProgress.dailyProgress?.lessonsCompleted || 0;
+    const vocabularyLearned = userProgress.dailyProgress?.vocabularyLearned || 0;
+
+    // Ensure targets are not zero
+    const safeXpTarget = xpTarget || 1; 
+    const safeLessonsTarget = lessonsTarget || 1;
+    const safeVocabularyTarget = vocabularyTarget || 1;
+
+    const xpPercentage = Math.min((xpEarned / safeXpTarget) * 100, 100);
+    const lessonsPercentage = Math.min((lessonsCompleted / safeLessonsTarget) * 100, 100);
+    const vocabPercentage = Math.min((vocabularyLearned / safeVocabularyTarget) * 100, 100);
+
+    // Calculate weighted average
+    const weightedPercentage = (
+      (xpPercentage * 0.6) +      
+      (lessonsPercentage * 0.2) + 
+      (vocabPercentage * 0.2)     
+    );
+
+    // Check for NaN before rounding
+    const finalPercentage = isNaN(weightedPercentage) ? 0 : Math.min(Math.round(weightedPercentage), 100);
+    
+    // console.log("[calculateDailyProgressPercentage] Final Calculated Percentage:", finalPercentage); // Keep this one if needed
+
+    return finalPercentage;
+  };
+
   // Calculate daily goal percentage (prevent division by zero)
   const dailyGoal = currentLanguage.dailyGoal || 30;
-  const dailyProgressPercentage = Math.min(
-    (currentLanguage.dailyProgress / dailyGoal) * 100,
-    100
-  );
+  const dailyProgressPercentage = calculateDailyGoalPercentage();
 
   // Display error or loading state if needed
   if (error) {
@@ -724,6 +964,18 @@ const Dashboard = () => {
           <button onClick={() => fetchDashboardData(userId, token)}>
             Try Again
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Only show loading indicator when overall loading is true
+  if (loading.overall) {
+    return (
+      <div className="dashboard-container">
+        <div className="dashboard-loading">
+          <div className="loading-spinner"></div>
+          <p>Loading your language dashboard...</p>
         </div>
       </div>
     );
@@ -756,9 +1008,9 @@ const Dashboard = () => {
             <div className="progress-card streak">
               <div className="streak-icon">🔥</div>
               <div className="streak-info">
-                <h4>{currentLanguage.streak} day streak</h4>
+                <h4>{streakData} day streak</h4>
                 <p>
-                  {currentLanguage.streak > 0
+                  {streakData > 0
                     ? "Keep it going!"
                     : "Start your streak today!"}
                 </p>
@@ -775,31 +1027,56 @@ const Dashboard = () => {
               </div>
               <div className="progress-details">
                 <span>{currentLanguage.xp} XP</span>
-                <span>{nextLevelXp} XP</span>
+                <span>{currentLanguage.nextLevelXp} XP</span>
               </div>
               <p>Keep earning XP to reach level {currentLanguage.level + 1}</p>
             </div>
 
             <div className="progress-card daily-goal">
               <h4>Daily Goal</h4>
-              <div className="progress-bar-container">
-                <div
-                  className="progress-bar"
-                  style={{ width: `${dailyProgressPercentage}%` }}
-                ></div>
-              </div>
-              <div className="progress-details">
-                <span>{currentLanguage.dailyProgress} XP today</span>
-                <span>Goal: {dailyGoal} XP</span>
-              </div>
-              <p>
-                You need {dailyGoal - currentLanguage.dailyProgress} more XP to
-                reach your daily goal
-              </p>
+              {(() => { 
+                // Log the state right before calculation in render
+                console.log("[Render] userProgress state before calculation:", userProgress);
+                
+                const percentage = calculateDailyProgressPercentage();
+                
+                // Log the result immediately after calculation in render
+                console.log("[Render] Calculated Percentage:", percentage);
+
+                let progressBarClass = 'progress-bar';
+                // ... (rest of the class logic remains the same)
+                if (percentage >= 100) {
+                  progressBarClass += ' completed';
+                } else if (percentage >= 70) {
+                  progressBarClass += ' almost-complete';
+                } else if (percentage >= 30) {
+                  progressBarClass += ' in-progress';
+                } else if (percentage > 0) { 
+                  progressBarClass += ' just-started';
+                }
+
+                return (
+                  <>
+                    {/* Temporarily display the raw percentage for debugging */}
+                    <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '10px' }}>
+                      DEBUG: Raw Percentage = {percentage}%
+                    </div>
+                    {/* ... rest of the JSX ... */}
+                    <div className="progress-bar-container">
+                      <div
+                        className={progressBarClass} 
+                        style={{ width: `${percentage}%` }} 
+                      >
+                        {/* ... existing span ... */}
+                      </div>
+                    </div>
+                    {/* ... rest of the details and paragraph ... */}
+                  </>
+                );
+              })()}
             </div>
           </div>
         </section>
-
         {/* Activities Section - Enhanced Horizontal */}
         <section className="activities-section">
           <div className="section-header">
@@ -938,6 +1215,20 @@ const Dashboard = () => {
                         <span className="completed-badge">Completed</span>
                       )}
                     </div>
+                    {!challenge.completed && (
+                      <div className="challenge-progress">
+                        <div className="progress-bar-container">
+                          <div
+                            className="progress-bar"
+                            style={{ width: `${challenge.progressPercentage}%` }}
+                          ></div>
+                        </div>
+                        <div className="progress-details">
+                          <span>{challenge.currentValue}</span>
+                          <span>{challenge.targetValue}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
@@ -953,28 +1244,61 @@ const Dashboard = () => {
         <section className="leaderboard-section">
           <div className="section-header">
             <h3>Leaderboard</h3>
-            <Link to="/community" className="see-all-link">
-              View Community
-            </Link>
+            <div className="leaderboard-controls">
+              <button 
+                className={`leaderboard-toggle ${!showFriendsLeaderboard ? 'active' : ''}`}
+                onClick={() => toggleLeaderboardType()}
+              >
+                Global
+              </button>
+              <button 
+                className={`leaderboard-toggle ${showFriendsLeaderboard ? 'active' : ''}`}
+                onClick={() => toggleLeaderboardType()}
+              >
+                Friends
+              </button>
+              <Link to="/community" className="see-all-link">
+                View All
+              </Link>
+            </div>
           </div>
 
           <div className="leaderboard-list">
             {loading.leaderboard ? (
               <div className="loading-indicator">Loading leaderboard...</div>
-            ) : leaderboardData.length > 0 ? (
+            ) : leaderboardData && leaderboardData.length > 0 ? (
               leaderboardData.map((user, index) => (
                 <div
-                  key={user.id}
+                  key={user._id || `user-${index}`}
                   className={`leaderboard-item ${
                     user.isCurrentUser ? "current-user" : ""
                   }`}
                 >
                   <div className="rank">{index + 1}</div>
-                  <div className="user-avatar">{user.avatar}</div>
-                  <div className="user-name">{user.name}</div>
-                  <div className="user-xp">{user.xp} XP</div>
+                  <div className="user-avatar letter-avatar">
+                    {(user.isCurrentUser ? "Y" : user.username?.[0] || "?").toUpperCase()}
+                  </div>
+                  <div className="user-name">
+                    {user.isCurrentUser ? "You" : user.username}
+                  </div>
+                  <div className="user-stats">
+                    <div className="user-xp">{user.totalXp} XP</div>
+                    {user.streak > 0 && (
+                      <div className="user-streak">
+                        <span className="streak-icon">🔥</span>
+                        <span className="streak-count">{user.streak}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))
+            ) : showFriendsLeaderboard ? (
+              <div className="no-leaderboard">
+                <p>Add friends to see them on your leaderboard!</p>
+                <Link to="/community" className="find-friends-btn">
+                  Find Friends
+                </Link>
+              </div>
             ) : (
               <div className="no-leaderboard">
                 <p>Start learning to appear on the leaderboard!</p>

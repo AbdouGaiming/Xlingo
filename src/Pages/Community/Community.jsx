@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import './Community.scss';
 import { API_URL } from '../../config';
 
@@ -14,6 +14,7 @@ import FriendProfile from './components/profile/FriendProfile';
 const Community = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('friends');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -64,8 +65,9 @@ const Community = () => {
       }
     };
 
+    // Always fetch data when the component mounts or the location changes
     fetchData();
-  }, []);
+  }, [location.key]); // Add location.key as a dependency to re-fetch when navigating
 
   // Handle friend actions
   const handleRemoveFriend = async (friendId) => {

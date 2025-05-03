@@ -9,8 +9,9 @@ const path = require("path");
 const seeders = [
   "achievementSeeder.js", // First: Create achievements
   "userSeeder.js", // Second: Create users
-  "activitySeeder.js", // Third: Create activities (requires users)
-  "friendInteractionSeeder.js", // Fourth: Create friend interactions (requires users)
+  "lessonSeeder.js", // Third: Create lessons
+  "activitySeeder.js", // Fourth: Create activities (requires users and lessons)
+  "friendInteractionSeeder.js", // Fifth: Create friend interactions (requires users)
 ];
 
 // Function to run a single seeder

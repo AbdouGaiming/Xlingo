@@ -178,3 +178,89 @@ exports.deleteAchievement = async (req, res) => {
       .json({ message: "Error deleting achievement", error: error.message });
   }
 };
+
+// Update achievement progress
+exports.updateAchievementProgress = async (req, res) => {
+  try {
+    const { userId, achievementId, progress, currentValue } = req.body;
+    
+    // Validate userId and achievementId
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(achievementId)) {
+      return res.status(400).json({ message: "Invalid user ID or achievement ID format" });
+    }
+    
+    // Get the achievement to know the target value
+    const achievement = await Achievement.findById(achievementId);
+    if (!achievement) {
+      return res.status(404).json({ message: "Achievement not found" });
+    }
+    
+    const targetValue = achievement.requirements.value;
+    
+    // Calculate if the achievement is completed
+    const isCompleted = currentValue >= targetValue;
+    
+    // Record progress through an activity
+    const Activity = require("../Models/Activity");
+    
+    // Check if the achievement is already completed
+    const existingActivity = await Activity.findOne({
+      userId,
+      type: "achievement_earned",
+      "details.achievementId": achievementId
+    });
+    
+    if (existingActivity) {
+      return res.status(200).json({
+        message: "Achievement already completed",
+        achievement
+      });
+    }
+    
+    // If the achievement is now completed, create an activity
+    if (isCompleted) {
+      const newActivity = new Activity({
+        userId,
+        type: "achievement_earned",
+        details: {
+          achievementId,
+          name: achievement.name,
+          xpEarned: achievement.xpReward
+        }
+      });
+      
+      await newActivity.save();
+      
+      // Award XP to the user
+      const User = require("../Models/User");
+      if (achievement.xpReward > 0) {
+        await User.findByIdAndUpdate(userId, {
+          $inc: { 'learningProgress.0.xp': achievement.xpReward }
+        });
+      }
+      
+      return res.status(200).json({
+        message: "Achievement completed!",
+        achievement,
+        xpAwarded: achievement.xpReward
+      });
+    }
+    
+    // Achievement not completed yet, return progress info
+    return res.status(200).json({
+      message: "Achievement progress updated",
+      achievement,
+      progress: {
+        current: currentValue,
+        target: targetValue,
+        percentage: Math.min((currentValue / targetValue) * 100, 100)
+      }
+    });
+  } catch (error) {
+    console.error("Error updating achievement progress:", error);
+    res.status(500).json({
+      message: "Error updating achievement progress",
+      error: error.message
+    });
+  }
+};
