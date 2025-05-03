@@ -9,12 +9,11 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 const Practice = () => {
   // Fixed language to Spanish only
   const selectedLanguage = "es";
-  const [selectedCategory, setSelectedCategory] = useState("vocabulary");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState("vocabulary"); // vocabulary, pronunciation, etc.
-  const [loading, setLoading] = useState(true);
-  const [practiceContent, setPracticeContent] = useState(null);
 
   // Get token for authenticated requests
   const getAuthHeader = () => {
@@ -27,6 +26,7 @@ const Practice = () => {
     const fetchCategories = async () => {
       try {
         setIsLoading(true);
+        setError(null);
 
         const response = await axios.get(`${API_URL}/vocabulary/categories`, {
           params: { languageId: selectedLanguage },
@@ -45,6 +45,7 @@ const Practice = () => {
         }
       } catch (err) {
         console.error("Error fetching vocabulary categories:", err);
+        setError("Failed to load categories. Using default options.");
         // Fallback categories
         setCategories(["basics", "food", "travel"]);
       } finally {
@@ -108,42 +109,6 @@ const Practice = () => {
 
     fetchUserStats();
   }, []);
-
-  // Function to load content based on category
-  const loadContentForCategory = async (category) => {
-    try {
-      const token = localStorage.getItem("xlingoToken");
-      const response = await axios.get(`${API_URL}/vocabulary/practice/${category}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        params: {
-          languageId: selectedLanguage
-        }
-      });
-      return response.data;
-    } catch (error) {
-      console.error(`Error loading ${category} content:`, error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    const loadPracticeContent = async () => {
-      setLoading(true);
-      try {
-        // Load practice content based on selectedCategory
-        const content = await loadContentForCategory(selectedCategory);
-        setPracticeContent(content);
-      } catch (err) {
-        console.error('Error loading practice content:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadPracticeContent();
-  }, [selectedCategory]);
 
   return (
     <div className="practice-page-container">
