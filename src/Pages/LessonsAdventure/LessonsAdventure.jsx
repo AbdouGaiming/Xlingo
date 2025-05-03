@@ -3,8 +3,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import AdventureCharacter from "./AdventureCharacter";
 import LessonPath from "./LessonPath";
 import "./LessonsAdventure.scss";
+import { getLearningTips } from "../../services/GeminiService";
 
-const LessonsAdventure = () => {
+const LessonsAdventure = ({ user }) => {
   const navigate = useNavigate();
   const { lessonId } = useParams();
   const [activeNodeId, setActiveNodeId] = useState(null);
@@ -20,9 +21,12 @@ const LessonsAdventure = () => {
   const [currentUnit, setCurrentUnit] = useState(1); // Track current unit
   const adventureWorldRef = useRef(null);
   const viewportRef = useRef(null);
+  const [learningTips, setLearningTips] = useState([]);
+  const [showLearningTips, setShowLearningTips] = useState(false);
+  const [isLoadingTips, setIsLoadingTips] = useState(false);
 
-  // Mock user data - in a real app, this would come from context/state
-  const userData = {
+  // Use the user prop if available, otherwise fallback to default
+  const userData = user || {
     name: "Language Explorer",
     level: 3,
   };
@@ -230,6 +234,50 @@ const LessonsAdventure = () => {
   const pathData = generatePathData();
   const decorations = generateDecorations(pathData);
 
+  // Fetch learning tips for the current unit
+  const fetchLearningTips = async () => {
+    if (!selectedLesson) return;
+
+    setIsLoadingTips(true);
+    try {
+      const language = selectedLesson.title.includes("Spanish")
+        ? "Spanish"
+        : selectedLesson.title.includes("French")
+        ? "French"
+        : selectedLesson.title.includes("German")
+        ? "German"
+        : "Spanish"; // Default to Spanish
+
+      const level =
+        selectedLesson.unitIndex <= 2
+          ? "Beginner"
+          : selectedLesson.unitIndex <= 4
+          ? "Intermediate"
+          : "Advanced";
+
+      const tips = await getLearningTips(
+        language,
+        level,
+        selectedLesson.lessonType
+      );
+      setLearningTips(tips);
+    } catch (error) {
+      console.error("Error fetching learning tips:", error);
+      setLearningTips([
+        {
+          title: "Practice regularly",
+          description: "Consistency is key to language learning.",
+        },
+        {
+          title: "Use flashcards",
+          description: "Spaced repetition helps with vocabulary retention.",
+        },
+      ]);
+    } finally {
+      setIsLoadingTips(false);
+    }
+  };
+
   // Handle node click
   const handleNodeClick = (lesson) => {
     setSelectedLesson(lesson);
@@ -245,6 +293,9 @@ const LessonsAdventure = () => {
       if (lesson.unitIndex !== currentUnit) {
         setCurrentUnit(lesson.unitIndex);
       }
+
+      // Fetch learning tips for this lesson
+      fetchLearningTips();
     }
   };
 
@@ -273,6 +324,20 @@ const LessonsAdventure = () => {
       setShowPopup(false);
       setCharacterState("jumping");
 
+      // Derive a topic from the lesson type or title
+      const topic =
+        selectedLesson.lessonType === "vocabulary"
+          ? "Basic Vocabulary"
+          : selectedLesson.lessonType === "grammar"
+          ? "Essential Grammar"
+          : selectedLesson.lessonType === "conversation"
+          ? "Simple Conversation"
+          : selectedLesson.lessonType === "listening"
+          ? "Listening Comprehension"
+          : selectedLesson.lessonType === "reading"
+          ? "Reading Practice"
+          : "General Learning"; // Fallback topic
+
       // Store the selected lesson in localStorage to access it in LessonPractice
       localStorage.setItem(
         "currentLesson",
@@ -284,6 +349,20 @@ const LessonsAdventure = () => {
           unitIndex: selectedLesson.unitIndex,
           lessonType: selectedLesson.lessonType,
           xpReward: selectedLesson.xpReward,
+          language: selectedLesson.title.includes("Spanish")
+            ? "Spanish"
+            : selectedLesson.title.includes("French")
+            ? "French"
+            : selectedLesson.title.includes("German")
+            ? "German"
+            : "Spanish", // Default to Spanish
+          level:
+            selectedLesson.unitIndex <= 2
+              ? "Beginner"
+              : selectedLesson.unitIndex <= 4
+              ? "Intermediate"
+              : "Advanced",
+          topic: topic, // Added topic field
         })
       );
 
@@ -292,6 +371,14 @@ const LessonsAdventure = () => {
         navigate(`/lesson-practice/${selectedLesson.id}`);
       }, 1000);
     }
+  };
+
+  // Toggle learning tips visibility
+  const toggleLearningTips = () => {
+    if (!showLearningTips && learningTips.length === 0) {
+      fetchLearningTips();
+    }
+    setShowLearningTips(!showLearningTips);
   };
 
   // Change zoom level
@@ -595,6 +682,36 @@ const LessonsAdventure = () => {
               <div className="xp-reward">+{selectedLesson.xpReward} XP</div>
               <div className="time-estimate">{selectedLesson.timeEstimate}</div>
             </div>
+
+            {/* Learning Tips Button */}
+            <button
+              className="learning-tips-button"
+              onClick={toggleLearningTips}
+            >
+              {showLearningTips ? "Hide Learning Tips" : "Show Learning Tips"}
+            </button>
+
+            {/* Learning Tips Panel */}
+            {showLearningTips && (
+              <div className="learning-tips-panel">
+                <h3>AI-Powered Learning Tips</h3>
+                {isLoadingTips ? (
+                  <div className="loading-tips">
+                    Loading personalized tips...
+                  </div>
+                ) : (
+                  <ul className="tips-list">
+                    {learningTips.slice(0, 3).map((tip, index) => (
+                      <li key={index} className="tip-item">
+                        <span className="tip-title">{tip.title}</span>
+                        <p className="tip-description">{tip.description}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
             {selectedLesson.status === "completed" ? (
               <button
                 className="review-lesson-button"

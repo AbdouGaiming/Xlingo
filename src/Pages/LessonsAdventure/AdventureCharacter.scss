@@ -1,3 +1,6 @@
+@use "sass:math";
+@use "sass:color";
+@use "../variables" as vars; // Corrected path
 @import url("https://fonts.googleapis.com/css2?family=Paprika&display=swap");
 
 // Variables
@@ -142,7 +145,7 @@ $shoes-color: #1a1a1a;
           transform: translateX(-50%);
           width: 4px;
           height: 6px;
-          background: darken($skin-color, 10%);
+          background: color.adjust($skin-color, $lightness: -10%);
           border-radius: 50%;
           transition: all 0.3s ease, transform 0.4s ease; // Add transform transition
         }
@@ -228,15 +231,12 @@ $shoes-color: #1a1a1a;
           height: 30px; // Adjusted height
           background: linear-gradient(
             to right,
-            darken($shirt-color, 15%) 0%,
+            color.adjust($shirt-color, $lightness: -15%) 0%,
             $shirt-color 50%,
-            lighten($shirt-color, 5%) 100%
+            color.adjust($shirt-color, $lightness: 5%) 100%
           );
           border-radius: 8px 8px 6px 6px; // Smoother bottom corners
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-
-          // Removed chest details for a cleaner look
-          // &:before, &:after { ... }
         }
 
         // Waist - Smoother transition to legs
@@ -291,7 +291,10 @@ $shoes-color: #1a1a1a;
           left: 1px;
           width: 6px;
           height: 6px;
-          background: darken($shirt-color, 5%); // Blend with arm
+          background: color.adjust(
+            $shirt-color,
+            $lightness: -5%
+          ); // Blend with arm
           border-radius: 50%;
           z-index: 2;
         }
@@ -392,7 +395,7 @@ $shoes-color: #1a1a1a;
             left: 2.5px;
             width: 7px;
             height: 7px;
-            background: darken($pants-color, 5%);
+            background: color.adjust($pants-color, $lightness: -5%);
             border-radius: 50%;
             z-index: 2;
           }

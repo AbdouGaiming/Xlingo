@@ -1,0 +1,1704 @@
+@use "../variables" as vars;
+@use "sass:color";
+
+// Variables - using theme colors from variables.scss where possible
+$primary-color: vars.$primary-blue;
+$secondary-color: vars.$accent-blue;
+$accent-color: #fbbc05;
+$error-color: vars.$error-color;
+$success-color: vars.$success-color;
+$dark-text: vars.$text-color;
+$light-text: vars.$light-text;
+$background-color: vars.$background-color;
+$card-background: #ffffff;
+$border-radius: vars.$border-radius;
+$box-shadow: vars.$box-shadow;
+$transition-speed: 0.3s;
+
+// Main container
+.lesson-practice-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  background-color: $card-background;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+  font-family: vars.$font-family;
+  color: $dark-text;
+  position: relative;
+
+  // Loading and error states
+  &.loading,
+  &.error {
+    padding: 3rem;
+    text-align: center;
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba($primary-color, 0.2);
+      border-top-color: $primary-color;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      animation: spin 1s infinite linear;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: $light-text;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color $transition-speed;
+
+      &:hover {
+        background-color: color.adjust($primary-color, $lightness: -10%);
+      }
+    }
+  }
+}
+
+// Header styles
+.lesson-header {
+  padding: 1.5rem 2rem;
+  background: linear-gradient(
+    135deg,
+    $primary-color,
+    color.adjust($primary-color, $lightness: -15%)
+  );
+  color: white;
+  position: relative;
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all $transition-speed;
+
+    .back-arrow {
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-3px);
+    }
+  }
+
+  .lesson-info {
+    margin: 1.5rem 0;
+    text-align: center;
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+  }
+
+  .progress-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));
+        border-radius: 4px;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+
+    .progress-text {
+      margin-left: 1rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+// Main content area
+.lesson-content {
+  padding: 2rem;
+
+  .question-area {
+    margin-bottom: 2rem;
+
+    .question-text {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: $dark-text;
+      text-align: center;
+      line-height: 1.4;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+
+    .check-answer {
+      padding: 0.8rem 2rem;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all $transition-speed;
+      cursor: pointer;
+      min-width: 200px;
+      box-shadow: 0 4px 8px rgba($primary-color, 0.2);
+
+      &:hover:not(.disabled) {
+        background-color: color.adjust($primary-color, $lightness: -10%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba($primary-color, 0.3);
+      }
+
+      &.disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+        box-shadow: none;
+      }
+
+      &.active {
+        background-color: $primary-color;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+// Exercise types styling
+.exercise {
+  background-color: #f9f9f9;
+  border-radius: $border-radius;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+  .audio-player {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .play-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all $transition-speed;
+
+      &:hover {
+        background-color: color.adjust($primary-color, $lightness: -10%);
+        transform: scale(1.05);
+      }
+
+      &.playing {
+        background-color: $secondary-color;
+      }
+    }
+
+    .audio-hint {
+      margin-left: 1rem;
+      color: $light-text;
+      font-size: 0.9rem;
+    }
+  }
+
+  .text-content {
+    margin-bottom: 1.5rem;
+
+    .reading-text {
+      padding: 1.5rem;
+      background-color: white;
+      border-radius: 8px;
+      border-left: 4px solid $accent-color;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .prompt {
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    font-style: italic;
+    color: $dark-text;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    .option {
+      padding: 1rem 1.5rem;
+      background-color: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+
+      &:hover {
+        border-color: rgba($primary-color, 0.5);
+        background-color: rgba($primary-color, 0.03);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      &.selected {
+        border-color: $primary-color;
+        background-color: rgba($primary-color, 0.08);
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 4px;
+          background-color: $primary-color;
+        }
+      }
+
+      &.correct-answer {
+        border-color: $success-color;
+        background-color: rgba($success-color, 0.05);
+        animation: pulseSuccess 0.5s ease;
+        box-shadow: 0 4px 12px rgba($success-color, 0.15);
+
+        &::before {
+          content: "✓";
+          position: absolute;
+          right: 1rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $success-color;
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
+      }
+
+      &.wrong-answer {
+        border-color: $error-color;
+        background-color: rgba($error-color, 0.05);
+        animation: pulseError 0.5s ease;
+        box-shadow: 0 4px 12px rgba($error-color, 0.15);
+
+        &::before {
+          content: "✗";
+          position: absolute;
+          right: 1rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $error-color;
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  // Matching exercise
+  &.matching {
+    .matching-pairs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+
+      .matching-pair {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all $transition-speed;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+        &:hover {
+          border-color: rgba($primary-color, 0.5);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        &.selected {
+          border-color: $primary-color;
+          box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+        }
+
+        .term {
+          padding: 1rem;
+          background-color: #f0f4f8;
+          font-weight: 500;
+          border-bottom: 1px solid #e0e0e0;
+        }
+
+        .definition {
+          padding: 1rem;
+          font-style: italic;
+        }
+      }
+    }
+  }
+
+  // Arrangement exercise
+  &.arrangement {
+    .arrangement-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+
+      .arranged-words {
+        min-height: 60px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        padding: 1rem;
+        background-color: white;
+        border: 2px dashed rgba($primary-color, 0.3);
+        border-radius: 8px;
+
+        .arranged-word {
+          padding: 0.6rem 1rem;
+          background-color: $primary-color;
+          color: white;
+          border-radius: 30px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all $transition-speed;
+          box-shadow: 0 2px 6px rgba($primary-color, 0.2);
+
+          &:hover {
+            transform: scale(1.05);
+            background-color: color.adjust($primary-color, $lightness: -10%);
+            box-shadow: 0 4px 8px rgba($primary-color, 0.3);
+          }
+        }
+      }
+
+      .available-words {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+
+        .available-word {
+          padding: 0.6rem 1rem;
+          background-color: white;
+          border: 2px solid #e0e0e0;
+          border-radius: 30px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all $transition-speed;
+
+          &:hover {
+            border-color: $primary-color;
+            background-color: rgba($primary-color, 0.05);
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+  }
+
+  // Dictation exercise
+  &.dictation {
+    .input-area {
+      margin-top: 1.5rem;
+
+      .dictation-input {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all $transition-speed;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+      }
+    }
+  }
+
+  // Interactive conversation
+  &.interactive-conversation {
+    .conversation-scenarios {
+      margin-bottom: 1.5rem;
+
+      h4 {
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+      }
+
+      .scenario-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        .scenario-button {
+          padding: 0.6rem 1rem;
+          background-color: white;
+          border: 2px solid #e0e0e0;
+          border-radius: 30px;
+          font-size: 0.9rem;
+          transition: all $transition-speed;
+          cursor: pointer;
+
+          &:hover {
+            border-color: rgba($primary-color, 0.5);
+            transform: translateY(-2px);
+          }
+
+          &.active {
+            background-color: $primary-color;
+            color: white;
+            border-color: $primary-color;
+            box-shadow: 0 2px 8px rgba($primary-color, 0.3);
+          }
+        }
+      }
+
+      .scenario-description {
+        font-size: 0.95rem;
+        color: $light-text;
+        font-style: italic;
+      }
+    }
+
+    .conversation-area {
+      .conversation-history {
+        height: 300px;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+
+        .empty-conversation {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: $light-text;
+          text-align: center;
+          font-style: italic;
+        }
+
+        .conversation-message {
+          max-width: 80%;
+          margin-bottom: 1rem;
+          padding: 1rem;
+          border-radius: 12px;
+          position: relative;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+          animation: messageSlide 0.3s ease;
+
+          &.user-message {
+            background-color: rgba($primary-color, 0.1);
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+          }
+
+          &.ai-message {
+            background-color: #f0f0f0;
+            margin-right: auto;
+            border-bottom-left-radius: 0;
+          }
+
+          .message-content {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+          }
+
+          .message-correction {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: $error-color;
+            padding: 0.5rem;
+            background-color: rgba($error-color, 0.05);
+            border-radius: 6px;
+
+            .correction-label {
+              font-weight: 600;
+            }
+          }
+
+          .message-suggestion {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: $secondary-color;
+            padding: 0.5rem;
+            background-color: rgba($secondary-color, 0.05);
+            border-radius: 6px;
+
+            .suggestion-label {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+
+      .conversation-input {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+
+        input {
+          flex: 1;
+          padding: 0.8rem 1.2rem;
+          font-size: 1rem;
+          border: 2px solid #e0e0e0;
+          border-radius: 30px;
+          transition: all $transition-speed;
+
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+          }
+
+          &:disabled {
+            background-color: #f9f9f9;
+            cursor: not-allowed;
+          }
+        }
+
+        .send-button {
+          padding: 0 1.5rem;
+          background-color: $primary-color;
+          color: white;
+          border: none;
+          border-radius: 30px;
+          font-weight: 500;
+          transition: all $transition-speed;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba($primary-color, 0.2);
+
+          &:hover:not(:disabled) {
+            background-color: color.adjust($primary-color, $lightness: -10%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+          }
+
+          &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+          }
+        }
+      }
+
+      .conversation-tips {
+        background-color: rgba($accent-color, 0.1);
+        border-left: 4px solid $accent-color;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba($accent-color, 0.1);
+
+        h4 {
+          margin-bottom: 0.8rem;
+          font-size: 1rem;
+          color: color.adjust($accent-color, $lightness: -20%);
+        }
+
+        ul {
+          margin: 0;
+          padding-left: 1.2rem;
+
+          li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: $dark-text;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Results screen
+.results-screen {
+  text-align: center;
+  padding: 2rem;
+
+  .results-header {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.6s ease;
+
+    h2 {
+      font-size: 2rem;
+      color: $dark-text;
+      margin-bottom: 1rem;
+    }
+
+    .lesson-icon {
+      font-size: 3rem;
+      margin: 0 auto;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba($primary-color, 0.1);
+      border-radius: 50%;
+      color: $primary-color;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+    }
+  }
+
+  .score-display {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.6s ease 0.2s both;
+
+    .score-circle {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 1rem;
+
+      svg {
+        transform: rotate(-90deg);
+        circle:nth-child(2) {
+          animation: circleProgress 1.5s ease-out forwards;
+        }
+      }
+
+      .score-percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+        font-weight: 600;
+        color: $success-color;
+        opacity: 0;
+        animation: fadeIn 0.8s ease 1s forwards;
+      }
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: $dark-text;
+    }
+  }
+
+  .xp-reward {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.6s ease 0.4s both;
+
+    .xp-badge {
+      display: inline-block;
+      padding: 0.5rem 1.5rem;
+      background-color: $accent-color;
+      color: color.adjust($accent-color, $lightness: -35%);
+      font-weight: 600;
+      border-radius: 30px;
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba($accent-color, 0.3);
+      animation: pulseXP 2s infinite;
+    }
+
+    p {
+      color: $light-text;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    animation: fadeIn 0.6s ease 0.6s both;
+
+    button {
+      padding: 0.8rem 1.5rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all $transition-speed;
+      cursor: pointer;
+
+      &.practice-again {
+        background-color: white;
+        border: 2px solid $primary-color;
+        color: $primary-color;
+        box-shadow: 0 4px 12px rgba($primary-color, 0.1);
+
+        &:hover {
+          background-color: rgba($primary-color, 0.05);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba($primary-color, 0.15);
+        }
+      }
+
+      &.continue-button {
+        background-color: $primary-color;
+        border: none;
+        color: white;
+        box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+
+        &:hover {
+          background-color: color.adjust($primary-color, $lightness: -10%);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 18px rgba($primary-color, 0.35);
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes messageSlide {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseXP {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes circleProgress {
+  0% {
+    stroke-dashoffset: 283;
+  }
+}
+
+@keyframes pulseSuccess {
+  0% {
+    box-shadow: 0 0 0 0 rgba($success-color, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba($success-color, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba($success-color, 0);
+  }
+}
+
+@keyframes pulseError {
+  0% {
+    box-shadow: 0 0 0 0 rgba($error-color, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba($error-color, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba($error-color, 0);
+  }
+}
+
+// SweetAlert custom styling - improved for faster feedback
+.xlingo-swal-container {
+  z-index: 9999;
+
+  .xlingo-swal-popup {
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-family: "Roboto", "Segoe UI", sans-serif;
+    max-width: 400px;
+    animation: swalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    .xlingo-swal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: $dark-text;
+    }
+
+    .swal2-html-container {
+      font-size: 1.1rem;
+      margin: 0.8rem 0;
+      color: $light-text;
+    }
+
+    .swal2-icon {
+      margin: 1.2rem auto;
+      border-width: 3px;
+
+      &.swal2-success {
+        border-color: $success-color;
+
+        .swal2-success-ring {
+          border-color: rgba($success-color, 0.3);
+        }
+
+        .swal2-success-line-tip,
+        .swal2-success-line-long {
+          background-color: $success-color;
+        }
+
+        .swal2-success-circular-line-left,
+        .swal2-success-circular-line-right,
+        .swal2-success-fix {
+          background-color: transparent !important;
+        }
+      }
+
+      &.swal2-error {
+        border-color: $error-color;
+
+        .swal2-x-mark-line-right,
+        .swal2-x-mark-line-left {
+          background-color: $error-color;
+        }
+      }
+
+      &.swal2-warning {
+        border-color: $accent-color;
+        color: $accent-color;
+      }
+
+      &.swal2-info {
+        border-color: $primary-color;
+        color: $primary-color;
+      }
+    }
+
+    .xlingo-swal-confirm-button {
+      border-radius: 30px !important;
+      padding: 0.7rem 2rem;
+      font-weight: 500;
+      transition: all 0.25s;
+      background-color: $primary-color !important;
+      box-shadow: 0 4px 12px rgba($primary-color, 0.3) !important;
+
+      &:hover {
+        background-color: color.adjust(
+          $primary-color,
+          $lightness: -10%
+        ) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba($primary-color, 0.35) !important;
+      }
+    }
+
+    .xlingo-swal-cancel-button {
+      border-radius: 30px !important;
+      padding: 0.7rem 2rem;
+      font-weight: 500;
+      box-shadow: none !important;
+      border: 2px solid #e0e0e0 !important;
+      background-color: white !important;
+      color: #666 !important;
+
+      &:hover {
+        background-color: #f9f9f9 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+      }
+    }
+
+    .swal2-timer-progress-bar {
+      background: $primary-color;
+      height: 4px;
+    }
+  }
+
+  // Special styling for correct/incorrect alerts
+  &.correct-alert .xlingo-swal-popup {
+    border-left: 4px solid $success-color;
+
+    .xlingo-swal-title {
+      color: $success-color;
+    }
+  }
+
+  &.incorrect-alert .xlingo-swal-popup {
+    border-left: 4px solid $error-color;
+
+    .xlingo-swal-title {
+      color: $error-color;
+    }
+  }
+}
+
+// Add custom SweetAlert animations and styling
+@keyframes pulseSuccess {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseError {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Custom SweetAlert styles
+.xlingo-swal-container {
+  &.correct-alert {
+    .swal2-popup {
+      background-color: rgba($success-color, 0.05);
+      border: 2px solid $success-color;
+    }
+  }
+
+  &.incorrect-alert {
+    .swal2-popup {
+      background-color: rgba($error-color, 0.05);
+      border: 2px solid $error-color;
+    }
+  }
+}
+
+.xlingo-swal-popup {
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  font-family: "Roboto", "Segoe UI", sans-serif;
+
+  .swal2-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .correct-answer-text {
+    margin-top: 8px;
+    font-style: italic;
+    font-weight: 500;
+    color: $success-color;
+  }
+}
+
+.xlingo-swal-confirm-button {
+  background-color: $primary-color !important;
+  border-radius: 30px !important;
+  padding: 0.6rem 1.5rem !important;
+  font-weight: 500 !important;
+}
+
+// Interactive conversation styles
+.exercise.interactive-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .conversation-scenarios {
+    background-color: rgba($primary-color, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+
+    h4 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+
+    .scenario-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1rem;
+
+      .scenario-button {
+        background-color: rgba($primary-color, 0.1);
+        border: 2px solid transparent;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgba($primary-color, 0.2);
+        }
+
+        &.active {
+          background-color: $primary-color;
+          color: white;
+          border-color: $primary-color;
+        }
+      }
+    }
+
+    .scenario-description {
+      font-size: 0.9rem;
+      color: $light-text;
+      margin: 0;
+    }
+  }
+
+  .conversation-area {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+
+    .conversation-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background-color: #f8f9fa;
+
+      .empty-conversation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: $light-text;
+        font-style: italic;
+      }
+
+      .conversation-message {
+        margin-bottom: 1rem;
+        max-width: 80%;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        position: relative;
+
+        &.user-message {
+          background-color: $primary-color;
+          color: white;
+          margin-left: auto;
+          border-bottom-right-radius: 2px;
+        }
+
+        &.ai-message {
+          background-color: white;
+          color: $dark-text;
+          margin-right: auto;
+          border-bottom-left-radius: 2px;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+          .message-correction {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            color: $error-color;
+
+            .correction-label {
+              font-weight: 600;
+            }
+          }
+
+          .message-suggestion {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: $accent-color;
+
+            .suggestion-label {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+
+    .conversation-input {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+      input {
+        flex: 1;
+        padding: 0.8rem 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 25px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+          border-color: $primary-color;
+        }
+      }
+
+      .send-button {
+        margin-left: 0.8rem;
+        background-color: $primary-color;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 0 1.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: color.adjust($primary-color, $lightness: -10%);
+        }
+
+        &:disabled {
+          background-color: #ccc;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .conversation-tips {
+      padding: 1rem;
+      background-color: rgba($accent-color, 0.05);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+      h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.95rem;
+        color: $accent-color;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        font-size: 0.85rem;
+        color: $light-text;
+
+        li {
+          margin-bottom: 0.3rem;
+        }
+      }
+    }
+  }
+}
+
+// Tools panel styles
+.exercise.tools-panel {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+
+  h3 {
+    margin-top: 0;
+    color: $primary-color;
+    font-weight: 600;
+  }
+
+  .tools-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.5rem 0;
+
+    .tool-button {
+      flex: 1;
+      min-width: 180px;
+      background-color: white;
+      border: 2px solid rgba($primary-color, 0.2);
+      border-radius: 10px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $primary-color;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      .tool-description {
+        font-size: 0.85rem;
+        font-weight: normal;
+        color: $light-text;
+        text-align: center;
+      }
+
+      &:hover {
+        border-color: $primary-color;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .translation-panel,
+  .grammar-panel {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+
+    h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: $primary-color;
+    }
+
+    p {
+      color: $light-text;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: $primary-color;
+      }
+    }
+
+    .translate-button,
+    .check-grammar-button {
+      display: block;
+      margin: 1rem 0;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 0.8rem 2rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: color.adjust($primary-color, $lightness: -10%);
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    }
+
+    .translation-result,
+    .grammar-result {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+      .translation-error,
+      .grammar-error {
+        color: $error-color;
+        padding: 0.8rem;
+        background-color: rgba($error-color, 0.05);
+        border-radius: 8px;
+        font-size: 0.95rem;
+      }
+
+      h5 {
+        font-size: 0.95rem;
+        margin: 0.8rem 0 0.5rem 0;
+        color: $dark-text;
+      }
+    }
+
+    .corrections-list {
+      ul {
+        padding-left: 1rem;
+        list-style: none;
+
+        li {
+          margin-bottom: 0.8rem;
+          padding: 0.5rem;
+          background-color: rgba(255, 255, 255, 0.8);
+          border-radius: 6px;
+
+          .original-text {
+            color: $error-color;
+            text-decoration: line-through;
+            margin-right: 0.3rem;
+          }
+
+          .arrow {
+            color: $light-text;
+            margin: 0 0.3rem;
+          }
+
+          .correction-text {
+            color: $success-color;
+            font-weight: 500;
+          }
+
+          .explanation {
+            font-size: 0.85rem;
+            color: $light-text;
+            margin-top: 0.3rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .lesson-practice-container {
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .lesson-header {
+    padding: 1rem;
+
+    .lesson-info {
+      margin: 1rem 0;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .lesson-content {
+    padding: 1rem;
+
+    .question-area .question-text {
+      font-size: 1.2rem;
+    }
+  }
+
+  .exercise {
+    padding: 1rem;
+
+    .options .option {
+      padding: 0.8rem 1rem;
+    }
+
+    &.matching .matching-pairs {
+      grid-template-columns: 1fr;
+    }
+
+    &.interactive-conversation {
+      .conversation-area .conversation-history {
+        height: 250px;
+      }
+
+      .conversation-message {
+        max-width: 90%;
+      }
+    }
+  }
+
+  .xlingo-swal-container .xlingo-swal-popup {
+    padding: 1.2rem;
+    margin: 0 1rem;
+
+    .xlingo-swal-title {
+      font-size: 1.3rem;
+    }
+
+    .swal2-html-container {
+      font-size: 1rem;
+    }
+  }
+
+  .results-screen {
+    .action-buttons {
+      flex-direction: column;
+      gap: 1rem;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .lesson-header {
+    .back-button {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .lesson-info h2 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .exercise {
+    .audio-player {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+
+      .audio-hint {
+        margin-left: 0;
+        text-align: center;
+      }
+    }
+
+    &.interactive-conversation {
+      .conversation-scenarios .scenario-buttons {
+        flex-direction: column;
+        align-items: center;
+
+        .scenario-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .results-screen {
+    .score-display .score-circle {
+      width: 120px;
+      height: 120px;
+
+      .score-percentage {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .xlingo-swal-container .xlingo-swal-popup {
+    padding: 1rem;
+    width: 85% !important;
+    max-width: 350px;
+
+    .xlingo-swal-title {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+/* SweetAlert custom styling */
+.xlingo-swal-container {
+  z-index: 10000;
+
+  .xlingo-swal-popup {
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+    .xlingo-swal-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .xlingo-swal-confirm-button {
+      background-color: $primary-color;
+      color: white;
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 10px 24px;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+  }
+
+  &.correct-alert .xlingo-swal-popup {
+    background-color: #e8f5e9;
+    border-left: 5px solid #43a047;
+
+    .xlingo-swal-title {
+      color: #2e7d32;
+    }
+  }
+
+  &.incorrect-alert .xlingo-swal-popup {
+    background-color: #ffebee;
+    border-left: 5px solid #e53935;
+
+    .xlingo-swal-title {
+      color: #c62828;
+    }
+
+    .correct-answer-text {
+      font-style: italic;
+      color: #2e7d32;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+  }
+}
+
+/* Animations for SweetAlert feedback */
+@keyframes pulseSuccess {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseError {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Answer feedback animations */
+.answer-option {
+  transition: all 0.3s ease;
+
+  &.correct {
+    animation: correctAnswerAnimation 0.6s ease;
+    background-color: rgba(76, 175, 80, 0.2);
+    border-color: #4caf50;
+  }
+
+  &.incorrect {
+    animation: incorrectAnswerAnimation 0.6s ease;
+    background-color: rgba(244, 67, 54, 0.2);
+    border-color: #f44336;
+  }
+}
+
+@keyframes correctAnswerAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes incorrectAnswerAnimation {
+  0%,
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(-5px);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
