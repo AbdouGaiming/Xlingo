@@ -74,6 +74,9 @@ exports.createActivity = async (req, res) => {
   try {
     const newActivity = new Activity(req.body);
     const savedActivity = await newActivity.save();
+    
+    const User = require("../Models/User");
+    const userId = req.body.userId;
 
     // Check if this is an achievement activity and update user XP if needed
     if (
@@ -86,10 +89,41 @@ exports.createActivity = async (req, res) => {
       );
 
       if (achievement && achievement.xpReward > 0) {
-        const User = require("../Models/User");
-        await User.findByIdAndUpdate(req.body.userId, {
+        await User.findByIdAndUpdate(userId, {
           $inc: { xp: achievement.xpReward },
         });
+      }
+    }
+    
+    // Update user streak whenever they complete a lesson
+    if (req.body.type === "lesson_complete") {
+      // Find the user
+      const user = await User.findById(userId);
+      if (user) {
+        // Call the updateStreak method defined in the User model
+        await user.updateStreak();
+        
+        // Check if user has hit a streak milestone (7, 14, 21, 30 days)
+        const milestones = [7, 14, 21, 30, 60, 90, 180, 365];
+        if (milestones.includes(user.streak.count)) {
+          // Create a streak milestone activity
+          const streakActivity = new Activity({
+            userId: user._id,
+            type: "streak_milestone",
+            details: {
+              streakCount: user.streak.count,
+              xpEarned: user.streak.count * 10, // 10 XP per day in streak
+            },
+            timestamp: new Date(),
+            visibility: "public",
+          });
+          await streakActivity.save();
+          
+          // Award XP for the streak milestone
+          await User.findByIdAndUpdate(userId, {
+            $inc: { xp: user.streak.count * 10 },
+          });
+        }
       }
     }
 

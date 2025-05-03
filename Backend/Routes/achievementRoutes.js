@@ -17,6 +17,13 @@ router.get(
 );
 router.get("/:id", achievementController.getAchievementById);
 
+// User progress endpoints
+router.post(
+  "/progress",
+  verifyToken,
+  achievementController.updateAchievementProgress
+);
+
 // Admin routes - typically would have additional middleware for admin verification
 router.post("/", verifyToken, achievementController.createAchievement);
 router.put("/:id", verifyToken, achievementController.updateAchievement);

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Lesson = require("./Lesson"); // Add this line
 
 const activitySchema = new mongoose.Schema(
   {

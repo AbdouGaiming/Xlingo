@@ -10,6 +10,19 @@ $border-radius: 12px;
 $box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 $hover-transition: all 0.3s ease;
 
+:root {
+  --card-bg: white;
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --text-primary: #{$text-color};
+  --text-secondary: #{$light-text};
+  --brand-primary: #{$primary-blue};
+  --brand-primary-light: rgba(5, 5, 181, 0.1);
+  --brand-primary-rgb: 5, 5, 181;
+  --brand-accent: #{$accent-blue};
+  --brand-accent-rgb: 74, 144, 226;
+  --success-color: #27ae60;
+}
+
 .dashboard-container {
   width: 100%;
   min-height: calc(100vh - 70px); // Accounting for navbar height
@@ -151,16 +164,22 @@ $hover-transition: all 0.3s ease;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
+      margin-bottom: 30px;
 
       .progress-card {
         background: rgba(255, 255, 255, 0.7);
         border-radius: $border-radius;
         padding: 20px;
         border: 1px solid rgba(74, 144, 226, 0.2);
+        transition: $hover-transition;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+        }
 
         h4 {
-          margin-top: 0;
-          margin-bottom: 15px;
+          margin: 0 0 15px;
           font-size: 1.2rem;
           font-weight: 600;
           font-family: "Paprika", system-ui;
@@ -174,13 +193,15 @@ $hover-transition: all 0.3s ease;
           .streak-icon {
             font-size: 2.5rem;
             margin-right: 20px;
+            color: #ff8000;
           }
 
           .streak-info {
+            flex: 1;
+
             h4 {
               margin: 0;
               font-size: 1.4rem;
-              color: $primary-blue;
             }
 
             p {
@@ -202,20 +223,27 @@ $hover-transition: all 0.3s ease;
             height: 100%;
             background: linear-gradient(120deg, $primary-blue, $secondary-blue);
             border-radius: 6px;
+            transition: width 0.3s ease-in-out;
           }
         }
 
         .progress-details {
           display: flex;
           justify-content: space-between;
-          font-size: 1rem;
-          margin-bottom: 10px;
+          font-size: 0.9rem;
+          color: $light-text;
+          margin-bottom: 8px;
         }
 
         p {
           margin: 5px 0 0;
           font-size: 0.9rem;
           color: $light-text;
+
+          &:contains("Daily goal completed!") {
+            color: #27ae60;
+            font-weight: 600;
+          }
         }
       }
     }
@@ -678,6 +706,92 @@ $hover-transition: all 0.3s ease;
         color: $light-text;
       }
     }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .leaderboard-controls {
+        display: flex;
+        align-items: center;
+
+        .leaderboard-toggle {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+          margin-right: 10px;
+          padding: 4px 8px;
+          border-radius: 12px;
+
+          &.active {
+            background-color: var(--brand-primary-light);
+            color: var(--brand-primary);
+            font-weight: 600;
+          }
+
+          &:hover:not(.active) {
+            color: var(--brand-primary);
+          }
+        }
+      }
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.current-user {
+        background-color: rgba(var(--brand-primary-rgb), 0.1);
+        border: 1px solid var(--brand-primary-light);
+
+        .user-name {
+          font-weight: 700;
+          color: var(--brand-primary);
+        }
+      }
+
+      .user-stats {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+
+        .user-xp {
+          font-weight: 600;
+          font-size: 1rem;
+          color: $accent-blue;
+        }
+
+        .user-streak {
+          display: flex;
+          align-items: center;
+          margin-left: 10px;
+          background-color: rgba(255, 128, 0, 0.1);
+          padding: 2px 6px;
+          border-radius: 12px;
+
+          .streak-icon {
+            font-size: 0.8rem;
+            margin-right: 3px;
+          }
+
+          .streak-count {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ff8000;
+          }
+        }
+      }
+    }
   }
 
   .quick-actions {
@@ -786,6 +900,229 @@ $hover-transition: all 0.3s ease;
 
     .activities-grid .activity-card {
       min-width: 240px;
+    }
+  }
+}
+
+/* Weekly XP Chart */
+.weekly-xp-chart {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+
+  h4 {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: var(--text-primary);
+  }
+
+  .weekly-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 150px;
+    margin-top: 12px;
+    padding-bottom: 24px;
+    position: relative;
+  }
+
+  .chart-bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    height: 100%;
+  }
+
+  .chart-day-label {
+    position: absolute;
+    bottom: -24px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .chart-bar-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .chart-bar {
+    width: 10px;
+    background: linear-gradient(to top, var(--brand-primary-light), var(--brand-primary));
+    border-radius: 5px;
+    min-height: 5px;
+    transition: height 0.5s ease;
+
+    &:hover {
+      background: var(--brand-accent);
+      box-shadow: 0 0 8px rgba(var(--brand-accent-rgb), 0.6);
+    }
+  }
+
+  .chart-xp-value {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 5px;
+    position: absolute;
+    top: -20px;
+  }
+}
+
+// Loading spinner for dashboard
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(var(--brand-primary-rgb), 0.3);
+    border-radius: 50%;
+    border-top-color: var(--brand-primary);
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+}
+
+// Enhanced progress cards
+.progress-card {
+  // ... existing styles ...
+
+  &.daily-goal {
+    // ... existing styles ...
+
+    .progress-bar-container {
+      height: 16px;
+      background: #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      position: relative;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      .progress-bar {
+        height: 100%;
+        border-radius: 8px;
+        transition: width 0.5s ease-in-out;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        // Different progress bar colors based on completion level
+        &.completed {
+          background: linear-gradient(120deg, #27ae60, #2ecc71);
+        }
+
+        &.almost-complete {
+          background: linear-gradient(120deg, #3498db, #2980b9);
+        }
+
+        &.in-progress {
+          background: linear-gradient(120deg, #f39c12, #e67e22);
+        }
+
+        &.just-started {
+          background: linear-gradient(120deg, #e74c3c, #c0392b);
+        }
+
+        .xp-indicator {
+          position: absolute;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: white;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          white-space: nowrap;
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+
+    .progress-details {
+      margin-bottom: 12px;
+      
+      .goal-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 5px;
+
+        .goal-item {
+          display: flex;
+          align-items: center;
+          padding: 5px 10px;
+          background-color: rgba(74, 144, 226, 0.05);
+          border-radius: 6px;
+          
+          .goal-label {
+            font-weight: 600;
+            width: 100px;
+          }
+          
+          .goal-value {
+            flex: 1;
+          }
+          
+          .goal-check {
+            color: #27ae60;
+            font-weight: bold;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+
+    .goal-completed-message {
+      background-color: rgba(46, 204, 113, 0.1);
+      color: #27ae60 !important;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .celebration-icon {
+        font-size: 1.2rem;
+        margin-right: 8px;
+      }
+    }
+    
+    .goal-progress-message {
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    p {
+      // ... existing styles ...
+
+      &:contains("Daily goal completed!") {
+        color: var(--success-color);
+        font-weight: 600;
+      }
     }
   }
 }
