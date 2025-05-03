@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import "./FriendLeaderboard.scss";
 
 const FriendLeaderboard = ({ friends }) => {
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [sortBy, setSortBy] = useState('xp');
-  const [selectedLanguage, setSelectedLanguage] = useState('all');
+  const [sortBy, setSortBy] = useState("xp");
+  const [selectedLanguage, setSelectedLanguage] = useState("all");
   const [loading, setLoading] = useState(true);
 
   // Language options for the filter
   const languageOptions = [
-    { value: 'all', label: 'All Languages' },
-    { value: 'es', label: 'Spanish 🇪🇸' },
-    { value: 'fr', label: 'French 🇫🇷' },
-    { value: 'de', label: 'German 🇩🇪' },
-    { value: 'it', label: 'Italian 🇮🇹' },
-    { value: 'en', label: 'English 🇬🇧' },
+    { value: "all", label: "All Languages" },
+    { value: "es", label: "Spanish 🇪🇸" },
+    { value: "fr", label: "French 🇫🇷" },
+    { value: "de", label: "German 🇩🇪" },
+    { value: "it", label: "Italian 🇮🇹" },
+    { value: "en", label: "English 🇬🇧" },
   ];
 
   // Process the leaderboard data when friends, sortBy, or selectedLanguage changes
@@ -26,54 +27,62 @@ const FriendLeaderboard = ({ friends }) => {
 
     // Add the current user to the leaderboard
     const currentUser = {
-      id: 'current-user',
-      username: 'You',
-      firstName: 'You',
-      lastName: '',
+      id: "current-user",
+      username: "You",
+      firstName: "You",
+      lastName: "",
       profileImage: null,
       isCurrentUser: true,
       streak: { count: 7 }, // Example value
       learningProgress: [
-        { language: 'es', xp: 1870, level: 5 },
-        { language: 'fr', xp: 950, level: 3 }
-      ]
+        { language: "es", xp: 1870, level: 5 },
+        { language: "fr", xp: 950, level: 3 },
+      ],
     };
 
     // Combine friends and current user
     let allUsers = [...friends, currentUser];
 
     // Filter by language if needed
-    if (selectedLanguage !== 'all') {
-      allUsers = allUsers.filter(user => 
-        user.learningProgress?.some(prog => prog.language === selectedLanguage)
+    if (selectedLanguage !== "all") {
+      allUsers = allUsers.filter((user) =>
+        user.learningProgress?.some(
+          (prog) => prog.language === selectedLanguage
+        )
       );
     }
 
     // Calculate the total XP or get language-specific XP for each user
-    allUsers = allUsers.map(user => {
+    allUsers = allUsers.map((user) => {
       let xp = 0;
       let level = 0;
-      
-      if (selectedLanguage === 'all') {
+
+      if (selectedLanguage === "all") {
         // Sum XP across all languages
-        xp = user.learningProgress?.reduce((sum, prog) => sum + prog.xp, 0) || 0;
+        xp =
+          user.learningProgress?.reduce((sum, prog) => sum + prog.xp, 0) || 0;
         // Use average level across languages
-        const levels = user.learningProgress?.map(prog => prog.level) || [];
-        level = levels.length > 0 ? Math.round(levels.reduce((sum, l) => sum + l, 0) / levels.length) : 0;
+        const levels = user.learningProgress?.map((prog) => prog.level) || [];
+        level =
+          levels.length > 0
+            ? Math.round(levels.reduce((sum, l) => sum + l, 0) / levels.length)
+            : 0;
       } else {
         // Get XP for the selected language
-        const langProgress = user.learningProgress?.find(prog => prog.language === selectedLanguage);
+        const langProgress = user.learningProgress?.find(
+          (prog) => prog.language === selectedLanguage
+        );
         xp = langProgress?.xp || 0;
         level = langProgress?.level || 0;
       }
-      
+
       return { ...user, calculatedXp: xp, calculatedLevel: level };
     });
 
     // Sort the users
-    if (sortBy === 'xp') {
+    if (sortBy === "xp") {
       allUsers.sort((a, b) => b.calculatedXp - a.calculatedXp);
-    } else if (sortBy === 'streak') {
+    } else if (sortBy === "streak") {
       allUsers.sort((a, b) => (b.streak?.count || 0) - (a.streak?.count || 0));
     }
 
@@ -97,7 +106,7 @@ const FriendLeaderboard = ({ friends }) => {
         <div className="leaderboard-header">
           <h2 className="leaderboard-title">Leaderboard</h2>
           <div className="leaderboard-filters">
-            <select 
+            <select
               className="filter-select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -105,12 +114,12 @@ const FriendLeaderboard = ({ friends }) => {
               <option value="xp">Sort by XP</option>
               <option value="streak">Sort by Streak</option>
             </select>
-            <select 
+            <select
               className="filter-select"
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
             >
-              {languageOptions.map(option => (
+              {languageOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -133,7 +142,7 @@ const FriendLeaderboard = ({ friends }) => {
       <div className="leaderboard-header">
         <h2 className="leaderboard-title">Leaderboard</h2>
         <div className="leaderboard-filters">
-          <select 
+          <select
             className="filter-select"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -141,12 +150,12 @@ const FriendLeaderboard = ({ friends }) => {
             <option value="xp">Sort by XP</option>
             <option value="streak">Sort by Streak</option>
           </select>
-          <select 
+          <select
             className="filter-select"
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
           >
-            {languageOptions.map(option => (
+            {languageOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -167,32 +176,38 @@ const FriendLeaderboard = ({ friends }) => {
         </thead>
         <tbody>
           {leaderboardData.map((user, index) => (
-            <tr 
-              key={user.id} 
-              className={user.isCurrentUser ? 'current-user' : ''}
+            <tr
+              key={user.id}
+              className={user.isCurrentUser ? "current-user" : ""}
             >
               <td className="rank-cell">{index + 1}</td>
               <td className="user-cell">
                 <div className="user-avatar">
-                  {user.profileImage 
-                    ? <img src={user.profileImage} alt={user.username} /> 
-                    : user.username.charAt(0).toUpperCase()}
+                  {user.profileImage ? (
+                    <img src={user.profileImage} alt={user.username} />
+                  ) : (
+                    user.username.charAt(0).toUpperCase()
+                  )}
                 </div>
                 <span className="user-name">
-                  {user.isCurrentUser 
-                    ? 'You' 
-                    : (user.firstName && user.lastName 
-                      ? `${user.firstName} ${user.lastName}` 
-                      : user.username)}
+                  {user.isCurrentUser
+                    ? "You"
+                    : user.firstName && user.lastName
+                    ? `${user.firstName} ${user.lastName}`
+                    : user.username}
                 </span>
               </td>
-              <td className="xp-cell">{user.calculatedXp.toLocaleString()} XP</td>
+              <td className="xp-cell">
+                {user.calculatedXp.toLocaleString()} XP
+              </td>
               <td className="streak-cell">
                 <span className="streak-icon">🔥</span>
                 {user.streak?.count || 0} days
               </td>
               <td className="level-cell">
-                <span className="level-badge">Level {user.calculatedLevel}</span>
+                <span className="level-badge">
+                  Level {user.calculatedLevel}
+                </span>
               </td>
             </tr>
           ))}
